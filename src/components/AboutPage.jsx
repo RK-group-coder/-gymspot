@@ -103,36 +103,19 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
         }} />
 
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Main Title Badge */}
-          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(180, 255, 4, 0.08)',
-              border: '1px solid rgba(180, 255, 4, 0.3)',
-              borderRadius: '999px',
-              padding: '6px 16px',
-              fontSize: '12px',
-              fontWeight: 800,
-              color: '#b4ff04',
-              marginBottom: '16px'
-            }}>
-              <Sparkles size={14} color="#b4ff04" />
-              品牌創立核心報告
-            </div>
-
+          {/* Main Title */}
+          <div style={{ textAlign: 'center', marginBottom: '36px', marginTop: '10px' }}>
             <h1 style={{
-              fontSize: 'clamp(30px, 5vw, 48px)',
+              fontSize: 'clamp(32px, 5vw, 52px)',
               fontWeight: 900,
-              lineHeight: 1.25,
-              margin: '0 0 16px',
+              lineHeight: 1.3,
+              margin: '0 0 18px',
               color: '#ffffff',
               letterSpacing: '-0.5px'
             }}>
               為什麼我們創立<br />
-              <span style={{ color: '#b4ff04', textShadow: '0 0 24px rgba(180, 255, 4, 0.45)' }}>
-                「肌動組 GYMspot」？
+              <span>
+                「<span style={{ color: '#ffffff', textShadow: '0 0 22px rgba(255, 255, 255, 0.85)' }}>肌動組 GYM</span><span style={{ color: '#b4ff04', textShadow: '0 0 25px rgba(180, 255, 4, 0.55)' }}>spot</span>」
               </span>
             </h1>
 
@@ -143,8 +126,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
               margin: '0 auto',
               lineHeight: 1.8
             }}>
-              由一群資深自由教練與熱愛重訓的工程師共同發起。<br />
-              這不是另一家連鎖健身房，而是一場針對台灣體適能「場租黑箱與抽成剝削」的數位革新。
+              由一群資深自由教練與熱愛重訓的工程師共同發起。
             </p>
           </div>
 
