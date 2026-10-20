@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Building2, 
   FileSpreadsheet, 
@@ -9,7 +9,11 @@ import {
   ExternalLink,
   Phone,
   MessageSquare,
-  Mail
+  Mail,
+  Clock,
+  Calendar,
+  Check,
+  RotateCcw
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -40,6 +44,41 @@ const TAIWAN_DISTRICTS = {
 
 const TAIWAN_CITIES = Object.keys(TAIWAN_DISTRICTS);
 
+// 1 到 7 星期定義
+const WEEKDAYS = [
+  { key: 1, name: '週一', num: '1' },
+  { key: 2, name: '週二', num: '2' },
+  { key: 3, name: '週三', num: '3' },
+  { key: 4, name: '週四', num: '4' },
+  { key: 5, name: '週五', num: '5' },
+  { key: 6, name: '週六', num: '6' },
+  { key: 7, name: '週日', num: '7' }
+];
+
+// 每天 8:00 到 24:00，一小時一格，共 16 格
+const TIME_SLOTS = Array.from({ length: 16 }, (_, i) => {
+  const start = 8 + i;
+  const end = start + 1;
+  const startStr = String(start).padStart(2, '0') + ':00';
+  const endStr = String(end).padStart(2, '0') + ':00';
+  return {
+    hour: start,
+    label: `${startStr} - ${endStr}`,
+    shortLabel: `${start}:00`
+  };
+});
+
+// 預設 8:00~24:00 全時段勾選
+const getInitialSchedule = () => {
+  const sched = {};
+  for (let d = 1; d <= 7; d++) {
+    for (let h = 8; h <= 23; h++) {
+      sched[`${d}-${h}`] = true;
+    }
+  }
+  return sched;
+};
+
 export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegisterSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -50,36 +89,116 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     lineId: '',
     igHandle: '',
     coverImage: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=900&auto=format&fit=crop',
-    offPeakPerHour: 160,
-    peakPerHour: 240,
-    peakHoursRange: '平日 18:00 - 22:00',
+    hourlyRate: 200,
     studentCleanFee: 0,
     cleanFeeDesc: '免收學員人頭清潔費',
-    packageDealText: '10小時 $1,500 / 30小時 $4,200',
+    packageDealText: '10小時 $1,800 / 30小時 $5,000',
     certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
     verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
   });
 
+  const [schedule, setSchedule] = useState(getInitialSchedule);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittedSuccess, setIsSubmittedSuccess] = useState(false);
   const [submittedGymData, setSubmittedGymData] = useState(null);
 
+  const selectedSlotsCount = useMemo(() => {
+    return Object.values(schedule).filter(Boolean).length;
+  }, [schedule]);
+
+  const toggleSlot = (dayKey, hour) => {
+    setSchedule(prev => ({
+      ...prev,
+      [`${dayKey}-${hour}`]: !prev[`${dayKey}-${hour}`]
+    }));
+  };
+
+  const toggleDayAll = (dayKey) => {
+    setSchedule(prev => {
+      const isAllChecked = TIME_SLOTS.every(slot => prev[`${dayKey}-${slot.hour}`]);
+      const next = { ...prev };
+      TIME_SLOTS.forEach(slot => {
+        next[`${dayKey}-${slot.hour}`] = !isAllChecked;
+      });
+      return next;
+    });
+  };
+
+  const toggleTimeSlotAll = (hour) => {
+    setSchedule(prev => {
+      const isAllChecked = WEEKDAYS.every(d => prev[`${d.key}-${hour}`]);
+      const next = { ...prev };
+      WEEKDAYS.forEach(d => {
+        next[`${d.key}-${hour}`] = !isAllChecked;
+      });
+      return next;
+    });
+  };
+
+  const selectAllSchedule = () => {
+    const next = {};
+    WEEKDAYS.forEach(d => {
+      TIME_SLOTS.forEach(s => {
+        next[`${d.key}-${s.hour}`] = true;
+      });
+    });
+    setSchedule(next);
+  };
+
+  const clearAllSchedule = () => {
+    setSchedule({});
+  };
+
+  const selectWeekdaysOnly = () => {
+    setSchedule(prev => {
+      const next = { ...prev };
+      [1, 2, 3, 4, 5].forEach(d => {
+        TIME_SLOTS.forEach(s => {
+          next[`${d}-${s.hour}`] = true;
+        });
+      });
+      [6, 7].forEach(d => {
+        TIME_SLOTS.forEach(s => {
+          next[`${d}-${s.hour}`] = false;
+        });
+      });
+      return next;
+    });
+  };
+
+  const selectWeekendsOnly = () => {
+    setSchedule(prev => {
+      const next = { ...prev };
+      [1, 2, 3, 4, 5].forEach(d => {
+        TIME_SLOTS.forEach(s => {
+          next[`${d}-${s.hour}`] = false;
+        });
+      });
+      [6, 7].forEach(d => {
+        TIME_SLOTS.forEach(s => {
+          next[`${d}-${s.hour}`] = true;
+        });
+      });
+      return next;
+    });
+  };
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
   const handleCityChange = (e) => {
-    const selectedCity = e.target.value;
-    const availableDistricts = TAIWAN_DISTRICTS[selectedCity] || [];
+    const newCity = e.target.value;
+    const defaultDistrict = (TAIWAN_DISTRICTS[newCity] && TAIWAN_DISTRICTS[newCity][0]) || '';
     setFormData(prev => ({
       ...prev,
-      city: selectedCity,
-      district: availableDistricts[0] || ''
+      city: newCity,
+      district: defaultDistrict
     }));
   };
 
@@ -100,6 +219,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     setIsSubmitting(true);
 
     setTimeout(() => {
+      const hourlyPrice = Number(formData.hourlyRate) || 200;
       const newGym = {
         id: `gym-reg-${Date.now()}`,
         name: formData.name || '新進駐場租健身房',
@@ -117,17 +237,21 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
         igHandle: formData.igHandle || 'gym.tw',
         coverImage: formData.coverImage,
         pricing: {
-          offPeakPerHour: Number(formData.offPeakPerHour) || 160,
-          peakPerHour: Number(formData.peakPerHour) || 240,
+          hourlyRate: hourlyPrice,
+          offPeakPerHour: hourlyPrice,
+          peakPerHour: hourlyPrice,
           studentCleanFee: Number(formData.studentCleanFee) || 0,
           cleanFeeDesc: formData.cleanFeeDesc,
-          peakHoursRange: formData.peakHoursRange,
-          offPeakHoursRange: '除尖峰外皆為離峰時段',
+          packageDealText: formData.packageDealText,
+          peakHoursRange: '依週時段表格勾選開放',
+          offPeakHoursRange: '全時段小時制場租',
           packageDeals: [
-            { hours: 10, price: Math.round(Number(formData.offPeakPerHour) * 9.5), note: '95折優惠' },
-            { hours: 30, price: Math.round(Number(formData.offPeakPerHour) * 27), note: '9折優惠' }
+            { hours: 10, price: Math.round(hourlyPrice * 9.5), note: '95折優惠' },
+            { hours: 30, price: Math.round(hourlyPrice * 27), note: '9折優惠' }
           ]
         },
+        availableSchedule: schedule,
+        openSlotsCount: selectedSlotsCount,
         equipment: {
           squatRacksCount: 4,
           turfZone: true,
@@ -185,15 +309,14 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       lineId: '',
       igHandle: '',
       coverImage: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=900&auto=format&fit=crop',
-      offPeakPerHour: 160,
-      peakPerHour: 240,
-      peakHoursRange: '平日 18:00 - 22:00',
+      hourlyRate: 200,
       studentCleanFee: 0,
       cleanFeeDesc: '免收學員人頭清潔費',
-      packageDealText: '10小時 $1,500 / 30小時 $4,200',
+      packageDealText: '10小時 $1,800 / 30小時 $5,000',
       certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
       verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
     });
+    setSchedule(getInitialSchedule());
     setUploadedFiles([]);
   };
 
@@ -312,9 +435,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
               <div style={{ fontSize: '13px', color: '#cbd5e1', marginBottom: '8px' }}>
                 📍 {submittedGymData.city} {submittedGymData.district} · {submittedGymData.address}
               </div>
-              <div style={{ display: 'flex', gap: '16px', fontSize: '13px', paddingTop: '8px', borderTop: '1px solid #192335' }}>
-                <div>離峰每小時：<strong style={{ color: '#b4ff04' }}>NT$ {submittedGymData.pricing.offPeakPerHour}</strong></div>
-                <div>尖峰每小時：<strong style={{ color: '#ffffff' }}>NT$ {submittedGymData.pricing.peakPerHour}</strong></div>
+              <div style={{ display: 'flex', gap: '20px', fontSize: '13px', paddingTop: '10px', borderTop: '1px solid #192335', flexWrap: 'wrap' }}>
+                <div>小時制場租：<strong style={{ color: '#b4ff04' }}>NT$ {submittedGymData.pricing.hourlyRate || submittedGymData.pricing.offPeakPerHour}</strong> / hr</div>
+                <div>每週開放時段：<strong style={{ color: '#ffffff' }}>{submittedGymData.openSlotsCount || 112} / 112 個小時格</strong></div>
               </div>
             </div>
 
@@ -533,47 +656,52 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
               </div>
 
-              {/* SECTION 2: 場租報價單 */}
+              {/* SECTION 2: 小時制場租費用與每週開放時段 */}
               <div style={{
                 background: '#0a0f1a',
                 padding: '24px',
                 borderRadius: '16px',
                 border: '1px solid #192336'
               }}>
+                {/* Section Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
                   <div style={{
                     width: '32px',
                     height: '32px',
                     borderRadius: '8px',
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    background: 'rgba(180, 255, 4, 0.1)',
+                    border: '1px solid rgba(180, 255, 4, 0.3)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <FileSpreadsheet size={18} color="#ffffff" />
+                    <FileSpreadsheet size={18} color="#b4ff04" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      2. 場租報價單設定 (公開透明比價)
+                      2. 小時制場租費用與每週開放時段
                     </h3>
                     <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                      公開清楚的計費與包套優惠，能顯著提高自由教練挑選預約的意願
+                      設定統一小時制場租收費，並在下方時間表格勾選可以場租的時段
                     </div>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                {/* Pricing Inputs */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '22px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', color: '#b4ff04', marginBottom: '6px', fontWeight: 800 }}>
-                      離峰每小時場租 (NT$) <span style={{ color: '#ef4444' }}>*</span>
+                      小時制場租費用 (NT$) <span style={{ color: '#ef4444' }}>*</span>
                     </label>
                     <input
                       type="number"
-                      name="offPeakPerHour"
+                      name="hourlyRate"
                       required
-                      value={formData.offPeakPerHour}
+                      min="50"
+                      max="5000"
+                      value={formData.hourlyRate}
                       onChange={handleChange}
+                      placeholder="例如：200"
                       style={{
                         width: '100%',
                         background: '#121927',
@@ -588,32 +716,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#f8fafc', marginBottom: '6px', fontWeight: 800 }}>
-                      尖峰每小時場租 (NT$) <span style={{ color: '#ef4444' }}>*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name="peakPerHour"
-                      required
-                      value={formData.peakPerHour}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '16px',
-                        fontWeight: 800,
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
+                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
+                      每小時公定場租費率（每小時一格計費）
+                    </div>
                   </div>
 
                   <div>
@@ -625,6 +730,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       name="studentCleanFee"
                       value={formData.studentCleanFee}
                       onChange={handleChange}
+                      placeholder="0"
                       style={{
                         width: '100%',
                         background: '#121927',
@@ -639,42 +745,19 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      尖峰時段定義
-                    </label>
-                    <input
-                      type="text"
-                      name="peakHoursRange"
-                      value={formData.peakHoursRange}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
+                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
+                      若向學員酌收人頭清潔費可填寫，無則填 0
+                    </div>
                   </div>
 
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      包套優惠備註
+                      包套優惠備註 (選填)
                     </label>
                     <input
                       type="text"
                       name="packageDealText"
-                      placeholder="例如：10小時 $1,500 / 30小時 $4,200"
+                      placeholder="例如：10小時 $1,800 / 30小時 $5,000"
                       value={formData.packageDealText}
                       onChange={handleChange}
                       style={{
@@ -690,6 +773,286 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
+                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
+                      教練預付多小時享折扣方案說明
+                    </div>
+                  </div>
+                </div>
+
+                {/* SCHEDULE TABLE SECTION: 1 到 7，每天 8. 到 24. */}
+                <div style={{
+                  background: '#070b13',
+                  borderRadius: '14px',
+                  border: '1px solid #1c2738',
+                  padding: '18px 16px'
+                }}>
+                  {/* Table Toolbar */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    flexWrap: 'wrap',
+                    marginBottom: '14px',
+                    paddingBottom: '12px',
+                    borderBottom: '1px solid #172033'
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Calendar size={16} color="#b4ff04" />
+                        <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                          每週開放時段勾選 (1 到 7，每天 8. 到 24.)
+                        </h4>
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '3px' }}>
+                        可以的時段請勾選起來（預設全時段開放，可直接點擊格子或利用快速按鈕）
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{
+                        background: 'rgba(180, 255, 4, 0.1)',
+                        border: '1px solid rgba(180, 255, 4, 0.3)',
+                        borderRadius: '8px',
+                        padding: '4px 10px',
+                        fontSize: '12px',
+                        color: '#cbd5e1'
+                      }}>
+                        已勾選開放：<strong style={{ color: '#b4ff04', fontSize: '14px' }}>{selectedSlotsCount}</strong> / 112 格
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick Select Buttons */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '8px',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    marginBottom: '14px'
+                  }}>
+                    <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 }}>快速切換：</span>
+                    <button
+                      type="button"
+                      onClick={selectAllSchedule}
+                      style={{
+                        background: '#141d2c',
+                        border: '1px solid #28374e',
+                        color: '#f8fafc',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '11.5px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.borderColor = '#b4ff04'}
+                      onMouseLeave={(e) => e.currentTarget.style.borderColor = '#28374e'}
+                    >
+                      全部勾選 (1~7 全開)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={selectWeekdaysOnly}
+                      style={{
+                        background: '#141d2c',
+                        border: '1px solid #28374e',
+                        color: '#f8fafc',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '11.5px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.borderColor = '#b4ff04'}
+                      onMouseLeave={(e) => e.currentTarget.style.borderColor = '#28374e'}
+                    >
+                      僅平日 (1~5)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={selectWeekendsOnly}
+                      style={{
+                        background: '#141d2c',
+                        border: '1px solid #28374e',
+                        color: '#f8fafc',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '11.5px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.borderColor = '#b4ff04'}
+                      onMouseLeave={(e) => e.currentTarget.style.borderColor = '#28374e'}
+                    >
+                      僅週末 (6~7)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={clearAllSchedule}
+                      style={{
+                        background: '#141d2c',
+                        border: '1px solid #28374e',
+                        color: '#94a3b8',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '11.5px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ef4444'}
+                      onMouseLeave={(e) => e.currentTarget.style.borderColor = '#28374e'}
+                    >
+                      全部取消
+                    </button>
+                  </div>
+
+                  {/* Scrollable Schedule Grid */}
+                  <div style={{
+                    overflowX: 'auto',
+                    borderRadius: '10px',
+                    border: '1px solid #1a2436',
+                    background: '#090e18'
+                  }}>
+                    <table style={{
+                      width: '100%',
+                      minWidth: '660px',
+                      borderCollapse: 'separate',
+                      borderSpacing: '4px',
+                      padding: '8px'
+                    }}>
+                      <thead>
+                        <tr>
+                          <th style={{
+                            padding: '10px 8px',
+                            fontSize: '12px',
+                            fontWeight: 800,
+                            color: '#94a3b8',
+                            background: '#0f172a',
+                            borderRadius: '8px',
+                            textAlign: 'center',
+                            width: '115px'
+                          }}>
+                            時段 (8.-24.)
+                          </th>
+                          {WEEKDAYS.map(d => {
+                            const isDayAllChecked = TIME_SLOTS.every(s => schedule[`${d.key}-${s.hour}`]);
+                            return (
+                              <th
+                                key={d.key}
+                                onClick={() => toggleDayAll(d.key)}
+                                title={`點擊切換 ${d.name} 全部時段`}
+                                style={{
+                                  padding: '8px 4px',
+                                  fontSize: '12.5px',
+                                  fontWeight: 800,
+                                  color: isDayAllChecked ? '#b4ff04' : '#f8fafc',
+                                  background: isDayAllChecked ? 'rgba(180, 255, 4, 0.12)' : '#0f172a',
+                                  border: isDayAllChecked ? '1px solid rgba(180, 255, 4, 0.35)' : '1px solid #1e293b',
+                                  borderRadius: '8px',
+                                  textAlign: 'center',
+                                  cursor: 'pointer',
+                                  userSelect: 'none',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                                  <span>{d.name} ({d.num})</span>
+                                  <span style={{ fontSize: '10.5px', color: isDayAllChecked ? '#b4ff04' : '#64748b' }}>
+                                    {isDayAllChecked ? '全開' : '點擊切換'}
+                                  </span>
+                                </div>
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {TIME_SLOTS.map(slot => {
+                          const isSlotAllChecked = WEEKDAYS.every(d => schedule[`${d.key}-${slot.hour}`]);
+                          return (
+                            <tr key={slot.hour}>
+                              {/* Row Time Slot Header */}
+                              <td
+                                onClick={() => toggleTimeSlotAll(slot.hour)}
+                                title="點擊切換此時段全星期"
+                                style={{
+                                  padding: '6px 6px',
+                                  fontSize: '11.5px',
+                                  fontWeight: 700,
+                                  color: isSlotAllChecked ? '#b4ff04' : '#94a3b8',
+                                  background: isSlotAllChecked ? 'rgba(180, 255, 4, 0.08)' : '#0d131f',
+                                  border: isSlotAllChecked ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid #192336',
+                                  borderRadius: '6px',
+                                  textAlign: 'center',
+                                  cursor: 'pointer',
+                                  userSelect: 'none',
+                                  whiteSpace: 'nowrap'
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                  <Clock size={11} color={isSlotAllChecked ? '#b4ff04' : '#64748b'} />
+                                  <span>{slot.label}</span>
+                                </div>
+                              </td>
+
+                              {/* 7 Days Cells (1 to 7) */}
+                              {WEEKDAYS.map(d => {
+                                const isChecked = !!schedule[`${d.key}-${slot.hour}`];
+                                return (
+                                  <td
+                                    key={d.key}
+                                    onClick={() => toggleSlot(d.key, slot.hour)}
+                                    title={`${d.name} ${slot.label}：${isChecked ? '可約場租 (點擊取消)' : '未開放 (點擊勾選)'}`}
+                                    style={{
+                                      padding: '5px 4px',
+                                      textAlign: 'center',
+                                      cursor: 'pointer',
+                                      userSelect: 'none',
+                                      borderRadius: '6px',
+                                      background: isChecked ? 'rgba(180, 255, 4, 0.16)' : 'rgba(15, 23, 42, 0.45)',
+                                      border: isChecked ? '1px solid #b4ff04' : '1px solid #1e293b',
+                                      boxShadow: isChecked ? '0 0 6px rgba(180, 255, 4, 0.15)' : 'none',
+                                      transition: 'all 0.12s ease'
+                                    }}
+                                  >
+                                    <div style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      gap: '4px',
+                                      fontSize: '11.5px',
+                                      fontWeight: 800,
+                                      color: isChecked ? '#b4ff04' : '#475569'
+                                    }}>
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => {}} // handled by td onClick
+                                        style={{
+                                          accentColor: '#b4ff04',
+                                          cursor: 'pointer',
+                                          width: '13px',
+                                          height: '13px',
+                                          margin: 0
+                                        }}
+                                      />
+                                      <span>{isChecked ? '可約' : '—'}</span>
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

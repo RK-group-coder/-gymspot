@@ -187,49 +187,75 @@ export default function GymDetailModal({ gym, userLat, userLng, onClose }) {
               gap: '14px',
               marginBottom: '16px'
             }}>
-              {/* Off Peak */}
-              <div style={{
-                background: '#141c2c',
-                padding: '16px',
-                borderRadius: '12px',
-                border: '1px solid #243248'
-              }}>
-                <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}>
-                  離峰時段場租 (每小時)
+              {(gym.pricing.hourlyRate && gym.pricing.offPeakPerHour === gym.pricing.peakPerHour) ? (
+                /* Unified Hourly Rate Card */
+                <div style={{
+                  background: 'linear-gradient(135deg, rgba(180, 255, 4, 0.08) 0%, #141c2c 100%)',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(180, 255, 4, 0.4)'
+                }}>
+                  <div style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 800, marginBottom: '4px' }}>
+                    小時制場租 (全時段統一)
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '32px', fontWeight: 900, color: '#b4ff04' }}>
+                      ${gym.pricing.hourlyRate}
+                    </span>
+                    <span style={{ fontSize: '13px', color: '#64748b' }}>/ hr</span>
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    <Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                    {gym.openSlotsCount ? `每週開放 ${gym.openSlotsCount} 個時段格 (8:00~24:00)` : (gym.pricing.offPeakHoursRange || '依開放課表預約')}
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '30px', fontWeight: 900, color: '#b4ff04' }}>
-                    ${gym.pricing.offPeakPerHour}
-                  </span>
-                  <span style={{ fontSize: '13px', color: '#64748b' }}>/ hr</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                  <Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                  {gym.pricing.offPeakHoursRange}
-                </div>
-              </div>
+              ) : (
+                <>
+                  {/* Off Peak */}
+                  <div style={{
+                    background: '#141c2c',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    border: '1px solid #243248'
+                  }}>
+                    <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}>
+                      離峰時段場租 (每小時)
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '30px', fontWeight: 900, color: '#b4ff04' }}>
+                        ${gym.pricing.offPeakPerHour}
+                      </span>
+                      <span style={{ fontSize: '13px', color: '#64748b' }}>/ hr</span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                      <Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                      {gym.pricing.offPeakHoursRange}
+                    </div>
+                  </div>
 
-              {/* Peak */}
-              <div style={{
-                background: '#141c2c',
-                padding: '16px',
-                borderRadius: '12px',
-                border: '1px solid #243248'
-              }}>
-                <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}>
-                  尖峰時段場租 (每小時)
-                </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '28px', fontWeight: 800, color: '#f3f4f6' }}>
-                    ${gym.pricing.peakPerHour}
-                  </span>
-                  <span style={{ fontSize: '13px', color: '#64748b' }}>/ hr</span>
-                </div>
-                <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                  <Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />
-                  {gym.pricing.peakHoursRange}
-                </div>
-              </div>
+                  {/* Peak */}
+                  <div style={{
+                    background: '#141c2c',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    border: '1px solid #243248'
+                  }}>
+                    <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}>
+                      尖峰時段場租 (每小時)
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '28px', fontWeight: 800, color: '#f3f4f6' }}>
+                        ${gym.pricing.peakPerHour}
+                      </span>
+                      <span style={{ fontSize: '13px', color: '#64748b' }}>/ hr</span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                      <Clock size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                      {gym.pricing.peakHoursRange}
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Clean fee */}
               <div style={{
