@@ -209,15 +209,17 @@ body {
   animation: drawerSlideRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Full Bleed Edge-to-Edge Story Sections (不要框框，連上左右兩側) */
+/* Full Bleed Edge-to-Edge Story Sections (上下白線分隔，連上左右兩側，文字居中) */
 .story-section {
   width: 100%;
   display: flex;
   align-items: stretch;
   min-height: 480px;
-  margin-bottom: 70px;
+  margin-bottom: 60px;
   position: relative;
   background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .story-section.reverse {
@@ -245,27 +247,32 @@ body {
   display: flex;
   flex-direction: column;
   justifyContent: center;
+  align-items: center;
+  padding: 50px 48px;
   background: transparent;
+  text-align: center;
 }
 
 .story-text-inner {
   width: 100%;
   max-width: 580px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-/* 左圖右文：文字往右舒適延伸 */
+/* 左圖右文：文字側置中 */
 .story-section:not(.reverse) .story-text-side {
-  padding: 40px 6% 40px 60px;
+  padding: 50px 48px;
 }
 
-/* 左文右圖：文字往左舒適延伸 */
+/* 左文右圖：文字側置中 */
 .story-section.reverse .story-text-side {
-  padding: 40px 60px 40px 6%;
-  align-items: flex-end;
+  padding: 50px 48px;
+  align-items: center;
 }
 
 .story-section.reverse .story-text-inner {
-  margin-left: auto;
+  margin: 0 auto;
 }
 
 @media (max-width: 900px) {
@@ -291,13 +298,15 @@ body {
   .story-text-side,
   .story-section:not(.reverse) .story-text-side,
   .story-section.reverse .story-text-side {
-    padding: 28px 20px;
-    align-items: flex-start;
+    padding: 32px 20px;
+    align-items: center;
+    text-align: center;
   }
 
   .story-text-inner {
     max-width: 100%;
-    margin-left: 0;
+    margin: 0 auto;
+    text-align: center;
   }
 }
 
