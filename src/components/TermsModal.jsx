@@ -1,8 +1,37 @@
-import React, { useState } from 'react';
-import { ShieldCheck, FileText, Lock, AlertTriangle, X, Check, Scale } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { X, Check, ArrowDown } from 'lucide-react';
 
 export default function TermsModal({ isOpen, onClose }) {
-  const [activeSection, setActiveSection] = useState('all');
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const contentRef = useRef(null);
+
+  // Reset scroll state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setHasScrolledToBottom(false);
+    }
+  }, [isOpen]);
+
+  const handleScroll = () => {
+    if (!contentRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
+    // When within 25px of the bottom, unlock the agree button
+    if (scrollTop + clientHeight >= scrollHeight - 25) {
+      setHasScrolledToBottom(true);
+    }
+  };
+
+  const handleScrollToBottom = () => {
+    if (!contentRef.current) return;
+    contentRef.current.scrollTo({
+      top: contentRef.current.scrollHeight,
+      behavior: 'smooth'
+    });
+    // Immediately set to true or let scroll handler trigger
+    setTimeout(() => {
+      setHasScrolledToBottom(true);
+    }, 300);
+  };
 
   if (!isOpen) return null;
 
@@ -30,11 +59,11 @@ export default function TermsModal({ isOpen, onClose }) {
           borderRadius: '24px',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.85), 0 0 30px rgba(180, 255, 4, 0.1)',
+          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.85)',
           overflow: 'hidden'
         }}
       >
-        {/* Header */}
+        {/* Header (無天平圖示外框，純淨正式標題) */}
         <div style={{
           padding: '20px 24px',
           borderBottom: '1px solid #1e293b',
@@ -43,33 +72,17 @@ export default function TermsModal({ isOpen, onClose }) {
           justifyContent: 'space-between',
           background: '#111827'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '12px',
-              background: 'rgba(180, 255, 4, 0.12)',
-              border: '1px solid rgba(180, 255, 4, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#b4ff04'
-            }}>
-              <Scale size={24} />
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h2 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0, letterSpacing: '0.3px' }}>
-                  肌動組 GYMspot · 使用者服務條款暨個人資料隱私保障協議
-                </h2>
-              </div>
-              <p style={{ fontSize: '11px', color: '#94a3b8', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ color: '#b4ff04', fontWeight: 700 }}>● 合約版本 V2.4</span>
-                <span>·</span>
-                <span>生效日期：2026 年 10 月 · 適用於全體教練、場館與使用者</span>
-              </p>
-            </div>
+          <div>
+            <h2 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0, letterSpacing: '0.3px' }}>
+              肌動組 GYMspot · 使用者服務條款暨個人資料隱私保障協議
+            </h2>
+            <p style={{ fontSize: '11px', color: '#94a3b8', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ color: '#b4ff04', fontWeight: 700 }}>● 合約版本 V2.4</span>
+              <span>·</span>
+              <span>生效日期：2026 年 10 月 · 適用於全體教練、場館與使用者</span>
+            </p>
           </div>
+
           <button
             onClick={onClose}
             aria-label="關閉協議"
@@ -91,84 +104,38 @@ export default function TermsModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Quick Nav Anchor Bar */}
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          padding: '10px 24px',
-          background: '#090d16',
-          borderBottom: '1px solid #1e293b',
-          overflowX: 'auto',
-          whiteSpace: 'nowrap'
-        }}>
-          <span style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', marginRight: '4px' }}>
-            快速指引：
-          </span>
-          {[
-            { id: 'sec-summary', label: '核心保護聲明' },
-            { id: 'sec-1', label: '一、平台定位與免責' },
-            { id: 'sec-2', label: '二、預約手續費與鎖位' },
-            { id: 'sec-3', label: '三、數位點數規範' },
-            { id: 'sec-4', label: '四、意外責任排除' },
-            { id: 'sec-5', label: '五、隱私與個人資料' },
-            { id: 'sec-6', label: '六、智慧財產與管轄' }
-          ].map(anchor => (
-            <button
-              key={anchor.id}
-              onClick={() => {
-                const el = document.getElementById(anchor.id);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-              style={{
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid #1e293b',
-                borderRadius: '6px',
-                padding: '4px 10px',
-                fontSize: '11px',
-                color: '#cbd5e1',
-                cursor: 'pointer',
-                transition: 'all 0.15s'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.color = '#cbd5e1'; }}
-            >
-              {anchor.label}
-            </button>
-          ))}
-        </div>
-
         {/* Contract Legal Text Body */}
-        <div style={{
-          flex: 1,
-          padding: '24px 28px',
-          overflowY: 'auto',
-          fontSize: '12.5px',
-          lineHeight: '1.85',
-          color: '#cbd5e1'
-        }}>
+        <div 
+          ref={contentRef}
+          onScroll={handleScroll}
+          style={{
+            flex: 1,
+            padding: '24px 28px',
+            overflowY: 'auto',
+            fontSize: '12.5px',
+            lineHeight: '1.85',
+            color: '#cbd5e1'
+          }}
+        >
           {/* Important Notice Callout Box */}
-          <div 
-            id="sec-summary"
-            style={{
-              background: 'rgba(180, 255, 4, 0.05)',
-              border: '1px solid rgba(180, 255, 4, 0.3)',
-              borderRadius: '14px',
-              padding: '16px',
-              marginBottom: '20px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#b4ff04', fontWeight: 900, fontSize: '13px', marginBottom: '6px' }}>
-              <AlertTriangle size={17} color="#b4ff04" />
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid #1e293b',
+            borderRadius: '12px',
+            padding: '14px 16px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ color: '#f8fafc', fontWeight: 900, fontSize: '13px', marginBottom: '6px' }}>
               【肌動組 GYMspot 營運方重要法定權益與使用前提】
             </div>
-            <div style={{ color: '#e2e8f0', fontSize: '12px' }}>
-              歡迎使用「肌動組 GYMspot」（下稱「本平台」）。本協議為您（包含自由教練、健身房/工作室經營業者及一般使用者）與本平台營運團隊間具備完全法律效力之合約。當您點擊「註冊」、「登入」、「儲值點數」、「時段預約」或「我已瞭解並同意」時，即視為您已完整審閱、充分理解並無保留同意遵守本條款全部內容。
+            <div style={{ color: '#cbd5e1', fontSize: '12px' }}>
+              歡迎使用「肌動組 GYMspot」（下稱「本平台」）。本協議為您（包含自由教練、健身房/工作室經營業者及一般使用者）與本平台營運團隊間具備完全法律效力之合約。當您點擊「註冊」、「登入」、「儲值點數」、「時段預約」或「我已詳細閱讀並同意遵守本合約」時，即視為您已完整審閱、充分理解並無保留同意遵守本條款全部內容。
             </div>
           </div>
 
           {/* Section 1 */}
-          <div id="sec-1" style={{ marginBottom: '22px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+          <div style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
               第一條：平台定位、服務性質與第三方免責界線
             </h3>
             <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -179,14 +146,14 @@ export default function TermsModal({ isOpen, onClose }) {
                 <strong>交易不介入與抽成原則：</strong>除本協議明定之「時段預約技術服務費（鎖位金）」外，本平台不經手、不代收亦不抽成自由教練向學員收取之任何私人授課費用。場租費用之收取、發票開立與教學私約，均由授課教練與合作場館雙方直接依法律與民法租賃規定履行。
               </li>
               <li>
-                <strong>場館即時數據免責：</strong>本平台各場館之價格、營業時間、合格保險及器材標籤，均來自公開蒐集或場合作方自主申報登記。平台盡合理審查查核之義務，惟無法對場館現場臨時臨時休館、設備臨時故障或突發性政策變動負即時擔保之法律責任，教練帶課前應以現場實際狀態為準。
+                <strong>場館即時數據免責：</strong>本平台各場館之價格、營業時間、合格保險及器材標籤，均來自公開蒐集或場合作方自主申報登記。平台盡合理審查查核之義務，惟無法對場館現場臨時休館、設備臨時故障或突發性政策變動負即時擔保之法律責任，教練帶課前應以現場實際狀態為準。
               </li>
             </ol>
           </div>
 
           {/* Section 2 */}
-          <div id="sec-2" style={{ marginBottom: '22px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+          <div style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
               第二條：時程表即時預約、深蹲架鎖位手續費與爽約防制規範
             </h3>
             <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -203,8 +170,8 @@ export default function TermsModal({ isOpen, onClose }) {
           </div>
 
           {/* Section 3 */}
-          <div id="sec-3" style={{ marginBottom: '22px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+          <div style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
               第三條：數位點數（GYM Points）錢包條款與防制洗錢規範
             </h3>
             <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -221,8 +188,8 @@ export default function TermsModal({ isOpen, onClose }) {
           </div>
 
           {/* Section 4 */}
-          <div id="sec-4" style={{ marginBottom: '22px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+          <div style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
               第四條：運動安全自主、意外傷害與法律責任極限完全排除
             </h3>
             <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -239,8 +206,8 @@ export default function TermsModal({ isOpen, onClose }) {
           </div>
 
           {/* Section 5 */}
-          <div id="sec-5" style={{ marginBottom: '22px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+          <div style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
               第五條：個人資料保護政策與隱私權法定遵循（個資法完整條款）
             </h3>
             <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -269,8 +236,8 @@ export default function TermsModal({ isOpen, onClose }) {
           </div>
 
           {/* Section 6 */}
-          <div id="sec-6" style={{ marginBottom: '14px' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+          <div style={{ marginBottom: '14px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
               第六條：智慧財產權宣告、條款修正與管轄法院約定
             </h3>
             <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -294,30 +261,68 @@ export default function TermsModal({ isOpen, onClose }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#090d16'
+          background: '#090d16',
+          gap: '12px'
         }}>
-          <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ShieldCheck size={14} color="#b4ff04" />
-            <span>點擊下方按鈕即代表您已完整審閱並同意遵守全部條款</span>
+          {/* Left: 一鍵滑到底按鈕 & 狀態提示 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {!hasScrolledToBottom ? (
+              <button
+                id="terms-scroll-to-bottom-btn"
+                onClick={handleScrollToBottom}
+                style={{
+                  background: '#1e293b',
+                  color: '#f8fafc',
+                  border: '1px solid #334155',
+                  borderRadius: '10px',
+                  padding: '8px 14px',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#334155'; e.currentTarget.style.color = '#f8fafc'; }}
+              >
+                <ArrowDown size={14} />
+                一鍵滑到底
+              </button>
+            ) : (
+              <span style={{ fontSize: '11px', color: '#b4ff04', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                ✓ 已審閱至合約最底端
+              </span>
+            )}
+
+            {!hasScrolledToBottom && (
+              <span style={{ fontSize: '11px', color: '#64748b' }}>
+                請滑動至底部以解鎖同意按鈕
+              </span>
+            )}
           </div>
 
+          {/* Right: 同意按鈕（未滑到底前停用） */}
           <button
             id="terms-accept-btn"
-            onClick={onClose}
+            disabled={!hasScrolledToBottom}
+            onClick={hasScrolledToBottom ? onClose : undefined}
             style={{
-              background: '#b4ff04',
-              color: '#0a1402',
-              border: 'none',
+              background: hasScrolledToBottom ? '#b4ff04' : '#1e293b',
+              color: hasScrolledToBottom ? '#0a1402' : '#64748b',
+              border: hasScrolledToBottom ? 'none' : '1px solid #243248',
               borderRadius: '12px',
-              padding: '11px 24px',
+              padding: '11px 22px',
               fontSize: '13px',
               fontWeight: 900,
-              cursor: 'pointer',
+              cursor: hasScrolledToBottom ? 'pointer' : 'not-allowed',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)',
-              transition: 'all 0.15s ease'
+              boxShadow: hasScrolledToBottom ? '0 0 16px rgba(180, 255, 4, 0.35)' : 'none',
+              transition: 'all 0.2s ease',
+              opacity: hasScrolledToBottom ? 1 : 0.7
             }}
           >
             <Check size={16} strokeWidth={3} />
