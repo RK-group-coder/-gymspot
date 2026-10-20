@@ -209,12 +209,13 @@ body {
   animation: drawerSlideRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Full Bleed Edge-to-Edge Story Sections (上下白線分隔，連上左右兩側，文字居中) */
+/* Full Bleed Edge-to-Edge Story Sections (上下白線分隔，連上左右兩側，文字完美上下垂直居中) */
 .story-section {
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: stretch;
-  min-height: 480px;
+  min-height: 500px;
   margin-bottom: 60px;
   position: relative;
   background: transparent;
@@ -222,13 +223,18 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.35);
 }
 
-.story-section.reverse {
-  flex-direction: row-reverse;
+.story-section.reverse .story-text-side {
+  order: 1;
+}
+
+.story-section.reverse .story-img-side {
+  order: 2;
 }
 
 .story-img-side {
-  flex: 1 1 50%;
-  min-height: 460px;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
   position: relative;
   overflow: hidden;
   background: #0d121f;
@@ -237,54 +243,43 @@ body {
 .story-img-side img {
   width: 100%;
   height: 100%;
-  min-height: 460px;
+  min-height: 480px;
   object-fit: cover;
   display: block;
 }
 
 .story-text-side {
-  flex: 1 1 50%;
-  display: flex;
-  flex-direction: column;
-  justifyContent: center;
-  align-items: center;
-  padding: 50px 48px;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100%;
+  width: 100%;
+  padding: 60px 48px;
   background: transparent;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .story-text-inner {
   width: 100%;
   max-width: 580px;
-  margin: 0 auto;
+  margin: auto 0; /* 確保在垂直方向自動居中 */
   text-align: center;
-}
-
-/* 左圖右文：文字側置中 */
-.story-section:not(.reverse) .story-text-side {
-  padding: 50px 48px;
-}
-
-/* 左文右圖：文字側置中 */
-.story-section.reverse .story-text-side {
-  padding: 50px 48px;
-  align-items: center;
-}
-
-.story-section.reverse .story-text-inner {
-  margin: 0 auto;
 }
 
 @media (max-width: 900px) {
   .story-section,
   .story-section.reverse {
+    display: flex;
     flex-direction: column;
     min-height: auto;
     margin-bottom: 40px;
   }
 
-  .story-img-side {
-    flex: none;
+  .story-section .story-img-side,
+  .story-section.reverse .story-img-side {
+    order: 1;
     width: 100%;
     height: 300px;
     min-height: 300px;
@@ -295,10 +290,10 @@ body {
     height: 100%;
   }
 
-  .story-text-side,
-  .story-section:not(.reverse) .story-text-side,
+  .story-section .story-text-side,
   .story-section.reverse .story-text-side {
-    padding: 32px 20px;
+    order: 2;
+    padding: 36px 20px;
     align-items: center;
     text-align: center;
   }
@@ -309,6 +304,7 @@ body {
     text-align: center;
   }
 }
+
 
 
 /* ===== Mobile only (<=768px): map + bottom sheet. Desktop untouched ===== */

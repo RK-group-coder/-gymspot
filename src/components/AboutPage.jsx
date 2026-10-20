@@ -74,7 +74,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
 
       {/* 2. Main Full-Bleed Story Sections (無框框、貼滿左右兩側) */}
       <main style={{ width: '100%', position: 'relative', zIndex: 1 }}>
-        {/* Section A: 我們在台灣看見了什麼問題？ (上下白線分隔、左側照片貼滿最左壁，右側文字居中) */}
+        {/* Section A: 我們在台灣看見了什麼問題？ (上下白線分隔、左側照片貼滿最左壁，右側文字在照片高度上下置中) */}
         <section 
           className="story-section" 
           style={{ 
@@ -91,9 +91,22 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             />
           </div>
 
-          {/* 右側文字：上下居中且文字置中 */}
-          <div className="story-text-side" style={{ textAlign: 'center', alignItems: 'center' }}>
-            <div className="story-text-inner" style={{ textAlign: 'center' }}>
+          {/* 右側文字：在照片高度範圍內 100% 上下垂直居中 + 水平居中 */}
+          <div 
+            className="story-text-side" 
+            style={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              width: '100%',
+              textAlign: 'center',
+              padding: '60px 48px',
+              boxSizing: 'border-box'
+            }}
+          >
+            <div className="story-text-inner" style={{ textAlign: 'center', margin: 'auto 0', maxWidth: '580px' }}>
               <h2 style={{ 
                 fontSize: 'clamp(22px, 2.5vw, 28px)', 
                 fontWeight: 900, 
@@ -126,7 +139,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
           </div>
         </section>
 
-        {/* Section B: 於是，我們決定徹底終結這場折磨 (上下白線分隔、左側文字居中，右側照片貼滿最右壁) */}
+        {/* Section B: 於是，我們決定徹底終結這場折磨 (上下白線分隔、左側文字在照片高度上下置中，右側照片貼滿最右壁) */}
         <section 
           className="story-section reverse" 
           style={{ 
@@ -143,9 +156,22 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             />
           </div>
 
-          {/* 左側文字：上下居中且文字置中 */}
-          <div className="story-text-side" style={{ textAlign: 'center', alignItems: 'center' }}>
-            <div className="story-text-inner" style={{ textAlign: 'center' }}>
+          {/* 左側文字：在照片高度範圍內 100% 上下垂直居中 + 水平居中 */}
+          <div 
+            className="story-text-side" 
+            style={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              width: '100%',
+              textAlign: 'center',
+              padding: '60px 48px',
+              boxSizing: 'border-box'
+            }}
+          >
+            <div className="story-text-inner" style={{ textAlign: 'center', margin: 'auto 0', maxWidth: '580px' }}>
               <h2 style={{ 
                 fontSize: 'clamp(22px, 2.5vw, 28px)', 
                 fontWeight: 900, 
