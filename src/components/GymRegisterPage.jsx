@@ -488,26 +488,12 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 borderRadius: '16px',
                 border: '1px solid #192336'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
-                    background: 'rgba(180, 255, 4, 0.1)',
-                    border: '1px solid rgba(180, 255, 4, 0.3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <Building2 size={18} color="#b4ff04" />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      1. 場館資訊與 Google Maps 地址
-                    </h3>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                      請填寫與 Google 地圖商家一致的名稱與地址，方便教練比對導航
-                    </div>
+                <div style={{ marginBottom: '18px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    1. 場館資訊與 Google Maps 地址
+                  </h3>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
+                    請填寫與 Google 地圖商家一致的名稱與地址，方便教練比對導航
                   </div>
                 </div>
 
@@ -658,26 +644,12 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 border: '1px solid #192336'
               }}>
                 {/* Section Header */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
-                    background: 'rgba(180, 255, 4, 0.1)',
-                    border: '1px solid rgba(180, 255, 4, 0.3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <FileSpreadsheet size={18} color="#b4ff04" />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      2. 小時制場租費用與每週開放時段
-                    </h3>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                      設定統一小時制場租收費，並在下方時間表格勾選可以場租的時段
-                    </div>
+                <div style={{ marginBottom: '18px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    2. 小時制場租費用與每週開放時段
+                  </h3>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
+                    設定統一小時制場租收費，並在下方時間表格勾選可以場租的時段
                   </div>
                 </div>
 
@@ -764,12 +736,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                     borderBottom: '1px solid #172033'
                   }}>
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Calendar size={16} color="#b4ff04" />
-                        <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                          每週開放時段勾選 (1 到 7，每天 8. 到 24.)
-                        </h4>
-                      </div>
+                      <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                        每週開放時段勾選 (1 到 7，每天 8. 到 24.)
+                      </h4>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '3px' }}>
                         可以的時段請勾選起來（預設全時段開放，可直接點擊格子或利用快速按鈕）
                       </div>
@@ -1030,24 +999,10 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 borderRadius: '16px',
                 border: '1px solid #192336'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
-                    background: 'rgba(245, 158, 11, 0.12)',
-                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <ShieldCheck size={18} color="#f59e0b" />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      3. 證明文件審核 (營利登記、消防與公共責任險)
-                    </h3>
-                  </div>
+                <div style={{ marginBottom: '10px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    3. 證明文件審核 (營利登記、消防與公共責任險)
+                  </h3>
                 </div>
 
                 <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, marginBottom: '16px' }}>
@@ -1113,24 +1068,10 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 borderRadius: '16px',
                 border: '1px solid #192336'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <Phone size={18} color="#ffffff" />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      4. 場館聯繫管道 (方便教練預約對接)
-                    </h3>
-                  </div>
+                <div style={{ marginBottom: '18px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    4. 場館聯繫管道 (方便教練預約對接)
+                  </h3>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
