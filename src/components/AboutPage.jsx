@@ -148,73 +148,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
           </div>
         </section>
 
-        {/* 3. Action Callout Box (Centered) */}
-        <div style={{
-          maxWidth: '860px',
-          margin: '20px auto 90px',
-          padding: '0 24px'
-        }}>
-
-          {/* Action Callout Box */}
-          <div style={{
-            background: 'rgba(17, 24, 39, 0.85)',
-            border: '1px solid #243248',
-            borderRadius: '20px',
-            padding: '28px',
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '16px'
-          }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#ffffff', margin: 0 }}>
-              加入肌動組，一起翻轉台灣自由健身生態
-            </h3>
-            <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, maxWidth: '520px' }}>
-              無論您是尋求優質場地的自由教練，還是希望提高離峰收益的健身房主，肌動組都是您最可靠的夥伴。
-            </p>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <button
-                onClick={onNavigateHome}
-                style={{
-                  background: '#b4ff04',
-                  color: '#0a1402',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '12px 24px',
-                  fontSize: '14px',
-                  fontWeight: 900,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)'
-                }}
-              >
-                <MapPin size={16} /> 立即開始地圖探索
-              </button>
-
-              <button
-                onClick={onOpenRegister}
-                style={{
-                  background: '#1e293b',
-                  color: '#ffffff',
-                  border: '1px solid #334155',
-                  borderRadius: '12px',
-                  padding: '12px 24px',
-                  fontSize: '14px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <Building2 size={16} /> 場館免費入駐申請
-              </button>
-            </div>
-          </div>
-        </div>
+        <div style={{ height: '40px' }} />
       </main>
 
       {/* 3. Footer */}
