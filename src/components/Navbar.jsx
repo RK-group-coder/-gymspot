@@ -10,12 +10,14 @@ import {
   ChevronRight,
   Sparkles,
   Wallet,
-  Coins
+  Coins,
+  Info
 } from 'lucide-react';
 
 export default function Navbar({ 
   onOpenProfile, 
   onOpenTerms, 
+  onOpenAbout,
   onOpenRegister, 
   onOpenTopUp,
   points = 0,
@@ -294,6 +296,37 @@ export default function Navbar({
             >
               <FileText size={17} color="#ffffff" />
               <span style={{ flex: 1 }}>服務條款與隱私權</span>
+            </button>
+
+            {/* Menu Item: 關於我們 */}
+            <button
+              id="menu-btn-about"
+              onClick={() => {
+                setIsMenuOpen(false);
+                onOpenAbout();
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                width: '100%',
+                padding: '10px 14px',
+                background: 'transparent',
+                border: 'none',
+                borderRadius: '10px',
+                color: '#e2e8f0',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
+              <Info size={17} color="#ffffff" />
+              <span style={{ flex: 1 }}>關於我們</span>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>品牌理念</span>
             </button>
 
             {/* Menu Item 3: 健身房入駐 (保留原重要申請功能) */}
