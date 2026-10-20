@@ -82,24 +82,6 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
               src="/about-gym-corner.jpg?v=2" 
               alt="健身房場館角落實景" 
             />
-            <div style={{
-              position: 'absolute',
-              bottom: '16px',
-              left: '20px',
-              padding: '6px 14px',
-              borderRadius: '8px',
-              background: 'rgba(10, 13, 20, 0.85)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              fontSize: '12px',
-              color: '#cbd5e1',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}>
-              <MapPin size={13} color="#b4ff04" /> 場館實景／深蹲架配置
-            </div>
           </div>
 
           {/* 右側文字：乾淨自然呼吸排版 */}
@@ -137,24 +119,6 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
               src="/about-coach-squat.jpg?v=2" 
               alt="教練現場指導學員深蹲" 
             />
-            <div style={{
-              position: 'absolute',
-              bottom: '16px',
-              right: '20px',
-              padding: '6px 14px',
-              borderRadius: '8px',
-              background: 'rgba(10, 13, 20, 0.85)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(180, 255, 4, 0.35)',
-              fontSize: '12px',
-              color: '#b4ff04',
-              fontWeight: 800,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}>
-              <Dumbbell size={13} color="#b4ff04" /> 自由教練安心帶課
-            </div>
           </div>
 
           {/* 左側文字：乾淨自然呼吸排版 */}
