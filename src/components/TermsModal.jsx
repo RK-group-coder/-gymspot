@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ShieldCheck, FileText, Lock, AlertCircle, X, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, FileText, Lock, AlertTriangle, X, Check, Scale } from 'lucide-react';
 
 export default function TermsModal({ isOpen, onClose }) {
-  const [activeTab, setActiveTab] = useState('terms'); // 'terms', 'privacy', 'guidelines'
+  const [activeSection, setActiveSection] = useState('all');
 
   if (!isOpen) return null;
 
@@ -11,26 +11,26 @@ export default function TermsModal({ isOpen, onClose }) {
       position: 'fixed',
       inset: 0,
       zIndex: 2000,
-      background: 'rgba(5, 8, 15, 0.85)',
-      backdropFilter: 'blur(10px)',
+      background: 'rgba(5, 8, 15, 0.88)',
+      backdropFilter: 'blur(12px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px'
+      padding: '16px'
     }}>
-      {/* Modal Dialog */}
+      {/* Modal Card */}
       <div 
         id="terms-modal-card"
         style={{
           width: '100%',
-          maxWidth: '680px',
-          maxHeight: '88vh',
+          maxWidth: '740px',
+          maxHeight: '90vh',
           background: '#0d131f',
           border: '1px solid #243248',
-          borderRadius: '20px',
+          borderRadius: '24px',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.7)',
+          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.85), 0 0 30px rgba(180, 255, 4, 0.1)',
           overflow: 'hidden'
         }}
       >
@@ -43,218 +43,285 @@ export default function TermsModal({ isOpen, onClose }) {
           justifyContent: 'space-between',
           background: '#111827'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '10px',
-              background: 'rgba(180, 255, 4, 0.15)',
+              width: '42px',
+              height: '42px',
+              borderRadius: '12px',
+              background: 'rgba(180, 255, 4, 0.12)',
+              border: '1px solid rgba(180, 255, 4, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#b4ff04'
             }}>
-              <ShieldCheck size={22} />
+              <Scale size={24} />
             </div>
             <div>
-              <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                肌動組 GYMspot · 平台服務條款與隱私權
-              </h2>
-              <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0' }}>
-                保障自由教練、健身房場館與學員三方權益之透明準則
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h2 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0, letterSpacing: '0.3px' }}>
+                  肌動組 GYMspot · 使用者服務條款暨個人資料隱私保障協議
+                </h2>
+              </div>
+              <p style={{ fontSize: '11px', color: '#94a3b8', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ color: '#b4ff04', fontWeight: 700 }}>● 合約版本 V2.4</span>
+                <span>·</span>
+                <span>生效日期：2026 年 10 月 · 適用於全體教練、場館與使用者</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
+            aria-label="關閉協議"
             style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#94a3b8',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              color: '#ffffff',
               cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '8px',
+              width: '32px',
+              height: '32px',
+              borderRadius: '10px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'background 0.15s'
+              transition: 'all 0.15s ease'
             }}
           >
-            <X size={20} />
+            <X size={18} strokeWidth={3} />
           </button>
         </div>
 
-        {/* Tab Buttons */}
+        {/* Quick Nav Anchor Bar */}
         <div style={{
           display: 'flex',
-          borderBottom: '1px solid #1e293b',
+          gap: '8px',
+          padding: '10px 24px',
           background: '#090d16',
-          padding: '0 24px'
+          borderBottom: '1px solid #1e293b',
+          overflowX: 'auto',
+          whiteSpace: 'nowrap'
         }}>
+          <span style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', marginRight: '4px' }}>
+            快速指引：
+          </span>
           {[
-            { id: 'terms', label: '服務條款 (Terms)', icon: FileText },
-            { id: 'privacy', label: '隱私保護 (Privacy)', icon: Lock },
-            { id: 'guidelines', label: '場租守則 (Guidelines)', icon: CheckCircle2 }
-          ].map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '14px 18px',
-                  background: 'transparent',
-                  border: 'none',
-                  borderBottom: isActive ? '2px solid #b4ff04' : '2px solid transparent',
-                  color: isActive ? '#b4ff04' : '#94a3b8',
-                  fontSize: '13px',
-                  fontWeight: isActive ? 800 : 500,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <Icon size={15} />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+            { id: 'sec-summary', label: '核心保護聲明' },
+            { id: 'sec-1', label: '一、平台定位與免責' },
+            { id: 'sec-2', label: '二、預約手續費與鎖位' },
+            { id: 'sec-3', label: '三、數位點數規範' },
+            { id: 'sec-4', label: '四、意外責任排除' },
+            { id: 'sec-5', label: '五、隱私與個人資料' },
+            { id: 'sec-6', label: '六、智慧財產與管轄' }
+          ].map(anchor => (
+            <button
+              key={anchor.id}
+              onClick={() => {
+                const el = document.getElementById(anchor.id);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              style={{
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid #1e293b',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                fontSize: '11px',
+                color: '#cbd5e1',
+                cursor: 'pointer',
+                transition: 'all 0.15s'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.color = '#cbd5e1'; }}
+            >
+              {anchor.label}
+            </button>
+          ))}
         </div>
 
-        {/* Content Body */}
+        {/* Contract Legal Text Body */}
         <div style={{
-          padding: '24px',
+          flex: 1,
+          padding: '24px 28px',
           overflowY: 'auto',
-          fontSize: '13px',
-          lineHeight: '1.7',
+          fontSize: '12.5px',
+          lineHeight: '1.85',
           color: '#cbd5e1'
         }}>
-          {activeTab === 'terms' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{
-                background: 'rgba(180, 255, 4, 0.08)',
-                border: '1px solid rgba(180, 255, 4, 0.2)',
-                borderRadius: '12px',
-                padding: '14px',
-                color: '#b4ff04',
-                fontSize: '12px'
-              }}>
-                歡迎使用「肌動組」自由教練與場租媒合平台。使用本平台前，請詳閱以下使用者協議條款。
-              </div>
-
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  一、平台服務宗旨
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  肌動組提供全台合法立案之健身房、體能工作室場租價格透明比價、設備查詢與聯絡資訊媒合服務。平台不向自由教練抽成課堂費用，致力推廣健康公平的場租共享生態。
-                </p>
-              </div>
-
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  二、自由教練自律規範
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  自由教練使用媒合場地授課時，應具備合法有效之體適能專業證照及 CPR+AED 證照，並恪遵各場館規定之器材使用禮節、離峰/尖峰預約時段及學員清潔費繳納義務。
-                </p>
-              </div>
-
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  三、場地責任與意外免責
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  運動訓練具一定之體能風險，自由教練應於帶課前審慎評估學員身心狀況。除場館器材因自身維護不當造成之損壞外，訓練過程之教學安全由授課教練全權負責任。
-                </p>
-              </div>
+          {/* Important Notice Callout Box */}
+          <div 
+            id="sec-summary"
+            style={{
+              background: 'rgba(180, 255, 4, 0.05)',
+              border: '1px solid rgba(180, 255, 4, 0.3)',
+              borderRadius: '14px',
+              padding: '16px',
+              marginBottom: '20px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#b4ff04', fontWeight: 900, fontSize: '13px', marginBottom: '6px' }}>
+              <AlertTriangle size={17} color="#b4ff04" />
+              【肌動組 GYMspot 營運方重要法定權益與使用前提】
             </div>
-          )}
-
-          {activeTab === 'privacy' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  一、個人資料蒐集與利用
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  肌動組僅於提供即時定位半徑搜尋服務時，請求瀏覽器 GPS 定位權限。我們絕不會將教練之精準地理位置或身分資料出售予第三方或廣告商。
-                </p>
-              </div>
-
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  二、資料加密與資安規範
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  所有通訊皆符合 HTTPS 傳輸加密協定。若您為認證教練或場館管理員，登入憑證與通聯資料皆經過高階加密防護，確保資訊隱私不受侵害。
-                </p>
-              </div>
+            <div style={{ color: '#e2e8f0', fontSize: '12px' }}>
+              歡迎使用「肌動組 GYMspot」（下稱「本平台」）。本協議為您（包含自由教練、健身房/工作室經營業者及一般使用者）與本平台營運團隊間具備完全法律效力之合約。當您點擊「註冊」、「登入」、「儲值點數」、「時段預約」或「我已瞭解並同意」時，即視為您已完整審閱、充分理解並無保留同意遵守本條款全部內容。
             </div>
-          )}
+          </div>
 
-          {activeTab === 'guidelines' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{
-                background: '#131b2e',
-                border: '1px solid #1e293b',
-                borderRadius: '10px',
-                padding: '12px 14px'
-              }}>
-                <div style={{ color: '#ffffff', textShadow: '0 0 6px rgba(255, 255, 255, 0.5)', fontWeight: 800, marginBottom: '4px' }}>
-                  💡 場租三原則：準時歸還、器材歸位、清潔消毒
-                </div>
-                <div style={{ color: '#94a3b8', fontSize: '12px' }}>
-                  良好場租禮儀是自由教練長期維持低成本帶課與建立良好口碑的關鍵。
-                </div>
-              </div>
+          {/* Section 1 */}
+          <div id="sec-1" style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+              第一條：平台定位、服務性質與第三方免責界線
+            </h3>
+            <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li>
+                <strong>技術與資訊媒合中介定位：</strong>本平台係基於地理定位演算法與資料庫技術，提供全台場租健身房價格查詢、設備規格檢視及「場地時段線上排程鎖定」之純技術服務工具。<strong>本平台絕非健身房場地之租賃出租人、二房東，亦非自由教練之雇主、代理人或教練與學員體適能課程承攬之當事人。</strong>
+              </li>
+              <li>
+                <strong>交易不介入與抽成原則：</strong>除本協議明定之「時段預約技術服務費（鎖位金）」外，本平台不經手、不代收亦不抽成自由教練向學員收取之任何私人授課費用。場租費用之收取、發票開立與教學私約，均由授課教練與合作場館雙方直接依法律與民法租賃規定履行。
+              </li>
+              <li>
+                <strong>場館即時數據免責：</strong>本平台各場館之價格、營業時間、合格保險及器材標籤，均來自公開蒐集或場合作方自主申報登記。平台盡合理審查查核之義務，惟無法對場館現場臨時臨時休館、設備臨時故障或突發性政策變動負即時擔保之法律責任，教練帶課前應以現場實際狀態為準。
+              </li>
+            </ol>
+          </div>
 
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  1. 器材使用前需預約登記
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  若場館深蹲架或草皮區為熱門設施，請提前透過 LINE 官方帳號或場館系統預約時段，避免多位教練同時段撞課。
-                </p>
-              </div>
+          {/* Section 2 */}
+          <div id="sec-2" style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+              第二條：時程表即時預約、深蹲架鎖位手續費與爽約防制規範
+            </h3>
+            <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li>
+                <strong>預約鎖位費之法律性質：</strong>自由教練使用本平台預約系統鎖定指定場館特定時段與深蹲架/場位時，平台將自教練帳戶扣抵對應點數（每筆 NT$ 30 ~ 50 元等值點數）。<strong>該筆費用性質為「平台系統排程演算與排他性時段鎖定之數位技術手續費」，一經系統確認鎖位完成即視為平台技術服務交付完畢。</strong>
+              </li>
+              <li>
+                <strong>不予退費與爽約罰則：</strong>除因場館發生重大火警、天災停電等不可抗力致無法營業外，<strong>凡因教練個人排程、學員請假、遲到、忘記或個人疏忽而未到場使用者，該筆預約手續費概不退還。</strong>教練若有連續無故爽約、惡意佔位阻礙他人使用之情事，本平台得逕行暫停或終止該帳號使用權，無須事先通知。
+              </li>
+              <li>
+                <strong>禁止機器人搶位：</strong>用戶嚴禁使用外掛、自動化腳本或非法逆向工程干擾搶佔熱門時段。違反者除沒收帳戶點數外，本平台將依刑法妨害電腦使用罪及民法侵權行為追究其一切損害賠償責任。
+              </li>
+            </ol>
+          </div>
 
-              <div>
-                <h4 style={{ color: '#f1f5f9', fontWeight: 700, margin: '0 0 6px' }}>
-                  2. 槓片與啞鈴主動歸位
-                </h4>
-                <p style={{ margin: 0, color: '#94a3b8' }}>
-                  課後應引導學員或教練本人將重量設備回放至架上，並使用場館提供之酒精噴霧擦拭接觸面。
-                </p>
-              </div>
-            </div>
-          )}
+          {/* Section 3 */}
+          <div id="sec-3" style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+              第三條：數位點數（GYM Points）錢包條款與防制洗錢規範
+            </h3>
+            <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li>
+                <strong>點數屬性：</strong>本平台提供之數位點數（換算基準為 1 點 = NT$ 1），為平台內部用於兌換預約手續費或加值推廣之數位抵用憑證，<strong>非銀行法所稱之電子貨幣或法定流通貨幣，亦不產生任何利息。</strong>
+              </li>
+              <li>
+                <strong>禁止轉售與非法套現：</strong>點數僅限持有人帳號於本平台合法扣抵使用，嚴禁私下交易、轉讓、洗錢、抵債或非透過本平台授權之套現行為。一經查獲，平台有權立即凍結相關帳戶。
+              </li>
+              <li>
+                <strong>退費申辦流程：</strong>用戶如欲終止帳號並就未消費之現金儲值點數申辦退還，應提出身分證明文件審核。平台將扣除第三方金流處理成本及 10% 系統行政處理手續費後，將剩餘之有效儲值餘額退回原付款帳戶；因平台活動贈送之贈點不在退款範圍內。
+              </li>
+            </ol>
+          </div>
+
+          {/* Section 4 */}
+          <div id="sec-4" style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+              第四條：運動安全自主、意外傷害與法律責任極限完全排除
+            </h3>
+            <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li>
+                <strong>運動風險自我承擔：</strong>肌力體能訓練具有潛在之肉體疲勞、肌肉拉傷、骨折甚至突發心血管意外之生理風險。自由教練於現場指導時，應善盡專業注意義務，課前詳細評估學員身體評估與訓練強度。
+              </li>
+              <li>
+                <strong>人身傷害完全免責：</strong>教練與學員於場館內所發生之任何體傷、病變、突發猝死、爭執毆打、性騷擾或財物失竊等糾紛，<strong>純屬當事人間與場館管理之法律關係，本平台營運方不負任何形式之民事賠償、連帶清償或刑事責任。</strong>
+              </li>
+              <li>
+                <strong>賠償金額最高上限：</strong>在適用法律允許之最大極限內，若因本平台系統嚴重故障或爭端致用戶遭受實質可歸責損害，本平台就單一用戶所承擔之全部累計民事賠償責任上限，<strong>以該用戶於事件發生前三十天內實際向本平台支付之系統手續費用總額為絕對最高上限。</strong>
+              </li>
+            </ol>
+          </div>
+
+          {/* Section 5 */}
+          <div id="sec-5" style={{ marginBottom: '22px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+              第五條：個人資料保護政策與隱私權法定遵循（個資法完整條款）
+            </h3>
+            <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li>
+                <strong>個人資料蒐集目的：</strong>本平台依據個人資料保護法相關法令，基於「會員管理與身分識別（法定代號 090）」、「商業資訊與地圖媒合技術推播（040）」及「消費者爭議處理（069）」之正當特定目的，在業務所必要之範圍內蒐集、處理及利用您的個人資料。
+              </li>
+              <li>
+                <strong>蒐集之個人資料類別：</strong>
+                <ul style={{ margin: '4px 0', paddingLeft: '20px' }}>
+                  <li>C001 辨識個人者：姓名、會員暱稱、通訊電子郵件、聯絡電話、LINE ID。</li>
+                  <li>C038 職業與執照：體適能教練合格證照名稱與證號、急救證書資料（教練資格認證審查用）。</li>
+                  <li>C102 約定技術資料：行動裝置 GPS 定位座標（僅用於即時半徑搜尋最近場館）、IP 位址、瀏覽歷程與預約時程操作記錄。</li>
+                </ul>
+              </li>
+              <li>
+                <strong>GPS 定位與個人資料嚴格保護承諾：</strong>
+                本平台僅在您主動點擊「定位」功能時取得瀏覽器或手機授權之坐標資料以進行距離計算，絕不常駐追蹤個人移動路徑，<strong>亦絕不會將您的電話、信箱或私密位置資料出售、租借或交換予任何外部廣告商或第三方資料公司。</strong>
+              </li>
+              <li>
+                <strong>資安技術防護：</strong>全站連線皆實施高規格 SSL/TLS 256-bit 傳輸層加密。第三方金流交易由具備國際 PCI-DSS 認證之金流機構獨立代收，本平台伺服器不儲存使用者信用卡卡號完整機密資料。
+              </li>
+              <li>
+                <strong>當事人權利行使：</strong>您可以隨時透過本平台官方聯絡管道，向我們請求查詢、閱覽、製給複製本、補充、更正、停止蒐集處理利用或刪除您的個人資料帳號。
+              </li>
+            </ol>
+          </div>
+
+          {/* Section 6 */}
+          <div id="sec-6" style={{ marginBottom: '14px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px', borderLeft: '3px solid #b4ff04', paddingLeft: '10px' }}>
+              第六條：智慧財產權宣告、條款修正與管轄法院約定
+            </h3>
+            <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <li>
+                <strong>智慧財產權歸屬：</strong>本平台所有軟體架構、使用者介面排版、品牌標誌（肌動組 GYMspot）、地圖標籤圖示、視覺設計與場館資料庫彙編著作，均為本平台開發營運方之智慧財產。非經書面同意，不得進行轉載、鏡像爬蟲抓取、逆向工程或商品化利用。
+              </li>
+              <li>
+                <strong>條款修訂權限：</strong>本平台保留隨時因應法規變動或業務演進修正本合約條款之權利。修正後之條文自本平台公告日起生效，繼續使用服務即視為同意更新之合約內容。
+              </li>
+              <li>
+                <strong>準據法與第一審管轄法院：</strong>本協議之解釋、履行及因本平台服務所引起之任何法律爭議，均以<strong>中華民國法律</strong>為準據法。雙方同意以<strong>臺灣臺北地方法院</strong>為第一審專屬管轄法院。
+              </li>
+            </ol>
+          </div>
         </div>
 
-        {/* Footer */}
+        {/* Footer Accept Bar */}
         <div style={{
           padding: '16px 24px',
           borderTop: '1px solid #1e293b',
           display: 'flex',
-          justifyContent: 'flex-end',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           background: '#090d16'
         }}>
+          <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <ShieldCheck size={14} color="#b4ff04" />
+            <span>點擊下方按鈕即代表您已完整審閱並同意遵守全部條款</span>
+          </div>
+
           <button
+            id="terms-accept-btn"
             onClick={onClose}
             style={{
               background: '#b4ff04',
               color: '#0a1402',
               border: 'none',
-              borderRadius: '8px',
-              padding: '9px 20px',
+              borderRadius: '12px',
+              padding: '11px 24px',
               fontSize: '13px',
               fontWeight: 900,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)',
+              transition: 'all 0.15s ease'
             }}
           >
-            我已瞭解並同意
+            <Check size={16} strokeWidth={3} />
+            我已詳細閱讀並同意遵守本合約
           </button>
         </div>
       </div>
