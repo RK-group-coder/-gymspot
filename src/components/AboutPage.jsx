@@ -1,19 +1,17 @@
 import React from 'react';
 import { 
   ArrowLeft, 
-  Dumbbell, 
   MapPin, 
-  ShieldCheck, 
-  Sparkles, 
-  Zap, 
-  CheckCircle2, 
-  TrendingUp, 
   Building2, 
-  Mail, 
-  MessageSquare, 
-  Scale, 
-  Users, 
-  Flame 
+  AlertCircle, 
+  CheckCircle2, 
+  Dumbbell, 
+  Clock, 
+  DollarSign, 
+  ShieldCheck, 
+  Sparkles,
+  Mail,
+  MessageSquare
 } from 'lucide-react';
 
 export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms }) {
@@ -26,7 +24,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
       position: 'relative',
       overflowX: 'hidden'
     }}>
-      {/* 1. Sticky Navigation Bar */}
+      {/* 1. Header Navigation */}
       <header style={{
         position: 'sticky',
         top: 0,
@@ -39,7 +37,6 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        {/* Brand Logo link back */}
         <div 
           onClick={onNavigateHome}
           style={{
@@ -61,389 +58,378 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
           />
         </div>
 
-        {/* Back to Map Button */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={onNavigateHome}
-            style={{
-              background: '#b4ff04',
-              color: '#0a1402',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '9px 18px',
-              fontSize: '13px',
-              fontWeight: 900,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <ArrowLeft size={16} strokeWidth={3} />
-            <span>返回地圖找場館</span>
-          </button>
-        </div>
+        <button
+          onClick={onNavigateHome}
+          style={{
+            background: '#b4ff04',
+            color: '#0a1402',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '9px 18px',
+            fontSize: '13px',
+            fontWeight: 900,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          <ArrowLeft size={16} strokeWidth={3} />
+          <span>返回地圖找場館</span>
+        </button>
       </header>
 
-      {/* 2. Hero Section */}
-      <section style={{
-        padding: '70px 24px 60px',
-        maxWidth: '1080px',
+      {/* 2. Main Article Container */}
+      <main style={{
+        maxWidth: '920px',
         margin: '0 auto',
-        textAlign: 'center',
+        padding: '60px 24px 90px',
         position: 'relative'
       }}>
-        {/* Subtle Ambient Glow */}
+        {/* Ambient Glow */}
         <div style={{
           position: 'absolute',
-          top: '20px',
+          top: '30px',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '450px',
-          height: '250px',
-          background: 'radial-gradient(ellipse at center, rgba(180, 255, 4, 0.15) 0%, rgba(7, 10, 16, 0) 70%)',
-          filter: 'blur(40px)',
+          width: '500px',
+          height: '240px',
+          background: 'radial-gradient(ellipse at center, rgba(180, 255, 4, 0.12) 0%, rgba(7, 10, 16, 0) 70%)',
+          filter: 'blur(50px)',
           zIndex: 0,
           pointerEvents: 'none'
         }} />
 
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(180, 255, 4, 0.08)',
-            border: '1px solid rgba(180, 255, 4, 0.3)',
-            borderRadius: '999px',
-            padding: '6px 16px',
-            fontSize: '12px',
-            fontWeight: 800,
-            color: '#b4ff04',
-            marginBottom: '20px'
-          }}>
-            <Sparkles size={14} color="#b4ff04" />
-            全台首創 · 自由健身教練專業場租媒合平台
-          </div>
-
-          <h1 style={{
-            fontSize: 'clamp(32px, 5vw, 54px)',
-            fontWeight: 900,
-            lineHeight: 1.2,
-            margin: '0 0 20px',
-            letterSpacing: '-0.5px',
-            color: '#ffffff'
-          }}>
-            為自由教練而生的<br />
-            <span style={{ 
-              color: '#b4ff04', 
-              textShadow: '0 0 25px rgba(180, 255, 4, 0.45)' 
+          {/* Main Title Badge */}
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(180, 255, 4, 0.08)',
+              border: '1px solid rgba(180, 255, 4, 0.3)',
+              borderRadius: '999px',
+              padding: '6px 16px',
+              fontSize: '12px',
+              fontWeight: 800,
+              color: '#b4ff04',
+              marginBottom: '16px'
             }}>
-              健身場租新時代
-            </span>
-          </h1>
+              <Sparkles size={14} color="#b4ff04" />
+              品牌創立核心報告
+            </div>
 
-          <p style={{
-            maxWidth: '680px',
-            margin: '0 auto 36px',
-            fontSize: '16px',
-            lineHeight: 1.8,
-            color: '#cbd5e1',
-            fontWeight: 400
-          }}>
-            打破私訊問價的繁瑣、告別被抽成 20%~40% 的不公待遇。<br />
-            肌動組 GYMspot 透過即時地圖與數位排程鎖位，讓優秀教練將 100% 收益留在手中，專注帶給學員最純粹的訓練成效。
-          </p>
+            <h1 style={{
+              fontSize: 'clamp(30px, 5vw, 48px)',
+              fontWeight: 900,
+              lineHeight: 1.25,
+              margin: '0 0 16px',
+              color: '#ffffff',
+              letterSpacing: '-0.5px'
+            }}>
+              為什麼我們創立<br />
+              <span style={{ color: '#b4ff04', textShadow: '0 0 24px rgba(180, 255, 4, 0.45)' }}>
+                「肌動組 GYMspot」？
+              </span>
+            </h1>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '14px',
-            flexWrap: 'wrap'
-          }}>
-            <button
-              onClick={onNavigateHome}
-              style={{
-                background: '#b4ff04',
-                color: '#0a1402',
-                border: 'none',
-                borderRadius: '14px',
-                padding: '14px 28px',
-                fontSize: '15px',
-                fontWeight: 900,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 0 24px rgba(180, 255, 4, 0.4)'
-              }}
-            >
-              <MapPin size={18} />
-              探索全台合作場館
-            </button>
-
-            <button
-              onClick={onOpenRegister}
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: '#ffffff',
-                border: '1px solid #243248',
-                borderRadius: '14px',
-                padding: '14px 28px',
-                fontSize: '15px',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#ffffff'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#243248'; }}
-            >
-              <Building2 size={18} />
-              場館免費申請入駐
-            </button>
+            <p style={{
+              fontSize: '16px',
+              color: '#cbd5e1',
+              maxWidth: '680px',
+              margin: '0 auto',
+              lineHeight: 1.8
+            }}>
+              由一群資深自由教練與熱愛重訓的工程師共同發起。<br />
+              這不是另一家連鎖健身房，而是一場針對台灣體適能「場租黑箱與抽成剝削」的數位革新。
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* 3. The Problem & Solution (傳統痛點 vs 肌動組解法) */}
-      <section style={{
-        maxWidth: '1000px',
-        margin: '0 auto 70px',
-        padding: '0 24px'
-      }}>
-        <div style={{
-          textAlign: 'center',
-          marginBottom: '32px'
-        }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#f8fafc', margin: '0 0 8px' }}>
-            為什麼我們創立「肌動組 GYMspot」？
-          </h2>
-          <p style={{ fontSize: '14px', color: '#94a3b8', margin: 0 }}>
-            傳統體適能產業長期存在的兩大結構性失衡，我們用科技一次解決。
-          </p>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '20px'
-        }}>
-          {/* Pain Point 1 */}
-          <div style={{
+          {/* Section A: 我們在台灣看見了什麼問題？ */}
+          <section style={{
             background: 'rgba(15, 23, 42, 0.65)',
             border: '1px solid #1e293b',
-            borderRadius: '20px',
-            padding: '24px'
+            borderRadius: '24px',
+            padding: '36px 32px',
+            marginBottom: '36px'
           }}>
             <div style={{
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
               background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
               color: '#f87171',
-              padding: '4px 12px',
-              borderRadius: '8px',
-              fontSize: '11px',
-              fontWeight: 800,
-              marginBottom: '14px'
+              padding: '6px 14px',
+              borderRadius: '10px',
+              fontSize: '12px',
+              fontWeight: 900,
+              marginBottom: '16px'
             }}>
-              傳統自由教練痛點
+              <AlertCircle size={15} /> 我們在台灣健身產業看見的三大沉痾
             </div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', margin: '0 0 10px' }}>
-              高額抽成與資訊不對稱
-            </h3>
-            <p style={{ fontSize: '13px', lineHeight: 1.7, color: '#94a3b8', margin: 0 }}>
-              一般大型連鎖健身房私教課抽成高達 30%~50%，教練付出巨大勞力卻只能分潤少部分。轉做自由教練後，每次換學員就要逐一私訊各場館問場租、深蹲架台數與清潔費，撞課撞架更常引發尷尬糾紛。
-            </p>
-          </div>
 
-          {/* Solution 1 */}
-          <div style={{
-            background: 'linear-gradient(145deg, rgba(180, 255, 4, 0.08) 0%, rgba(13, 19, 31, 0.85) 100%)',
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#ffffff', margin: '0 0 20px', lineHeight: 1.4 }}>
+              教練用專業流汗，卻在制度與資訊不對稱中受困
+            </h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {/* Problem 1 */}
+              <div style={{
+                background: '#0a0e17',
+                border: '1px solid #1b2436',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', fontWeight: 900, fontSize: '13px' }}>
+                    1
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    高達 30%～50% 的私教課堂抽成剝削
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#94a3b8', margin: 0 }}>
+                  在傳統大型連鎖健身房，一堂動輒 1,600 ~ 2,200 元的私人教練課，實際落入教練口袋的往往只有幾百元。龐大業績壓力逼得專業教練變成銷售業務員，無法專心回歸教學本質；想獨立出來當自由教練，卻苦於沒有屬於自己的教學主場。
+                </p>
+              </div>
+
+              {/* Problem 2 */}
+              <div style={{
+                background: '#0a0e17',
+                border: '1px solid #1b2436',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', fontWeight: 900, fontSize: '13px' }}>
+                    2
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    場租資訊極度黑箱封閉，私訊問到心累
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#94a3b8', margin: 0 }}>
+                  台灣缺乏透明的場租彙整平台。自由教練每接一位不同區域的學員，就得逐一到 IG、LINE 私訊周邊工作室詢問：「一小時場租多少？」、「尖峰離峰怎麼算？」、「學員有沒有另外收清潔費？」、「深蹲架有幾台？」。小編回覆緩慢、費率混亂，甚至不同人問給不同報價，消耗極大溝通成本。
+                </p>
+              </div>
+
+              {/* Problem 3 */}
+              <div style={{
+                background: '#0a0e17',
+                border: '1px solid #1b2436',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', fontWeight: 900, fontSize: '13px' }}>
+                    3
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    現場「撞架搶器材」，學員乾等無比尷尬
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#94a3b8', margin: 0 }}>
+                  許多場館口頭答應教練可以帶課，但到了現場卻發現深蹲架、專用草皮全被其他教練或會員佔滿。付費學員只能站在旁邊尷尬乾等或臨時被迫換菜單，嚴重損及教學專業形象與授課流暢度。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Section B: 於是，肌動組打算如何解決？ */}
+          <section style={{
+            background: 'linear-gradient(145deg, rgba(180, 255, 4, 0.08) 0%, rgba(13, 19, 31, 0.95) 100%)',
             border: '1.5px solid rgba(180, 255, 4, 0.4)',
-            borderRadius: '20px',
-            padding: '24px',
-            boxShadow: '0 0 30px rgba(180, 255, 4, 0.12)'
+            borderRadius: '24px',
+            padding: '36px 32px',
+            boxShadow: '0 0 35px rgba(180, 255, 4, 0.12)',
+            marginBottom: '40px'
           }}>
             <div style={{
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
               background: '#b4ff04',
               color: '#0a1402',
-              padding: '4px 12px',
-              borderRadius: '8px',
-              fontSize: '11px',
+              padding: '6px 14px',
+              borderRadius: '10px',
+              fontSize: '12px',
               fontWeight: 900,
-              marginBottom: '14px'
+              marginBottom: '16px'
             }}>
-              肌動組 GYMspot 的創新方案
+              <CheckCircle2 size={15} /> 我們的具體解法與核心承諾
             </div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', margin: '0 0 10px' }}>
-              0 抽成 · 實價地圖 · 秒級排程鎖位
-            </h3>
-            <p style={{ fontSize: '13px', lineHeight: 1.7, color: '#e2e8f0', margin: 0 }}>
-              我們不抽私教課一分錢！所有場館尖峰/離峰費率、深蹲架數量、草皮規格與淋浴配備一目瞭然。教練只要透過平台即可線上預約特定時段，系統自動鎖位保障專用深蹲架，教練、場館與學員三方皆贏。
-            </p>
-          </div>
-        </div>
-      </section>
 
-      {/* 4. Three Core Pillars (三大核心承諾) */}
-      <section style={{
-        background: '#0c111a',
-        borderTop: '1px solid #1e293b',
-        borderBottom: '1px solid #1e293b',
-        padding: '60px 24px'
-      }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-            <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#ffffff', margin: '0 0 8px' }}>
-              肌動組的三大核心承諾
+            <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#ffffff', margin: '0 0 20px', lineHeight: 1.4 }}>
+              用科技終結黑箱，為台灣打造「公平、透明、高效」的場租新生態
             </h2>
-            <p style={{ fontSize: '14px', color: '#94a3b8', margin: 0 }}>
-              我們只做對自由健身生態真正有價值的事
-            </p>
-          </div>
 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {/* Solution 1 */}
+              <div style={{
+                background: 'rgba(8, 12, 20, 0.85)',
+                border: '1px solid rgba(180, 255, 4, 0.25)',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#b4ff04', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a1402', fontWeight: 900, fontSize: '13px' }}>
+                    ✓
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    全台首創「地圖實價登錄」：10 秒比價，所有費用器材全面透明
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#cbd5e1', margin: 0 }}>
+                  不用再私訊問價！肌動組將各場館的<strong>離峰/尖峰每小時場租、學員清潔費、深蹲架台數、特殊賽事槓規格</strong>全部公開在地圖上。教練打開手機一鍵定位，半徑幾百公尺內哪家場地最划算、設備最好，一目瞭然。
+                </p>
+              </div>
+
+              {/* Solution 2 */}
+              <div style={{
+                background: 'rgba(8, 12, 20, 0.85)',
+                border: '1px solid rgba(180, 255, 4, 0.25)',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#b4ff04', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a1402', fontWeight: 900, fontSize: '13px' }}>
+                    ✓
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    堅持「0 課堂抽成」原則：教練的辛勞收益，100% 留給教練自己
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#cbd5e1', margin: 0 }}>
+                  我們絕不從教練的私教課堂費中抽取一分錢佣金。教練自訂課價、自行向學員收費，賺取的每一分錢全數歸教練所有，平台僅作為高效率的純技術工具。
+                </p>
+              </div>
+
+              {/* Solution 3 */}
+              <div style={{
+                background: 'rgba(8, 12, 20, 0.85)',
+                border: '1px solid rgba(180, 255, 4, 0.25)',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#b4ff04', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a1402', fontWeight: 900, fontSize: '13px' }}>
+                    ✓
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    秒級時程表鎖位機制：保證到場有專屬深蹲架可用
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#cbd5e1', margin: 0 }}>
+                  為每個合作場館建置可用時段排程表。教練提前在線上選定時段與架號鎖位，系統即時扣除該時段可用名額，確保教練與學員踏入現場時，器材已經準備就緒，再也不用經歷搶架乾等的窘境。
+                </p>
+              </div>
+
+              {/* Solution 4 */}
+              <div style={{
+                background: 'rgba(8, 12, 20, 0.85)',
+                border: '1px solid rgba(180, 255, 4, 0.25)',
+                borderRadius: '16px',
+                padding: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#b4ff04', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a1402', fontWeight: 900, fontSize: '13px' }}>
+                    ✓
+                  </div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    100% 營業登記查核與責任保險：為雙方安全築起防護牆
+                  </h3>
+                </div>
+                <p style={{ fontSize: '13px', lineHeight: 1.8, color: '#cbd5e1', margin: 0 }}>
+                  平台嚴格篩選合法立案之合格場館，審查消防安檢與公共意外責任險，淘汰違規黑心鐵皮屋，保障自由教練專業名譽與學員人身安全。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Action Callout Box */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '20px'
+            background: 'rgba(17, 24, 39, 0.85)',
+            border: '1px solid #243248',
+            borderRadius: '20px',
+            padding: '28px',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '16px'
           }}>
-            {/* Pillar 1 */}
-            <div style={{
-              background: '#080c14',
-              border: '1px solid #1e293d',
-              borderRadius: '18px',
-              padding: '24px'
-            }}>
-              <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '14px',
-                background: 'rgba(180, 255, 4, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#b4ff04',
-                marginBottom: '16px'
-              }}>
-                <Dumbbell size={24} />
-              </div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: '0 0 8px' }}>
-                1. 課堂收益 100% 歸教練
-              </h3>
-              <p style={{ fontSize: '13px', lineHeight: 1.7, color: '#94a3b8', margin: 0 }}>
-                平台嚴格遵守「0 私教抽成」原則。教練與學員間的教學私約、定價與款項均由教練全額自主收取，平台僅作為便利的資訊與預約工具。
-              </p>
-            </div>
+            <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#ffffff', margin: 0 }}>
+              加入肌動組，一起翻轉台灣自由健身生態
+            </h3>
+            <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, maxWidth: '520px' }}>
+              無論您是尋求優質場地的自由教練，還是希望提高離峰收益的健身房主，肌動組都是您最可靠的夥伴。
+            </p>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button
+                onClick={onNavigateHome}
+                style={{
+                  background: '#b4ff04',
+                  color: '#0a1402',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '12px 24px',
+                  fontSize: '14px',
+                  fontWeight: 900,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)'
+                }}
+              >
+                <MapPin size={16} /> 立即開始地圖探索
+              </button>
 
-            {/* Pillar 2 */}
-            <div style={{
-              background: '#080c14',
-              border: '1px solid #1e293d',
-              borderRadius: '18px',
-              padding: '24px'
-            }}>
-              <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '14px',
-                background: 'rgba(180, 255, 4, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#b4ff04',
-                marginBottom: '16px'
-              }}>
-                <MapPin size={24} />
-              </div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: '0 0 8px' }}>
-                2. 地圖實價與規格透明
-              </h3>
-              <p style={{ fontSize: '13px', lineHeight: 1.7, color: '#94a3b8', margin: 0 }}>
-                不只標出場租，連 Eleiko 賽事槓、專用雪橇草皮、深蹲架台數、學員清潔費減免等關鍵帶課條件一清二楚，不再花時間盲踩雷。
-              </p>
-            </div>
-
-            {/* Pillar 3 */}
-            <div style={{
-              background: '#080c14',
-              border: '1px solid #1e293d',
-              borderRadius: '18px',
-              padding: '24px'
-            }}>
-              <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '14px',
-                background: 'rgba(180, 255, 4, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#b4ff04',
-                marginBottom: '16px'
-              }}>
-                <ShieldCheck size={24} />
-              </div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: '0 0 8px' }}>
-                3. 合法立案與查核機制
-              </h3>
-              <p style={{ fontSize: '13px', lineHeight: 1.7, color: '#94a3b8', margin: 0 }}>
-                嚴格把關合作場館之營業登記、消防安檢與公共意外責任險，讓自由教練能驕傲地帶學員踏入每一個專業合格的訓練場域。
-              </p>
+              <button
+                onClick={onOpenRegister}
+                style={{
+                  background: '#1e293b',
+                  color: '#ffffff',
+                  border: '1px solid #334155',
+                  borderRadius: '12px',
+                  padding: '12px 24px',
+                  fontSize: '14px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Building2 size={16} /> 場館免費入駐申請
+              </button>
             </div>
           </div>
         </div>
-      </section>
+      </main>
 
-      {/* 5. Brand Story (品牌故事) */}
-      <section style={{
-        maxWidth: '840px',
-        margin: '0 auto',
-        padding: '70px 24px'
-      }}>
-        <div style={{
-          background: 'rgba(15, 23, 42, 0.45)',
-          border: '1px solid #1e293b',
-          borderRadius: '24px',
-          padding: '36px 32px'
-        }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#ffffff', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Users size={22} color="#b4ff04" /> 我們的故事：始於鐵槓，成於共享
-          </h2>
-          <div style={{ fontSize: '13.5px', lineHeight: 1.9, color: '#cbd5e1', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <p style={{ margin: 0 }}>
-              「肌動組 GYMspot」由一群深耕體適能產業多年的自由教練與科技軟體工程師共同創辦。我們在健身房看過無數熱血有才華的教練，因為無法忍受傳統體系的業績高壓與層層抽成而走向自由授課；卻又常常在尋找合法、友善、不撞架的場租空間上耗盡心力。
-            </p>
-            <p style={{ margin: 0 }}>
-              我們相信：<strong>「教練的專業價值，應該毫無保留地回饋在學員的身心蜕變上。」</strong>
-            </p>
-            <p style={{ margin: 0 }}>
-              因此，我們打造了肌動組。透過最直觀的互動地圖、自動化預約排程與公平透明的評價生態，為全台優秀教練與用心經營的優質場館搭起最短的一座橋樑。
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Contact & Footer */}
+      {/* 3. Footer */}
       <footer style={{
         background: '#04060a',
         borderTop: '1px solid #1e293b',
-        padding: '40px 24px'
+        padding: '36px 24px'
       }}>
         <div style={{
-          maxWidth: '1000px',
+          maxWidth: '920px',
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '20px',
+          gap: '16px',
           textAlign: 'center'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/brand-icon.png" alt="肌動組" style={{ height: '32px', width: 'auto', mixBlendMode: 'screen' }} />
-            <span style={{ fontSize: '15px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
+            <img src="/brand-icon.png" alt="肌動組" style={{ height: '30px', width: 'auto', mixBlendMode: 'screen' }} />
+            <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
           </div>
 
           <div style={{
@@ -451,21 +437,21 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             gap: '24px',
             flexWrap: 'wrap',
             justifyContent: 'center',
-            fontSize: '13px',
+            fontSize: '12.5px',
             color: '#94a3b8'
           }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Mail size={14} color="#b4ff04" /> 客服信箱：contact@gymspot.tw
+              <Mail size={13} color="#b4ff04" /> 客服信箱：contact@gymspot.tw
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <MessageSquare size={14} color="#b4ff04" /> 官方 LINE 合作諮詢：@gymspot
+              <MessageSquare size={13} color="#b4ff04" /> 官方 LINE 合作諮詢：@gymspot
             </span>
           </div>
 
           <div style={{
             display: 'flex',
-            gap: '16px',
-            fontSize: '12px',
+            gap: '14px',
+            fontSize: '11.5px',
             color: '#64748b'
           }}>
             <button
