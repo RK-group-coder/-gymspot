@@ -92,7 +92,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     hourlyRate: 200,
     studentCleanFee: 0,
     cleanFeeDesc: '免收學員人頭清潔費',
-    packageDealText: '10小時 $1,800 / 30小時 $5,000',
     certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
     verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
   });
@@ -242,13 +241,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           peakPerHour: hourlyPrice,
           studentCleanFee: Number(formData.studentCleanFee) || 0,
           cleanFeeDesc: formData.cleanFeeDesc,
-          packageDealText: formData.packageDealText,
           peakHoursRange: '依週時段表格勾選開放',
           offPeakHoursRange: '全時段小時制場租',
-          packageDeals: [
-            { hours: 10, price: Math.round(hourlyPrice * 9.5), note: '95折優惠' },
-            { hours: 30, price: Math.round(hourlyPrice * 27), note: '9折優惠' }
-          ]
+          packageDeals: []
         },
         availableSchedule: schedule,
         openSlotsCount: selectedSlotsCount,
@@ -312,7 +307,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       hourlyRate: 200,
       studentCleanFee: 0,
       cleanFeeDesc: '免收學員人頭清潔費',
-      packageDealText: '10小時 $1,800 / 30小時 $5,000',
       certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
       verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
     });
@@ -688,7 +682,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
 
                 {/* Pricing Inputs */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '22px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '22px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', color: '#b4ff04', marginBottom: '6px', fontWeight: 800 }}>
                       小時制場租費用 (NT$) <span style={{ color: '#ef4444' }}>*</span>
@@ -747,34 +741,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                     />
                     <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
                       若向學員酌收人頭清潔費可填寫，無則填 0
-                    </div>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      包套優惠備註 (選填)
-                    </label>
-                    <input
-                      type="text"
-                      name="packageDealText"
-                      placeholder="例如：10小時 $1,800 / 30小時 $5,000"
-                      value={formData.packageDealText ?? ''}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
-                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
-                      教練預付多小時享折扣方案說明
                     </div>
                   </div>
                 </div>
