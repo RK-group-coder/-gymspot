@@ -40,37 +40,37 @@ export default function TermsModal({ isOpen, onClose }) {
       position: 'fixed',
       inset: 0,
       zIndex: 2000,
-      background: 'rgba(5, 8, 15, 0.88)',
+      background: 'rgba(0, 0, 0, 0.85)',
       backdropFilter: 'blur(12px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '16px'
     }}>
-      {/* Modal Card */}
+      {/* Modal Card (底色全黑) */}
       <div 
         id="terms-modal-card"
         style={{
           width: '100%',
           maxWidth: '740px',
           maxHeight: '90vh',
-          background: '#0d131f',
-          border: '1px solid #243248',
+          background: '#000000',
+          border: '1px solid #222222',
           borderRadius: '24px',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.85)',
+          boxShadow: '0 25px 70px rgba(0, 0, 0, 0.95)',
           overflow: 'hidden'
         }}
       >
-        {/* Header (無天平圖示外框，純淨正式標題) */}
+        {/* Header (全黑純淨標題) */}
         <div style={{
           padding: '20px 24px',
-          borderBottom: '1px solid #1e293b',
+          borderBottom: '1px solid #1c1c1c',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#111827'
+          background: '#000000'
         }}>
           <div>
             <h2 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0, letterSpacing: '0.3px' }}>
@@ -87,7 +87,7 @@ export default function TermsModal({ isOpen, onClose }) {
             onClick={onClose}
             aria-label="關閉協議"
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: 'rgba(255, 255, 255, 0.06)',
               border: '1px solid rgba(255, 255, 255, 0.15)',
               color: '#ffffff',
               cursor: 'pointer',
@@ -104,7 +104,7 @@ export default function TermsModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Contract Legal Text Body */}
+        {/* Contract Legal Text Body (全黑背景) */}
         <div 
           ref={contentRef}
           onScroll={handleScroll}
@@ -114,13 +114,14 @@ export default function TermsModal({ isOpen, onClose }) {
             overflowY: 'auto',
             fontSize: '12.5px',
             lineHeight: '1.85',
-            color: '#cbd5e1'
+            color: '#cbd5e1',
+            background: '#000000'
           }}
         >
           {/* Important Notice Callout Box */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid #1e293b',
+            background: '#080808',
+            border: '1px solid #222222',
             borderRadius: '12px',
             padding: '14px 16px',
             marginBottom: '20px'
@@ -254,14 +255,14 @@ export default function TermsModal({ isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Footer Accept Bar */}
+        {/* Footer Accept Bar (底色全黑) */}
         <div style={{
           padding: '16px 24px',
-          borderTop: '1px solid #1e293b',
+          borderTop: '1px solid #1c1c1c',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#090d16',
+          background: '#000000',
           gap: '12px'
         }}>
           {/* Left: 一鍵滑到底按鈕 & 狀態提示 */}
@@ -271,9 +272,9 @@ export default function TermsModal({ isOpen, onClose }) {
                 id="terms-scroll-to-bottom-btn"
                 onClick={handleScrollToBottom}
                 style={{
-                  background: '#1e293b',
+                  background: '#141414',
                   color: '#f8fafc',
-                  border: '1px solid #334155',
+                  border: '1px solid #2e2e2e',
                   borderRadius: '10px',
                   padding: '8px 14px',
                   fontSize: '12px',
@@ -285,7 +286,7 @@ export default function TermsModal({ isOpen, onClose }) {
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#334155'; e.currentTarget.style.color = '#f8fafc'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#2e2e2e'; e.currentTarget.style.color = '#f8fafc'; }}
               >
                 <ArrowDown size={14} />
                 一鍵滑到底
@@ -309,9 +310,9 @@ export default function TermsModal({ isOpen, onClose }) {
             disabled={!hasScrolledToBottom}
             onClick={hasScrolledToBottom ? onClose : undefined}
             style={{
-              background: hasScrolledToBottom ? '#b4ff04' : '#1e293b',
-              color: hasScrolledToBottom ? '#0a1402' : '#64748b',
-              border: hasScrolledToBottom ? 'none' : '1px solid #243248',
+              background: hasScrolledToBottom ? '#b4ff04' : '#141414',
+              color: hasScrolledToBottom ? '#0a1402' : '#525252',
+              border: hasScrolledToBottom ? 'none' : '1px solid #262626',
               borderRadius: '12px',
               padding: '11px 22px',
               fontSize: '13px',
