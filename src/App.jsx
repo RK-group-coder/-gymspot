@@ -52,7 +52,7 @@ export default function App() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const SHEET_SNAPS = [0.11, 0.38, 0.64];
+  const SHEET_SNAPS = [0.11, 0.38, 0.90];
   const [sheetSnap, setSheetSnap] = useState(1);
   const [isDraggingSheet, setIsDraggingSheet] = useState(false);
   const asideRef = useRef(null);
@@ -75,7 +75,7 @@ export default function App() {
     const d = dragRef.current;
     const dy = d.startY - e.clientY;
     if (Math.abs(dy) > 5) d.moved = true;
-    const h = Math.min(d.mainH * 0.8, Math.max(d.mainH * 0.08, d.startH + dy));
+    const h = Math.min(d.mainH * 0.92, Math.max(d.mainH * 0.08, d.startH + dy));
     asideRef.current.style.setProperty('--sheet-h', `${h}px`);
   };
   const handleSheetPointerUp = (e) => {
