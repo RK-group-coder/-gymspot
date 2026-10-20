@@ -292,12 +292,41 @@ export default function App() {
   // Full-page /about route
   if (currentPath === '/about' || currentPath === '/about/') {
     return (
-      <>
+      <div style={{ minHeight: '100vh', background: '#070a10', display: 'flex', flexDirection: 'column' }}>
+        <Navbar
+          onNavigateHome={() => navigateTo('/')}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
+          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenAbout={() => navigateTo('/about')}
+          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onOpenTopUp={() => setIsTopUpOpen(true)}
+          currentPath="/about"
+          points={points}
+          isLoggedIn={isLoggedIn}
+          onToggleLogin={handleToggleLogin}
+        />
+        {isTopUpOpen && (
+          <TopUpModal
+            points={points}
+            onClose={() => setIsTopUpOpen(false)}
+            onTopUp={(pts, price) => {
+              setPoints(p => p + pts);
+              setIsTopUpOpen(false);
+              setToastMessage(`儲值成功！已加值 ${pts} 點 (NT$ ${price})`);
+            }}
+          />
+        )}
         <AboutPage
           onNavigateHome={() => navigateTo('/')}
           onOpenRegister={() => setIsRegisterModalOpen(true)}
           onOpenTerms={() => setIsTermsModalOpen(true)}
         />
+        {isProfileModalOpen && (
+          <ProfileModal
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
+          />
+        )}
         {isRegisterModalOpen && (
           <GymRegisterModal
             isOpen={isRegisterModalOpen}
@@ -309,7 +338,7 @@ export default function App() {
           isOpen={isTermsModalOpen}
           onClose={() => setIsTermsModalOpen(false)}
         />
-      </>
+      </div>
     );
   }
 

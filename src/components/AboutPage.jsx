@@ -24,64 +24,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
       position: 'relative',
       overflowX: 'hidden'
     }}>
-      {/* 1. Header Navigation */}
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        background: 'rgba(7, 10, 16, 0.92)',
-        backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid #1e293b',
-        padding: '12px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}>
-        <div 
-          onClick={onNavigateHome}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            userSelect: 'none'
-          }}
-        >
-          <img 
-            src="/brand-icon.png" 
-            alt="肌動組" 
-            style={{ height: '40px', width: 'auto', mixBlendMode: 'screen' }} 
-          />
-          <img 
-            src="/brand-text.png" 
-            alt="GYMspot" 
-            style={{ height: '26px', width: 'auto', marginLeft: '6px', mixBlendMode: 'screen' }} 
-          />
-        </div>
-
-        <button
-          onClick={onNavigateHome}
-          style={{
-            background: '#b4ff04',
-            color: '#0a1402',
-            border: 'none',
-            borderRadius: '12px',
-            padding: '9px 18px',
-            fontSize: '13px',
-            fontWeight: 900,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 0 16px rgba(180, 255, 4, 0.35)',
-            transition: 'all 0.15s ease'
-          }}
-        >
-          <ArrowLeft size={16} strokeWidth={3} />
-          <span>返回地圖找場館</span>
-        </button>
-      </header>
-
-      {/* 2. Main Article Container */}
+      {/* Main Article Container */}
       <main style={{
         maxWidth: '920px',
         margin: '0 auto',

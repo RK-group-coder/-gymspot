@@ -11,7 +11,9 @@ import {
   Sparkles,
   Wallet,
   Coins,
-  Info
+  Info,
+  MapPin,
+  ArrowLeft
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -20,6 +22,8 @@ export default function Navbar({
   onOpenAbout,
   onOpenRegister, 
   onOpenTopUp,
+  onNavigateHome,
+  currentPath = '/',
   points = 0,
   isLoggedIn = true, 
   onToggleLogin 
@@ -59,7 +63,10 @@ export default function Navbar({
       {/* 1. Left: Brand Logo (字體往右移適當間距、移除所有懸停特效) */}
       <div 
         id="navbar-brand"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onClick={() => {
+          if (onNavigateHome) onNavigateHome();
+          else window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         style={{ 
           cursor: 'pointer',
           userSelect: 'none',
@@ -99,8 +106,33 @@ export default function Navbar({
         />
       </div>
 
-      {/* 2. Right: Points + Hamburger Button (三條線) & Dropdown Menu */}
+      {/* 2. Right: (Optional back button) + Points + Hamburger Button (三條線) & Dropdown Menu */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      {currentPath === '/about' && (
+        <button
+          id="navbar-back-map-btn"
+          onClick={onNavigateHome}
+          style={{
+            background: 'rgba(180, 255, 4, 0.1)',
+            border: '1px solid rgba(180, 255, 4, 0.4)',
+            color: '#b4ff04',
+            borderRadius: '10px',
+            padding: '7px 12px',
+            fontSize: '12px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            transition: 'all 0.15s ease'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#b4ff04'; e.currentTarget.style.color = '#0a1402'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(180, 255, 4, 0.1)'; e.currentTarget.style.color = '#b4ff04'; }}
+        >
+          <ArrowLeft size={14} strokeWidth={2.5} />
+          <span>返回地圖</span>
+        </button>
+      )}
       <div
         id="navbar-points-badge"
         className="nav-points"
@@ -236,6 +268,37 @@ export default function Navbar({
                 </button>
               </div>
             )}
+
+            {/* Menu Item: 返回地圖找場館 */}
+            <button
+              id="menu-btn-home"
+              onClick={() => {
+                setIsMenuOpen(false);
+                if (onNavigateHome) onNavigateHome();
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                width: '100%',
+                padding: '10px 14px',
+                background: currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
+                border: currentPath === '/' ? '1px solid rgba(180, 255, 4, 0.25)' : 'none',
+                borderRadius: '10px',
+                color: '#e2e8f0',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
+              onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+            >
+              <MapPin size={17} color="#b4ff04" />
+              <span style={{ flex: 1, color: '#b4ff04', fontWeight: 800 }}>返回地圖找場館</span>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>探索地圖</span>
+            </button>
 
             {/* Menu Item 1: 個人頁面 */}
             <button
