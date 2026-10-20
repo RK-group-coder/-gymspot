@@ -7,7 +7,6 @@ import {
   ShieldCheck, 
   Sparkles, 
   ExternalLink,
-  Dumbbell,
   Phone,
   MessageSquare,
   Mail
@@ -23,11 +22,9 @@ const TAIWAN_CITIES = [
 export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegisterSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
-    brand: '',
     city: '台北市',
     district: '',
     address: '',
-    nearMrt: '',
     phone: '',
     lineId: '',
     igHandle: '',
@@ -38,14 +35,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     studentCleanFee: 0,
     cleanFeeDesc: '免收學員人頭清潔費',
     packageDealText: '10小時 $1,500 / 30小時 $4,200',
-    squatRacksCount: 4,
-    turfZone: true,
-    turfLength: '12米專用功能衝刺草皮',
-    eleikoPlates: true,
-    dumbbellsMaxKg: 50,
-    privateRoom: true,
-    showerAvailable: true,
-    freeParking: false,
     certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
     verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
   });
@@ -83,11 +72,11 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       const newGym = {
         id: `gym-reg-${Date.now()}`,
         name: formData.name || '新進駐場租健身房',
-        brand: formData.brand || formData.name,
+        brand: formData.name,
         city: formData.city,
         district: formData.district || '市區',
         address: formData.address || `${formData.city}${formData.district}`,
-        nearMrt: formData.nearMrt || '鄰近大眾交通站點',
+        nearMrt: '交通便利',
         lat: 25.0400 + (Math.random() - 0.5) * 0.05,
         lng: 121.5400 + (Math.random() - 0.5) * 0.05,
         rating: 5.0,
@@ -109,15 +98,15 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           ]
         },
         equipment: {
-          squatRacksCount: Number(formData.squatRacksCount) || 4,
-          turfZone: formData.turfZone,
-          turfLength: formData.turfLength,
-          eleikoPlates: formData.eleikoPlates,
-          dumbbellsMaxKg: Number(formData.dumbbellsMaxKg) || 50,
-          privateRoom: formData.privateRoom,
-          showerAvailable: formData.showerAvailable,
+          squatRacksCount: 4,
+          turfZone: true,
+          turfLength: '12米專用功能衝刺草皮',
+          eleikoPlates: true,
+          dumbbellsMaxKg: 50,
+          privateRoom: true,
+          showerAvailable: true,
           freeWater: true,
-          freeParking: formData.freeParking
+          freeParking: false
         },
         requirements: {
           certRequired: formData.certRequired,
@@ -127,8 +116,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           cancellationPolicy: '開課前 6 小時可線上取消'
         },
         tags: [
-          `深蹲架${formData.squatRacksCount}座`,
-          formData.turfZone ? '有衝刺草皮' : '',
           Number(formData.studentCleanFee) === 0 ? '免學員費' : '',
           '第一波特約入駐'
         ].filter(Boolean),
@@ -160,11 +147,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     setSubmittedGymData(null);
     setFormData({
       name: '',
-      brand: '',
       city: '台北市',
       district: '',
       address: '',
-      nearMrt: '',
       phone: '',
       lineId: '',
       igHandle: '',
@@ -175,14 +160,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       studentCleanFee: 0,
       cleanFeeDesc: '免收學員人頭清潔費',
       packageDealText: '10小時 $1,500 / 30小時 $4,200',
-      squatRacksCount: 4,
-      turfZone: true,
-      turfLength: '12米專用功能衝刺草皮',
-      eleikoPlates: true,
-      dumbbellsMaxKg: 50,
-      privateRoom: true,
-      showerAvailable: true,
-      freeParking: false,
       certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
       verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
     });
@@ -301,11 +278,8 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   審核中 (第一波免費特約)
                 </span>
               </div>
-              <div style={{ fontSize: '13px', color: '#cbd5e1', marginBottom: '6px' }}>
+              <div style={{ fontSize: '13px', color: '#cbd5e1', marginBottom: '8px' }}>
                 📍 {submittedGymData.city} {submittedGymData.district} · {submittedGymData.address}
-              </div>
-              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '8px' }}>
-                🚇 {submittedGymData.nearMrt}
               </div>
               <div style={{ display: 'flex', gap: '16px', fontSize: '13px', paddingTop: '8px', borderTop: '1px solid #192335' }}>
                 <div>離峰每小時：<strong style={{ color: '#b4ff04' }}>NT$ {submittedGymData.pricing.offPeakPerHour}</strong></div>
@@ -389,61 +363,34 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      場館全名 <span style={{ color: '#ef4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      placeholder="例如：Forge 鍛造體能運動空間"
-                      value={formData.name}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none',
-                        transition: 'border-color 0.2s ease'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      品牌 / 體系簡稱
-                    </label>
-                    <input
-                      type="text"
-                      name="brand"
-                      placeholder="例如：Forge Fitness"
-                      value={formData.brand}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
-                  </div>
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
+                    場館全名 <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="例如：Forge 鍛造體能運動空間"
+                    value={formData.name}
+                    onChange={handleChange}
+                    style={{
+                      width: '100%',
+                      background: '#121927',
+                      border: '1px solid #243248',
+                      borderRadius: '10px',
+                      padding: '11px 14px',
+                      color: '#fff',
+                      fontSize: '14px',
+                      outline: 'none',
+                      transition: 'border-color 0.2s ease'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
+                    onBlur={(e) => e.target.style.borderColor = '#243248'}
+                  />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '140px 160px 1fr', gap: '12px', marginBottom: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '16px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
                       所在城市 <span style={{ color: '#ef4444' }}>*</span>
@@ -479,31 +426,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       required
                       placeholder="例如：大安區"
                       value={formData.district}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      鄰近捷運 / 地標描述
-                    </label>
-                    <input
-                      type="text"
-                      name="nearMrt"
-                      placeholder="例如：捷運忠孝敦化站步行 3 分鐘"
-                      value={formData.nearMrt}
                       onChange={handleChange}
                       style={{
                         width: '100%',
@@ -728,206 +650,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
               </div>
 
-              {/* SECTION 3: 器材與環境規格 */}
-              <div style={{
-                background: '#0a0f1a',
-                padding: '24px',
-                borderRadius: '16px',
-                border: '1px solid #192336'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <Dumbbell size={18} color="#b4ff04" />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      3. 器材規格與設施
-                    </h3>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                      勾選您場館具備的硬體優勢，教練可精準按規格檢索
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      深蹲架數量 (座)
-                    </label>
-                    <input
-                      type="number"
-                      name="squatRacksCount"
-                      value={formData.squatRacksCount}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      啞鈴最大重量 (KG)
-                    </label>
-                    <input
-                      type="number"
-                      name="dumbbellsMaxKg"
-                      value={formData.dumbbellsMaxKg}
-                      onChange={handleChange}
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '14px',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '12px 14px',
-                    background: formData.turfZone ? 'rgba(180, 255, 4, 0.08)' : '#121927',
-                    border: formData.turfZone ? '1px solid rgba(180, 255, 4, 0.35)' : '1px solid #243248',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: '#e2e8f0',
-                    transition: 'all 0.15s ease'
-                  }}>
-                    <input
-                      type="checkbox"
-                      name="turfZone"
-                      checked={formData.turfZone}
-                      onChange={handleChange}
-                      style={{ accentColor: '#b4ff04', width: '16px', height: '16px' }}
-                    />
-                    <span>具備衝刺草皮區</span>
-                  </label>
-
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '12px 14px',
-                    background: formData.eleikoPlates ? 'rgba(180, 255, 4, 0.08)' : '#121927',
-                    border: formData.eleikoPlates ? '1px solid rgba(180, 255, 4, 0.35)' : '1px solid #243248',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: '#e2e8f0',
-                    transition: 'all 0.15s ease'
-                  }}>
-                    <input
-                      type="checkbox"
-                      name="eleikoPlates"
-                      checked={formData.eleikoPlates}
-                      onChange={handleChange}
-                      style={{ accentColor: '#b4ff04', width: '16px', height: '16px' }}
-                    />
-                    <span>Eleiko 賽事級槓片</span>
-                  </label>
-
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '12px 14px',
-                    background: formData.privateRoom ? 'rgba(180, 255, 4, 0.08)' : '#121927',
-                    border: formData.privateRoom ? '1px solid rgba(180, 255, 4, 0.35)' : '1px solid #243248',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: '#e2e8f0',
-                    transition: 'all 0.15s ease'
-                  }}>
-                    <input
-                      type="checkbox"
-                      name="privateRoom"
-                      checked={formData.privateRoom}
-                      onChange={handleChange}
-                      style={{ accentColor: '#b4ff04', width: '16px', height: '16px' }}
-                    />
-                    <span>獨立 VIP 私教包廂</span>
-                  </label>
-
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '12px 14px',
-                    background: formData.showerAvailable ? 'rgba(180, 255, 4, 0.08)' : '#121927',
-                    border: formData.showerAvailable ? '1px solid rgba(180, 255, 4, 0.35)' : '1px solid #243248',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: '#e2e8f0',
-                    transition: 'all 0.15s ease'
-                  }}>
-                    <input
-                      type="checkbox"
-                      name="showerAvailable"
-                      checked={formData.showerAvailable}
-                      onChange={handleChange}
-                      style={{ accentColor: '#b4ff04', width: '16px', height: '16px' }}
-                    />
-                    <span>提供乾濕分離淋浴</span>
-                  </label>
-
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '12px 14px',
-                    background: formData.freeParking ? 'rgba(180, 255, 4, 0.08)' : '#121927',
-                    border: formData.freeParking ? '1px solid rgba(180, 255, 4, 0.35)' : '1px solid #243248',
-                    borderRadius: '10px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: '#e2e8f0',
-                    transition: 'all 0.15s ease'
-                  }}>
-                    <input
-                      type="checkbox"
-                      name="freeParking"
-                      checked={formData.freeParking}
-                      onChange={handleChange}
-                      style={{ accentColor: '#b4ff04', width: '16px', height: '16px' }}
-                    />
-                    <span>提供免費專屬車位</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* SECTION 4: 證明文件審核 */}
+              {/* SECTION 3: 證明文件審核 */}
               <div style={{
                 background: '#0a0f1a',
                 padding: '24px',
@@ -949,7 +672,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   </div>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      4. 證明文件審核 (營利登記、消防與公共責任險)
+                      3. 證明文件審核 (營利登記、消防與公共責任險)
                     </h3>
                   </div>
                 </div>
@@ -1010,7 +733,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 )}
               </div>
 
-              {/* SECTION 5: 聯絡資訊 */}
+              {/* SECTION 4: 聯絡資訊 */}
               <div style={{
                 background: '#0a0f1a',
                 padding: '24px',
@@ -1032,7 +755,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   </div>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                      5. 場館聯繫管道 (方便教練預約對接)
+                      4. 場館聯繫管道 (方便教練預約對接)
                     </h3>
                   </div>
                 </div>
