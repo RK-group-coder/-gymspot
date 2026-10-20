@@ -216,6 +216,10 @@ body {
   align-items: stretch;
 }
 
+.about-card-split.reverse {
+  flex-direction: row-reverse;
+}
+
 .about-card-img-wrap {
   flex: 0 0 340px;
   position: relative;
@@ -247,7 +251,8 @@ body {
 }
 
 @media (max-width: 820px) {
-  .about-card-split {
+  .about-card-split,
+  .about-card-split.reverse {
     flex-direction: column;
     gap: 20px;
   }

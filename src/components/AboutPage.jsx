@@ -136,7 +136,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             </div>
           </section>
 
-          {/* Section B: 於是，肌動組打算如何解決？ (左側放教練指導深蹲照片) */}
+          {/* Section B: 於是，肌動組打算如何解決？ (照片在右側，與上方卡片相反) */}
           <section style={{
             background: 'linear-gradient(145deg, rgba(180, 255, 4, 0.08) 0%, rgba(13, 19, 31, 0.95) 100%)',
             border: '1.5px solid rgba(180, 255, 4, 0.4)',
@@ -145,8 +145,8 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             boxShadow: '0 0 35px rgba(180, 255, 4, 0.12)',
             marginBottom: '40px'
           }}>
-            <div className="about-card-split">
-              {/* 左側照片：教練現場隨手抓拍指導深蹲 */}
+            <div className="about-card-split reverse">
+              {/* 照片：教練現場隨手抓拍指導深蹲 (桌面位於右側) */}
               <div className="about-card-img-wrap" style={{ borderColor: 'rgba(180, 255, 4, 0.25)' }}>
                 <img 
                   src="/about-coach-squat.jpg?v=2" 
