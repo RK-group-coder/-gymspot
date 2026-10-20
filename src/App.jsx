@@ -10,7 +10,7 @@ import CoachProModal from './components/CoachProModal';
 import ProfileModal from './components/ProfileModal';
 import TermsModal from './components/TermsModal';
 import TopUpModal from './components/TopUpModal';
-import AboutUsModal from './components/AboutUsModal';
+import AboutPage from './components/AboutPage';
 import { INITIAL_GYMS, PRESET_LOCATIONS } from './data/mockGyms';
 import { calculateDistanceKm, getCurrentPositionAsync } from './utils/geo';
 import { 
@@ -52,8 +52,24 @@ export default function App() {
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  // Lightweight SPA path routing (supports direct URL e.g. /about)
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (path) => {
+    window.history.pushState({}, '', path);
+    setCurrentPath(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const SHEET_SNAPS = [0.11, 0.38, 0.90];
   const [sheetSnap, setSheetSnap] = useState(1);
   const [isDraggingSheet, setIsDraggingSheet] = useState(false);
@@ -273,13 +289,37 @@ export default function App() {
 
   const verifiedCount = useMemo(() => gyms.filter(g => g.isVerified).length, [gyms]);
 
+  // Full-page /about route
+  if (currentPath === '/about' || currentPath === '/about/') {
+    return (
+      <>
+        <AboutPage
+          onNavigateHome={() => navigateTo('/')}
+          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onOpenTerms={() => setIsTermsModalOpen(true)}
+        />
+        {isRegisterModalOpen && (
+          <GymRegisterModal
+            isOpen={isRegisterModalOpen}
+            onClose={() => setIsRegisterModalOpen(false)}
+            onRegisterSuccess={handleRegisterSuccess}
+          />
+        )}
+        <TermsModal
+          isOpen={isTermsModalOpen}
+          onClose={() => setIsTermsModalOpen(false)}
+        />
+      </>
+    );
+  }
+
   return (
     <div style={{ height: '100vh', maxHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0a0d14', overflow: 'hidden' }}>
       {/* 1. Header Navbar */}
       <Navbar
         onOpenProfile={() => setIsProfileModalOpen(true)}
         onOpenTerms={() => setIsTermsModalOpen(true)}
-        onOpenAbout={() => setIsAboutModalOpen(true)}
+        onOpenAbout={() => navigateTo('/about')}
         onOpenRegister={() => setIsRegisterModalOpen(true)}
         onOpenTopUp={() => setIsTopUpOpen(true)}
         points={points}
@@ -517,12 +557,6 @@ export default function App() {
       <TermsModal
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
-      />
-
-      {/* About Us Modal (關於我們) */}
-      <AboutUsModal
-        isOpen={isAboutModalOpen}
-        onClose={() => setIsAboutModalOpen(false)}
       />
 
       {/* Toast Notification */}
