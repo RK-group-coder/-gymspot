@@ -12,8 +12,7 @@ import {
   Wallet,
   Coins,
   Info,
-  MapPin,
-  ArrowLeft
+  MapPin
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -106,33 +105,8 @@ export default function Navbar({
         />
       </div>
 
-      {/* 2. Right: (Optional back button) + Points + Hamburger Button (三條線) & Dropdown Menu */}
+      {/* 2. Right: Points + Hamburger Button (三條線) & Dropdown Menu */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-      {currentPath === '/about' && (
-        <button
-          id="navbar-back-map-btn"
-          onClick={onNavigateHome}
-          style={{
-            background: 'rgba(180, 255, 4, 0.1)',
-            border: '1px solid rgba(180, 255, 4, 0.4)',
-            color: '#b4ff04',
-            borderRadius: '10px',
-            padding: '7px 12px',
-            fontSize: '12px',
-            fontWeight: 800,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            transition: 'all 0.15s ease'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#b4ff04'; e.currentTarget.style.color = '#0a1402'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(180, 255, 4, 0.1)'; e.currentTarget.style.color = '#b4ff04'; }}
-        >
-          <ArrowLeft size={14} strokeWidth={2.5} />
-          <span>返回地圖</span>
-        </button>
-      )}
       <div
         id="navbar-points-badge"
         className="nav-points"
