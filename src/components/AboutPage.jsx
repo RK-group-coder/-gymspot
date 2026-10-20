@@ -24,180 +24,172 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
       position: 'relative',
       overflowX: 'hidden'
     }}>
-      {/* Main Article Container */}
-      <main style={{
-        maxWidth: '980px',
+      {/* 1. Page Header (Centered) */}
+      <div style={{
+        maxWidth: '900px',
         margin: '0 auto',
-        padding: '50px 24px 90px',
-        position: 'relative'
+        padding: '50px 24px 30px',
+        textAlign: 'center',
+        position: 'relative',
+        zIndex: 1
       }}>
         {/* Ambient Glow */}
         <div style={{
           position: 'absolute',
-          top: '30px',
+          top: '20px',
           left: '50%',
           transform: 'translateX(-50%)',
           width: '500px',
-          height: '240px',
+          height: '220px',
           background: 'radial-gradient(ellipse at center, rgba(180, 255, 4, 0.12) 0%, rgba(7, 10, 16, 0) 70%)',
           filter: 'blur(50px)',
-          zIndex: 0,
+          zIndex: -1,
           pointerEvents: 'none'
         }} />
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Main Title */}
-          <div style={{ textAlign: 'center', marginBottom: '40px', marginTop: '10px' }}>
-            <h1 style={{
-              fontSize: 'clamp(32px, 5vw, 52px)',
-              fontWeight: 900,
-              lineHeight: 1.3,
-              margin: '0 0 18px',
-              color: '#ffffff',
-              letterSpacing: '-0.5px'
-            }}>
-              為什麼我們創立<br />
-              <span>
-                「<span style={{ color: '#ffffff', textShadow: '0 0 22px rgba(255, 255, 255, 0.85)' }}>肌動組 GYM</span><span style={{ color: '#b4ff04', textShadow: '0 0 25px rgba(180, 255, 4, 0.55)' }}>spot</span>」
-              </span>
-            </h1>
+        <h1 style={{
+          fontSize: 'clamp(32px, 5vw, 52px)',
+          fontWeight: 900,
+          lineHeight: 1.3,
+          margin: '0 0 16px',
+          color: '#ffffff',
+          letterSpacing: '-0.5px'
+        }}>
+          為什麼我們創立<br />
+          <span>
+            「<span style={{ color: '#ffffff', textShadow: '0 0 22px rgba(255, 255, 255, 0.85)' }}>肌動組 GYM</span><span style={{ color: '#b4ff04', textShadow: '0 0 25px rgba(180, 255, 4, 0.55)' }}>spot</span>」
+          </span>
+        </h1>
 
-            <p style={{
-              fontSize: '16px',
+        <p style={{
+          fontSize: '16px',
+          color: '#cbd5e1',
+          maxWidth: '680px',
+          margin: '0 auto',
+          lineHeight: 1.8
+        }}>
+          由一群資深自由教練與熱愛重訓的工程師共同發起。
+        </p>
+      </div>
+
+      {/* 2. Main Full-Bleed Story Sections (無框框、貼滿左右兩側) */}
+      <main style={{ width: '100%', position: 'relative', zIndex: 1 }}>
+        {/* Section A: 我們在台灣看見了什麼問題？ (左側照片貼滿最左壁，右側文字) */}
+        <section className="story-section" style={{ border: 'none', background: 'transparent' }}>
+          {/* 左側照片：連上最左側螢幕邊緣 */}
+          <div className="story-img-side">
+            <img 
+              src="/about-gym-corner.jpg?v=2" 
+              alt="健身房場館角落實景" 
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: '16px',
+              left: '20px',
+              padding: '6px 14px',
+              borderRadius: '8px',
+              background: 'rgba(10, 13, 20, 0.85)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              fontSize: '12px',
               color: '#cbd5e1',
-              maxWidth: '680px',
-              margin: '0 auto',
-              lineHeight: 1.8
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}>
-              由一群資深自由教練與熱愛重訓的工程師共同發起。
-            </p>
+              <MapPin size={13} color="#b4ff04" /> 場館實景／深蹲架配置
+            </div>
           </div>
 
-          {/* Section A: 我們在台灣看見了什麼問題？ (左側放健身房角落照片) */}
-          <section style={{
-            background: 'rgba(15, 23, 42, 0.72)',
-            border: '1px solid #1e293b',
-            borderRadius: '24px',
-            padding: '32px 30px',
-            marginBottom: '36px',
-            boxShadow: '0 15px 35px rgba(0, 0, 0, 0.45)'
-          }}>
-            <div className="about-card-split">
-              {/* 左側照片：健身房場館角落 (自然隨手拍真實質感) */}
-              <div className="about-card-img-wrap">
-                <img 
-                  src="/about-gym-corner.jpg?v=2" 
-                  alt="健身房場館角落實景" 
-                  className="about-card-img" 
-                />
-                <div style={{
-                  position: 'absolute',
-                  bottom: '12px',
-                  left: '12px',
-                  padding: '4px 10px',
-                  borderRadius: '8px',
-                  background: 'rgba(10, 13, 20, 0.82)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  fontSize: '11px',
-                  color: '#cbd5e1',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}>
-                  <MapPin size={12} color="#b4ff04" /> 場館實景／深蹲架配置
-                </div>
-              </div>
+          {/* 右側文字：乾淨自然呼吸排版 */}
+          <div className="story-text-side">
+            <div className="story-text-inner">
+              <h2 style={{ fontSize: 'clamp(22px, 2.5vw, 28px)', fontWeight: 900, color: '#ffffff', margin: '0 0 20px', lineHeight: 1.35 }}>
+                我們看見的痛點：要在台灣找一個能帶人的場地，到底有多難？
+              </h2>
 
-              {/* 右側文字內容 */}
-              <div className="about-card-content">
-                <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#ffffff', margin: '0 0 16px', lineHeight: 1.4 }}>
-                  我們看見的痛點：要在台灣找一個能帶人的場地，到底有多難？
-                </h2>
-
-                <div style={{
-                  fontSize: '14.5px',
-                  lineHeight: 2.1,
-                  color: '#cbd5e1',
-                  letterSpacing: '0.2px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px'
-                }}>
-                  <p style={{ margin: 0 }}>
-                    我們團隊的幾位夥伴，過去其實也全都是在第一線接案的自由健身教練。在真正出來自己帶課後才深刻發現，要在台灣找到一間「能合法友善帶人」的場租健身房，真的非常非常困難。
-                  </p>
-                  <p style={{ margin: 0 }}>
-                    就算有些店家確實有提供場租服務，資訊也極端不透明——每家店家點開 Google Maps 一家家找，根本看不出哪間能租、哪間不能租；有些店家明明有在做場租，網路上卻連一丁點費用與規則都沒有放出來。往往在手機前面花了好幾個小時、好不容易篩選出幾家後，教練還得親自頂著大太陽一家家實地走訪現場，櫃檯詢問後才能問到真實報價、確認深蹲架台數與器材規格，整個過程既繁瑣又心力交瘁。
-                  </p>
-                </div>
+              <div style={{
+                fontSize: '15px',
+                lineHeight: 2.15,
+                color: '#cbd5e1',
+                letterSpacing: '0.2px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '14px'
+              }}>
+                <p style={{ margin: 0 }}>
+                  我們團隊的幾位夥伴，過去其實也全都是在第一線接案的自由健身教練。在真正出來自己帶課後才深刻發現，要在台灣找到一間「能合法友善帶人」的場租健身房，真的非常非常困難。
+                </p>
+                <p style={{ margin: 0 }}>
+                  就算有些店家確實有提供場租服務，資訊也極端不透明——每家店家點開 Google Maps 一家家找，根本看不出哪間能租、哪間不能租；有些店家明明有在做場租，網路上卻連一丁點費用與規則都沒有放出來。往往在手機前面花了好幾個小時、好不容易篩選出幾家後，教練還得親自頂著大太陽一家家實地走訪現場，櫃檯詢問後才能問到真實報價、確認深蹲架台數與器材規格，整個過程既繁瑣又心力交瘁。
+                </p>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Section B: 於是，肌動組打算如何解決？ (照片在右側，與上方卡片相反) */}
-          <section style={{
-            background: 'linear-gradient(145deg, rgba(180, 255, 4, 0.08) 0%, rgba(13, 19, 31, 0.95) 100%)',
-            border: '1.5px solid rgba(180, 255, 4, 0.4)',
-            borderRadius: '24px',
-            padding: '32px 30px',
-            boxShadow: '0 0 35px rgba(180, 255, 4, 0.12)',
-            marginBottom: '40px'
-          }}>
-            <div className="about-card-split reverse">
-              {/* 照片：教練現場隨手抓拍指導深蹲 (桌面位於右側) */}
-              <div className="about-card-img-wrap" style={{ borderColor: 'rgba(180, 255, 4, 0.25)' }}>
-                <img 
-                  src="/about-coach-squat.jpg?v=2" 
-                  alt="教練現場指導學員深蹲" 
-                  className="about-card-img" 
-                />
-                <div style={{
-                  position: 'absolute',
-                  bottom: '12px',
-                  left: '12px',
-                  padding: '4px 10px',
-                  borderRadius: '8px',
-                  background: 'rgba(10, 13, 20, 0.85)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(180, 255, 4, 0.35)',
-                  fontSize: '11px',
-                  color: '#b4ff04',
-                  fontWeight: 800,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}>
-                  <Dumbbell size={12} color="#b4ff04" /> 自由教練安心帶課
-                </div>
-              </div>
+        {/* Section B: 於是，我們決定徹底終結這場折磨 (左側文字，右側照片貼滿最右壁) */}
+        <section className="story-section reverse" style={{ border: 'none', background: 'transparent' }}>
+          {/* 右側照片：連上最右側螢幕邊緣 */}
+          <div className="story-img-side">
+            <img 
+              src="/about-coach-squat.jpg?v=2" 
+              alt="教練現場指導學員深蹲" 
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: '16px',
+              right: '20px',
+              padding: '6px 14px',
+              borderRadius: '8px',
+              background: 'rgba(10, 13, 20, 0.85)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(180, 255, 4, 0.35)',
+              fontSize: '12px',
+              color: '#b4ff04',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <Dumbbell size={13} color="#b4ff04" /> 自由教練安心帶課
+            </div>
+          </div>
 
-              {/* 右側文字內容 */}
-              <div className="about-card-content">
-                <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#ffffff', margin: '0 0 16px', lineHeight: 1.4 }}>
-                  於是，我們決定徹底終結這場找場地的折磨
-                </h2>
+          {/* 左側文字：乾淨自然呼吸排版 */}
+          <div className="story-text-side">
+            <div className="story-text-inner">
+              <h2 style={{ fontSize: 'clamp(22px, 2.5vw, 28px)', fontWeight: 900, color: '#ffffff', margin: '0 0 20px', lineHeight: 1.35 }}>
+                於是，我們決定徹底終結這場找場地的折磨
+              </h2>
 
-                <div style={{
-                  fontSize: '14.5px',
-                  lineHeight: 2.1,
-                  color: '#e2e8f0',
-                  letterSpacing: '0.2px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px'
-                }}>
-                  <p style={{ margin: 0 }}>
-                    正因為我們自己親身走過這段到處碰壁的痛苦過程，才下定決心打造「肌動組 GYMspot」。我們要把全台灣所有願意提供場租的健身房與工作室，通通搬上即時地圖——尖峰離峰每小時場租多少、學員要不要加清潔費、有幾座深蹲架、是競技槓還是普通器材，全部實名實價攤開在陽光下，讓教練 10 秒鐘就能比價定位，再也不用逐一私訊碰運氣、更不必頂著風雨四處走訪確認。
-                  </p>
-                  <p style={{ margin: 0 }}>
-                    更重要的是，我們堅持「0 課堂抽成」並提供線上深蹲架秒級排程鎖位，讓自由教練能把 100% 的血汗收益留給自己，到場時保證有專屬器材可用，帶著學員體面安心地專注於每一次訓練。
-                  </p>
-                </div>
+              <div style={{
+                fontSize: '15px',
+                lineHeight: 2.15,
+                color: '#e2e8f0',
+                letterSpacing: '0.2px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '14px'
+              }}>
+                <p style={{ margin: 0 }}>
+                  正因為我們自己親身走過這段到處碰壁的痛苦過程，才下定決心打造「肌動組 GYMspot」。我們要把全台灣所有願意提供場租的健身房與工作室，通通搬上即時地圖——尖峰離峰每小時場租多少、學員要不要加清潔費、有幾座深蹲架、是競技槓還是普通器材，全部實名實價攤開在陽光下，讓教練 10 秒鐘就能比價定位，再也不用逐一私訊碰運氣、更不必頂著風雨四處走訪確認。
+                </p>
+                <p style={{ margin: 0 }}>
+                  更重要的是，我們堅持「0 課堂抽成」並提供線上深蹲架秒級排程鎖位，讓自由教練能把 100% 的血汗收益留給自己，到場時保證有專屬器材可用，帶著學員體面安心地專注於每一次訓練。
+                </p>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
+
+        {/* 3. Action Callout Box (Centered) */}
+        <div style={{
+          maxWidth: '860px',
+          margin: '20px auto 90px',
+          padding: '0 24px'
+        }}>
 
           {/* Action Callout Box */}
           <div style={{
