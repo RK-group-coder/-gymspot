@@ -699,7 +699,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       required
                       min="50"
                       max="5000"
-                      value={formData.hourlyRate}
+                      value={formData.hourlyRate ?? ''}
                       onChange={handleChange}
                       placeholder="例如：200"
                       style={{
@@ -728,7 +728,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                     <input
                       type="number"
                       name="studentCleanFee"
-                      value={formData.studentCleanFee}
+                      value={formData.studentCleanFee ?? ''}
                       onChange={handleChange}
                       placeholder="0"
                       style={{
@@ -758,7 +758,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       type="text"
                       name="packageDealText"
                       placeholder="例如：10小時 $1,800 / 30小時 $5,000"
-                      value={formData.packageDealText}
+                      value={formData.packageDealText ?? ''}
                       onChange={handleChange}
                       style={{
                         width: '100%',
