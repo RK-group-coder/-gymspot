@@ -4,13 +4,13 @@ import CoachMapFilter from './components/CoachMapFilter';
 import LeafletMap from './components/LeafletMap';
 import GymCard from './components/GymCard';
 import GymDetailModal from './components/GymDetailModal';
-import GymRegisterModal from './components/GymRegisterModal';
 import MonetizationModal from './components/MonetizationModal';
 import CoachProModal from './components/CoachProModal';
 import ProfileModal from './components/ProfileModal';
 import TermsModal from './components/TermsModal';
 import TopUpModal from './components/TopUpModal';
 import AboutPage from './components/AboutPage';
+import GymRegisterPage from './components/GymRegisterPage';
 import { INITIAL_GYMS, PRESET_LOCATIONS } from './data/mockGyms';
 import { calculateDistanceKm, getCurrentPositionAsync } from './utils/geo';
 import { 
@@ -298,7 +298,7 @@ export default function App() {
           onOpenProfile={() => setIsProfileModalOpen(true)}
           onOpenTerms={() => setIsTermsModalOpen(true)}
           onOpenAbout={() => navigateTo('/about')}
-          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onOpenRegister={() => navigateTo('/partner')}
           onOpenTopUp={() => setIsTopUpOpen(true)}
           currentPath="/about"
           points={points}
@@ -318,7 +318,7 @@ export default function App() {
         )}
         <AboutPage
           onNavigateHome={() => navigateTo('/')}
-          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onOpenRegister={() => navigateTo('/partner')}
           onOpenTerms={() => setIsTermsModalOpen(true)}
         />
         {isProfileModalOpen && (
@@ -327,17 +327,88 @@ export default function App() {
             onClose={() => setIsProfileModalOpen(false)}
           />
         )}
-        {isRegisterModalOpen && (
-          <GymRegisterModal
-            isOpen={isRegisterModalOpen}
-            onClose={() => setIsRegisterModalOpen(false)}
-            onRegisterSuccess={handleRegisterSuccess}
+        <TermsModal
+          isOpen={isTermsModalOpen}
+          onClose={() => setIsTermsModalOpen(false)}
+        />
+      </div>
+    );
+  }
+
+  // Full-page /partner (健身房/工作室場租服務登記上架專屬頁面)
+  if (
+    currentPath === '/partner' || 
+    currentPath === '/partner/' || 
+    currentPath === '/register' || 
+    currentPath === '/register/' || 
+    currentPath === '/gym-register' || 
+    currentPath === '/join'
+  ) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#070a10', display: 'flex', flexDirection: 'column' }}>
+        <Navbar
+          onNavigateHome={() => navigateTo('/')}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
+          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenAbout={() => navigateTo('/about')}
+          onOpenRegister={() => navigateTo('/partner')}
+          onOpenTopUp={() => setIsTopUpOpen(true)}
+          currentPath="/partner"
+          points={points}
+          isLoggedIn={isLoggedIn}
+          onToggleLogin={handleToggleLogin}
+        />
+        {isTopUpOpen && (
+          <TopUpModal
+            points={points}
+            onClose={() => setIsTopUpOpen(false)}
+            onTopUp={(pts, price) => {
+              setPoints(p => p + pts);
+              setIsTopUpOpen(false);
+              setToastMessage(`儲值成功！已加值 ${pts} 點 (NT$ ${price})`);
+            }}
+          />
+        )}
+        <GymRegisterPage
+          onNavigateHome={() => navigateTo('/')}
+          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onRegisterSuccess={handleRegisterSuccess}
+        />
+        {isProfileModalOpen && (
+          <ProfileModal
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
           />
         )}
         <TermsModal
           isOpen={isTermsModalOpen}
           onClose={() => setIsTermsModalOpen(false)}
         />
+        {toastMessage && (
+          <div 
+            id="toast-notification"
+            style={{
+              position: 'fixed',
+              bottom: '24px',
+              right: '24px',
+              zIndex: 3000,
+              background: 'rgba(15, 23, 42, 0.96)',
+              border: '1px solid #b4ff04',
+              color: '#f8fafc',
+              padding: '12px 20px',
+              borderRadius: '12px',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(180, 255, 4, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              fontSize: '13px',
+              fontWeight: 700
+            }}
+          >
+            <CheckCircle2 size={18} color="#b4ff04" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
       </div>
     );
   }
@@ -349,7 +420,7 @@ export default function App() {
         onOpenProfile={() => setIsProfileModalOpen(true)}
         onOpenTerms={() => setIsTermsModalOpen(true)}
         onOpenAbout={() => navigateTo('/about')}
-        onOpenRegister={() => setIsRegisterModalOpen(true)}
+        onOpenRegister={() => navigateTo('/partner')}
         onOpenTopUp={() => setIsTopUpOpen(true)}
         points={points}
         isLoggedIn={isLoggedIn}
@@ -504,7 +575,7 @@ export default function App() {
                 </div>
               </div>
               <button
-                onClick={() => setIsRegisterModalOpen(true)}
+                onClick={() => navigateTo('/partner')}
                 style={{
                   background: '#b4ff04',
                   color: '#0a1402',
@@ -551,14 +622,6 @@ export default function App() {
           userLat={userLocation.lat}
           userLng={userLocation.lng}
           onClose={() => setDetailModalGym(null)}
-        />
-      )}
-
-      {isRegisterModalOpen && (
-        <GymRegisterModal
-          isOpen={isRegisterModalOpen}
-          onClose={() => setIsRegisterModalOpen(false)}
-          onRegisterSuccess={handleRegisterSuccess}
         />
       )}
 
