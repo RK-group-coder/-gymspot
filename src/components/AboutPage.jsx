@@ -16,13 +16,8 @@ import {
 
 export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms }) {
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#070a10',
-      color: '#f8fafc',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      position: 'relative',
-      overflowX: 'hidden'
+    <div className="about-page-steel-bg" style={{
+      fontFamily: 'system-ui, -apple-system, sans-serif'
     }}>
       {/* 1. Page Header (Centered) */}
       <div style={{

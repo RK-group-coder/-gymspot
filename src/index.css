@@ -205,8 +205,27 @@ body {
   animation: drawerFadeIn 0.22s ease-out forwards;
 }
 
-.drawer-panel {
-  animation: drawerSlideRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+/* About Page Dark Steel Diamond Plate Background (鋼鐵風健身背景 + 品牌綠元素) */
+.about-page-steel-bg {
+  min-height: 100vh;
+  background-color: #06090e;
+  background-image: 
+    radial-gradient(ellipse at 50% 140px, rgba(180, 255, 4, 0.16) 0%, rgba(6, 9, 14, 0.78) 50%, rgba(6, 9, 14, 0.94) 100%),
+    linear-gradient(rgba(6, 9, 14, 0.82), rgba(6, 9, 14, 0.88)),
+    url("/about-steel-bg.jpg");
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #f8fafc;
+  position: relative;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .about-page-steel-bg {
+    background-attachment: scroll;
+  }
 }
 
 /* Full Bleed Edge-to-Edge Story Sections (上下白線分隔，連上左右兩側，文字完美上下垂直居中) */
