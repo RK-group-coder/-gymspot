@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
 import { 
   Building2, 
-  MapPin, 
   FileSpreadsheet, 
   Upload, 
   CheckCircle2, 
   ShieldCheck, 
   Sparkles, 
   ExternalLink,
-  DollarSign,
-  AlertCircle,
   Dumbbell,
-  ArrowLeft,
   Phone,
   MessageSquare,
-  Check,
-  Zap,
-  Award,
-  Layers,
-  ChevronRight,
   Mail
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -228,61 +219,10 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
         position: 'relative',
         zIndex: 1
       }}>
-        {/* Navigation Breadcrumb / Back button */}
-        <div style={{ marginBottom: '24px' }}>
-          <button
-            onClick={onNavigateHome}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid #1e293b',
-              borderRadius: '999px',
-              padding: '8px 16px',
-              color: '#cbd5e1',
-              fontSize: '13px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(180, 255, 4, 0.12)';
-              e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.4)';
-              e.currentTarget.style.color = '#b4ff04';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = '#1e293b';
-              e.currentTarget.style.color = '#cbd5e1';
-            }}
-          >
-            <ArrowLeft size={16} />
-            返回地圖找場館
-          </button>
-        </div>
-
-        {/* Hero Header */}
-        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(180, 255, 4, 0.12)',
-            border: '1px solid rgba(180, 255, 4, 0.35)',
-            color: '#b4ff04',
-            fontSize: '13px',
-            fontWeight: 800,
-            padding: '6px 14px',
-            borderRadius: '999px',
-            marginBottom: '16px',
-            boxShadow: '0 0 16px rgba(180, 255, 4, 0.2)'
-          }}>
-            <Sparkles size={15} /> 第一波免費入駐審核中 · 0 平台抽成
-          </div>
-
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h1 style={{
-            fontSize: 'clamp(26px, 4.5vw, 40px)',
+            fontSize: 'clamp(26px, 4.5vw, 38px)',
             fontWeight: 900,
             color: '#ffffff',
             margin: '0 0 14px',
@@ -301,63 +241,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           }}>
             提交您的場館地址、核驗證明文件與場租報價表，審核通過後即時在 <strong style={{ color: '#ffffff', textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>Google Maps 場租地圖</strong> 上線，免費吸引全台自由教練進駐帶課！
           </p>
-
-          {/* 3 Value Pillars */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '14px',
-            marginTop: '28px',
-            textAlign: 'left'
-          }}>
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.75)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '14px',
-              padding: '16px 18px',
-              backdropFilter: 'blur(10px)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <Zap size={18} color="#b4ff04" />
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>0 平台抽成</span>
-              </div>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
-                教練場租款項直接與您結算，肌動組完全不抽任何每小時佣金或成交服務費。
-              </div>
-            </div>
-
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.75)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '14px',
-              padding: '16px 18px',
-              backdropFilter: 'blur(10px)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <MapPin size={18} color="#ffffff" />
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>地圖透明比價</span>
-              </div>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
-                全台自由教練依距離、時段價格、深蹲架器材篩選，讓閒置時段轉化為現金流。
-              </div>
-            </div>
-
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.75)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '14px',
-              padding: '16px 18px',
-              backdropFilter: 'blur(10px)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <ShieldCheck size={18} color="#f59e0b" />
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>官方查核標章</span>
-              </div>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
-                核驗營利事業登記證、消防安檢與責任險，核發官方綠標，教練預約率高出 3 倍。
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* If Form is already submitted successfully */}
