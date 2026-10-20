@@ -186,6 +186,29 @@ body {
   }
 }
 
+/* Right-side Slide Drawer Animations */
+@keyframes drawerFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes drawerSlideRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer-backdrop {
+  animation: drawerFadeIn 0.22s ease-out forwards;
+}
+
+.drawer-panel {
+  animation: drawerSlideRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 
 /* ===== Mobile only (<=768px): map + bottom sheet. Desktop untouched ===== */
 .sheet-handle-zone { display: none; }

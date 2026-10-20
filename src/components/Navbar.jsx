@@ -30,19 +30,23 @@ export default function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // Close menu on click outside
+  // Close on Escape key and prevent background scroll when drawer is open
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+    function handleKeyDown(event) {
+      if (event.key === 'Escape' && isMenuOpen) {
         setIsMenuOpen(false);
       }
     }
+
     if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
   }, [isMenuOpen]);
 
   return (
@@ -124,50 +128,311 @@ export default function Navbar({
         <button
           id="navbar-hamburger-btn"
           className="nav-burger"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="選單"
+          onClick={() => setIsMenuOpen(true)}
+          aria-label="開啟選單"
           style={{
             width: '42px',
             height: '42px',
             borderRadius: '12px',
-            background: isMenuOpen ? '#1e293b' : 'rgba(17, 24, 39, 0.85)',
-            border: isMenuOpen ? '1px solid #ffffff' : '1px solid #243248',
+            background: 'rgba(17, 24, 39, 0.85)',
+            border: '1px solid #243248',
             color: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
             transition: 'all 0.18s ease',
-            boxShadow: isMenuOpen ? '0 0 10px rgba(255, 255, 255, 0.35)' : '0 2px 10px rgba(0, 0, 0, 0.3)'
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#ffffff';
+            e.currentTarget.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#243248';
+            e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.3)';
           }}
         >
-          {isMenuOpen ? <X size={22} color="#ffffff" /> : <Menu size={22} color="#ffffff" />}
+          <Menu size={22} color="#ffffff" />
         </button>
+      </div>
 
-        {/* Dropdown Flyout Card */}
-        {isMenuOpen && (
+      {/* 3. Full Right-Side Slide-out Drawer */}
+      {isMenuOpen && (
+        <>
+          {/* Backdrop Overlay */}
           <div 
-            id="navbar-dropdown-menu"
+            id="drawer-backdrop"
+            className="drawer-backdrop"
+            onClick={() => setIsMenuOpen(false)}
             style={{
-              position: 'absolute',
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.68)',
+              backdropFilter: 'blur(5px)',
+              WebkitBackdropFilter: 'blur(5px)',
+              zIndex: 2500,
+              cursor: 'pointer'
+            }}
+          />
+
+          {/* Right Sliding Drawer Panel */}
+          <aside 
+            id="navbar-drawer-panel"
+            className="drawer-panel"
+            aria-label="導航選單抽屜"
+            style={{
+              position: 'fixed',
+              top: 0,
               right: 0,
-              top: '52px',
-              width: '280px',
-              background: '#0d131f',
-              border: '1px solid #243248',
-              borderRadius: '16px',
-              boxShadow: '0 20px 45px rgba(0, 0, 0, 0.65)',
-              padding: '12px',
+              bottom: 0,
+              width: 'min(360px, 88vw)',
+              height: '100vh',
+              height: '100dvh',
+              background: '#0a0f19',
+              borderLeft: '1px solid #1e293b',
+              boxShadow: '-12px 0 45px rgba(0, 0, 0, 0.85)',
+              zIndex: 2501,
               display: 'flex',
               flexDirection: 'column',
-              gap: '4px',
-              zIndex: 1100,
-              animation: 'dropdownFadeIn 0.18s ease-out'
+              overflowY: 'auto'
             }}
           >
-            {/* User Profile Mini Header */}
-            {isLoggedIn ? (
-              <div 
+            {/* Drawer Top Header: Title + Close Button */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '18px 20px',
+              borderBottom: '1px solid #192335'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{
+                  fontSize: '15px',
+                  fontWeight: 900,
+                  letterSpacing: '0.04em',
+                  color: '#ffffff',
+                  textShadow: '0 0 10px rgba(255, 255, 255, 0.3)'
+                }}>
+                  功能選單
+                </span>
+                <span style={{
+                  fontSize: '11px',
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: 'rgba(180, 255, 4, 0.12)',
+                  color: '#b4ff04',
+                  fontWeight: 800,
+                  border: '1px solid rgba(180, 255, 4, 0.3)'
+                }}>
+                  GYMspot
+                </span>
+              </div>
+
+              {/* Close Button (X) */}
+              <button
+                id="drawer-close-btn"
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="關閉選單"
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid #2a374f',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                  e.currentTarget.style.borderColor = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.borderColor = '#2a374f';
+                }}
+              >
+                <X size={20} color="#ffffff" />
+              </button>
+            </div>
+
+            {/* Drawer Body Scroll Content */}
+            <div style={{
+              flex: 1,
+              padding: '16px 18px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px'
+            }}>
+              {/* User Profile Card */}
+              {isLoggedIn ? (
+                <div 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    onOpenProfile();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px 14px',
+                    background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
+                    borderRadius: '14px',
+                    border: '1px solid #243248',
+                    marginBottom: '10px',
+                    cursor: 'pointer',
+                    transition: 'all 0.18s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.4)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#243248';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <div style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #b4ff04 0%, #ffffff 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 900,
+                    fontSize: '15px',
+                    color: '#0a1402',
+                    boxShadow: '0 0 14px rgba(180, 255, 4, 0.4)',
+                    flexShrink: 0
+                  }}>
+                    AL
+                  </div>
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <div style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>
+                      林峻 (Alex Lin)
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#b4ff04', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 700, marginTop: '2px' }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#b4ff04', display: 'inline-block', boxShadow: '0 0 6px #b4ff04' }}></span>
+                      認證自由教練
+                    </div>
+                  </div>
+                  <ChevronRight size={18} color="#94a3b8" />
+                </div>
+              ) : (
+                <div style={{
+                  padding: '14px',
+                  background: 'rgba(17, 24, 39, 0.85)',
+                  borderRadius: '14px',
+                  border: '1px solid #243248',
+                  marginBottom: '10px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px' }}>
+                    您目前為訪客模式
+                  </div>
+                  <button
+                    onClick={() => {
+                      onToggleLogin();
+                      setIsMenuOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      background: '#b4ff04',
+                      color: '#0a1402',
+                      border: 'none',
+                      borderRadius: '10px',
+                      padding: '10px',
+                      fontSize: '13px',
+                      fontWeight: 800,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    以教練身份登入
+                  </button>
+                </div>
+              )}
+
+              {/* Points Mini Bar */}
+              <div
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onOpenTopUp();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 14px',
+                  borderRadius: '12px',
+                  background: 'rgba(180, 255, 4, 0.06)',
+                  border: '1px solid rgba(180, 255, 4, 0.3)',
+                  marginBottom: '10px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(180, 255, 4, 0.12)';
+                  e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.6)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(180, 255, 4, 0.06)';
+                  e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.3)';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Coins size={18} color="#b4ff04" />
+                  <span style={{ fontSize: '13px', color: '#e2e8f0', fontWeight: 700 }}>帳戶餘額</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#b4ff04' }}>{points} 點</span>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px' }}>儲值</span>
+                </div>
+              </div>
+
+              {/* Navigation Section Label */}
+              <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, padding: '4px 6px 2px', letterSpacing: '0.06em' }}>
+                導航導覽
+              </div>
+
+              {/* Menu Item 1: 返回地圖找場館 */}
+              <button
+                id="menu-btn-home"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  if (onNavigateHome) onNavigateHome();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
+                  border: currentPath === '/' ? '1px solid rgba(180, 255, 4, 0.28)' : '1px solid transparent',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+              >
+                <MapPin size={18} color="#b4ff04" />
+                <span style={{ flex: 1, color: '#b4ff04', fontWeight: 800 }}>返回地圖找場館</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>探索地圖</span>
+              </button>
+
+              {/* Menu Item 2: 個人頁面 */}
+              <button
+                id="menu-btn-profile"
                 onClick={() => {
                   setIsMenuOpen(false);
                   onOpenProfile();
@@ -176,277 +441,198 @@ export default function Navbar({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
-                  padding: '10px 12px',
-                  background: 'rgba(17, 24, 39, 0.9)',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: 'transparent',
+                  border: '1px solid transparent',
                   borderRadius: '12px',
-                  border: '1px solid #1f293d',
-                  marginBottom: '8px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
                   cursor: 'pointer',
-                  transition: 'background 0.15s'
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
-                <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #b4ff04 0%, #ffffff 100%)',
+                <User size={18} color="#ffffff" />
+                <span style={{ flex: 1 }}>個人頁面</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>資歷 / 評價</span>
+              </button>
+
+              {/* Menu Item 3: 服務條款與隱私權 */}
+              <button
+                id="menu-btn-terms"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onOpenTerms();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: 'transparent',
+                  border: '1px solid transparent',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                <FileText size={18} color="#ffffff" />
+                <span style={{ flex: 1 }}>服務條款與隱私權</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>法律規範</span>
+              </button>
+
+              {/* Menu Item 4: 關於我們 */}
+              <button
+                id="menu-btn-about"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onOpenAbout();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: currentPath === '/about' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
+                  border: currentPath === '/about' ? '1px solid rgba(180, 255, 4, 0.28)' : '1px solid transparent',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/about' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+              >
+                <Info size={18} color="#ffffff" />
+                <span style={{ flex: 1 }}>關於我們</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>品牌理念</span>
+              </button>
+
+              {/* Menu Item 5: 場館免費入駐申請 */}
+              <button
+                id="menu-btn-gym-register"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onOpenRegister();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: 'transparent',
+                  border: '1px solid transparent',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                <Building2 size={18} color="#ffffff" />
+                <span style={{ flex: 1 }}>場館免費入駐申請</span>
+                <span style={{ fontSize: '11px', color: '#b4ff04' }}>審核中</span>
+              </button>
+
+              {/* Menu Item 6: 點數儲值 */}
+              <button
+                id="menu-btn-topup"
+                onClick={() => { 
+                  setIsMenuOpen(false); 
+                  onOpenTopUp(); 
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: 'transparent',
+                  border: '1px solid transparent',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                <Wallet size={18} color="#ffffff" />
+                <span style={{ flex: 1 }}>點數儲值方案</span>
+                <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 800 }}>{points} 點</span>
+              </button>
+            </div>
+
+            {/* Drawer Bottom Footer */}
+            <div style={{
+              padding: '16px 18px',
+              borderTop: '1px solid #192335',
+              background: 'rgba(10, 15, 25, 0.95)'
+            }}>
+              {/* Logout / Login button */}
+              <button
+                id="menu-btn-logout"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onToggleLogin();
+                }}
+                style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontWeight: 900,
-                  fontSize: '14px',
-                  color: '#0a1402'
-                }}>
-                  AL
-                </div>
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <div style={{ fontSize: '13px', fontWeight: 800, color: '#f8fafc' }}>
-                    林峻 (Alex Lin)
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#b4ff04', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#b4ff04', display: 'inline-block', boxShadow: '0 0 6px #b4ff04' }}></span>
-                    認證自由教練
-                  </div>
-                </div>
-                <ChevronRight size={16} color="#64748b" />
+                  gap: '8px',
+                  width: '100%',
+                  padding: '11px',
+                  background: isLoggedIn ? 'rgba(239, 68, 68, 0.08)' : 'rgba(180, 255, 4, 0.08)',
+                  border: isLoggedIn ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid rgba(180, 255, 4, 0.3)',
+                  borderRadius: '10px',
+                  color: isLoggedIn ? '#f87171' : '#b4ff04',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = isLoggedIn ? 'rgba(239, 68, 68, 0.18)' : 'rgba(180, 255, 4, 0.18)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = isLoggedIn ? 'rgba(239, 68, 68, 0.08)' : 'rgba(180, 255, 4, 0.08)';
+                }}
+              >
+                <LogOut size={16} color={isLoggedIn ? '#f87171' : '#b4ff04'} />
+                <span>{isLoggedIn ? '退出登入' : '登入教練帳號'}</span>
+              </button>
+
+              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569' }}>
+                肌動組 GYMspot • 自由教練場租媒合平台
               </div>
-            ) : (
-              <div style={{
-                padding: '12px',
-                background: 'rgba(17, 24, 39, 0.7)',
-                borderRadius: '12px',
-                marginBottom: '8px',
-                textAlign: 'center'
-              }}>
-                <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px' }}>
-                  您目前為訪客模式
-                </div>
-                <button
-                  onClick={() => {
-                    onToggleLogin();
-                    setIsMenuOpen(false);
-                  }}
-                  style={{
-                    width: '100%',
-                    background: '#b4ff04',
-                    color: '#0a1402',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px',
-                    fontSize: '12px',
-                    fontWeight: 800,
-                    cursor: 'pointer'
-                  }}
-                >
-                  以教練身份登入
-                </button>
-              </div>
-            )}
-
-            {/* Menu Item: 返回地圖找場館 */}
-            <button
-              id="menu-btn-home"
-              onClick={() => {
-                setIsMenuOpen(false);
-                if (onNavigateHome) onNavigateHome();
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                background: currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
-                border: currentPath === '/' ? '1px solid rgba(180, 255, 4, 0.25)' : 'none',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
-            >
-              <MapPin size={17} color="#b4ff04" />
-              <span style={{ flex: 1, color: '#b4ff04', fontWeight: 800 }}>返回地圖找場館</span>
-              <span style={{ fontSize: '11px', color: '#64748b' }}>探索地圖</span>
-            </button>
-
-            {/* Menu Item 1: 個人頁面 */}
-            <button
-              id="menu-btn-profile"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onOpenProfile();
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <User size={17} color="#ffffff" />
-              <span style={{ flex: 1 }}>個人頁面</span>
-              <span style={{ fontSize: '11px', color: '#64748b' }}>資歷 / 評價</span>
-            </button>
-
-            {/* Menu Item 2: 條款 */}
-            <button
-              id="menu-btn-terms"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onOpenTerms();
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <FileText size={17} color="#ffffff" />
-              <span style={{ flex: 1 }}>服務條款與隱私權</span>
-            </button>
-
-            {/* Menu Item: 關於我們 */}
-            <button
-              id="menu-btn-about"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onOpenAbout();
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <Info size={17} color="#ffffff" />
-              <span style={{ flex: 1 }}>關於我們</span>
-              <span style={{ fontSize: '11px', color: '#64748b' }}>品牌理念</span>
-            </button>
-
-            {/* Menu Item 3: 健身房入駐 (保留原重要申請功能) */}
-            <button
-              id="menu-btn-gym-register"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onOpenRegister();
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <Building2 size={17} color="#ffffff" />
-              <span style={{ flex: 1 }}>場館免費入駐申請</span>
-            </button>
-
-            <button
-              id="menu-btn-topup"
-              onClick={() => { setIsMenuOpen(false); onOpenTopUp(); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '10px', width: '100%', padding: '10px 14px',
-                background: 'transparent', border: 'none', borderRadius: '10px', color: '#e2e8f0',
-                fontSize: '13px', fontWeight: 600, cursor: 'pointer', textAlign: 'left'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <Wallet size={17} color="#ffffff" />
-              <span style={{ flex: 1 }}>點數儲值</span>
-              <span style={{ fontSize: '11px', color: '#b4ff04', fontWeight: 800 }}>{points} 點</span>
-            </button>
-
-            {/* Divider */}
-            <div style={{ height: '1px', background: '#1e293b', margin: '6px 4px' }} />
-
-            {/* Menu Item 4: 退出登入 (or 重新登入) */}
-            <button
-              id="menu-btn-logout"
-              onClick={() => {
-                setIsMenuOpen(false);
-                onToggleLogin();
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                width: '100%',
-                padding: '10px 14px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '10px',
-                color: isLoggedIn ? '#f87171' : '#ffffff',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.15s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = isLoggedIn ? 'rgba(239, 68, 68, 0.12)' : '#1e293b'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <LogOut size={17} color="#ffffff" />
-              <span>{isLoggedIn ? '退出登入' : '登入教練帳號'}</span>
-            </button>
-          </div>
-        )}
-      </div>
+            </div>
+          </aside>
+        </>
+      )}
       </div>
     </header>
   );
