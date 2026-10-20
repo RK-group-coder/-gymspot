@@ -83,10 +83,10 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             boxShadow: '0 15px 35px rgba(0, 0, 0, 0.45)'
           }}>
             <div className="about-card-split">
-              {/* 左側照片：健身房場館角落 */}
+              {/* 左側照片：健身房場館角落 (自然隨手拍真實質感) */}
               <div className="about-card-img-wrap">
                 <img 
-                  src="/about-gym-corner.jpg" 
+                  src="/about-gym-corner.jpg?v=2" 
                   alt="健身房場館角落實景" 
                   className="about-card-img" 
                 />
@@ -146,10 +146,10 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
             marginBottom: '40px'
           }}>
             <div className="about-card-split">
-              {/* 左側照片：教練指導深蹲 */}
+              {/* 左側照片：教練現場隨手抓拍指導深蹲 */}
               <div className="about-card-img-wrap" style={{ borderColor: 'rgba(180, 255, 4, 0.25)' }}>
                 <img 
-                  src="/about-coach-squat.jpg" 
+                  src="/about-coach-squat.jpg?v=2" 
                   alt="教練現場指導學員深蹲" 
                   className="about-card-img" 
                 />
