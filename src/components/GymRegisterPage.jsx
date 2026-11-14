@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   Building2, 
   FileSpreadsheet, 
@@ -6,43 +6,25 @@ import {
   CheckCircle2, 
   ShieldCheck, 
   Sparkles, 
-  ExternalLink,
-  Phone,
-  MessageSquare,
-  Mail,
-  Clock,
-  Calendar,
-  Check,
-  RotateCcw
+  ExternalLink, 
+  Phone, 
+  MessageSquare, 
+  Mail, 
+  Clock, 
+  Calendar, 
+  Check, 
+  RotateCcw, 
+  Camera, 
+  Image as ImageIcon, 
+  Trash2,
+  AlertCircle,
+  FileText,
+  ChevronDown,
+  X
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-
-const TAIWAN_DISTRICTS = {
-  '台北市': ['大安區', '信義區', '中山區', '中正區', '松山區', '內湖區', '士林區', '北投區', '南港區', '文山區', '萬華區', '大同區'],
-  '新北市': ['板橋區', '中和區', '新莊區', '三重區', '永和區', '土城區', '汐止區', '新店區', '蘆洲區', '淡水區', '樹林區', '林口區', '三峽區', '五股區', '鶯歌區', '泰山區', '八里區', '瑞芳區', '深坑區', '三芝區', '萬里區', '金山區', '貢寮區', '石門區', '雙溪區', '石碇區', '坪林區', '平溪區', '烏來區'],
-  '基隆市': ['仁愛區', '信義區', '中正區', '中山區', '安樂區', '暖暖區', '七堵區'],
-  '桃園市': ['桃園區', '中壢區', '平鎮區', '八德區', '楊梅區', '蘆竹區', '大溪區', '龜山區', '大園區', '觀音區', '新屋區', '龍潭區', '復興區'],
-  '新竹市': ['東區', '北區', '香山區'],
-  '新竹縣': ['竹北市', '竹東鎮', '新埔鎮', '關西鎮', '湖口鄉', '新豐鄉', '芎林鄉', '橫山鄉', '北埔鄉', '寶山鄉', '峨眉鄉', '尖石鄉', '五峰鄉'],
-  '苗栗縣': ['苗栗市', '頭份市', '竹南鎮', '後龍鎮', '通霄鎮', '苑裡鎮', '卓蘭鎮', '造橋鄉', '西湖鄉', '頭屋鄉', '公館鄉', '銅鑼鄉', '三義鄉', '大湖鄉', '獅潭鄉', '三灣鄉', '南庄鄉', '泰安鄉'],
-  '台中市': ['西屯區', '北屯區', '南屯區', '北區', '西區', '中區', '東區', '南區', '豐原區', '大里區', '太平區', '清水區', '沙鹿區', '大甲區', '東勢區', '烏日區', '神岡區', '大雅區', '潭子區', '后里區', '霧峰區', '梧棲區', '龍井區', '大肚區', '外埔區', '大安區', '石岡區', '新社區', '和平區'],
-  '彰化縣': ['彰化市', '員林市', '和美鎮', '鹿港鎮', '溪湖鎮', '二林鎮', '田中鎮', '北斗鎮', '花壇鄉', '芬園鄉', '大村鄉', '永靖鄉', '伸港鄉', '線西鄉', '福興鄉', '秀水鄉', '埔心鄉', '埔鹽鄉', '大城鄉', '芳苑鄉', '竹塘鄉', '社頭鄉', '二水鄉', '田尾鄉', '埤頭鄉', '溪州鄉'],
-  '南投縣': ['南投市', '埔里鎮', '草屯鎮', '竹山鎮', '集集鎮', '名間鄉', '鹿谷鄉', '中寮鄉', '魚池鄉', '國姓鄉', '水里鄉', '信義鄉', '仁愛鄉'],
-  '雲林縣': ['斗六市', '斗南鎮', '虎尾鎮', '西螺鎮', '土庫鎮', '北港鎮', '古坑鄉', '大埤鄉', '莿桐鄉', '林內鄉', '二崙鄉', '崙背鄉', '麥寮鄉', '東勢鄉', '褒忠鄉', '台西鄉', '元長鄉', '四湖鄉', '口湖鄉', '水林鄉'],
-  '嘉義市': ['西區', '東區'],
-  '嘉義縣': ['太保市', '朴子市', '布袋鎮', '大林鎮', '民雄鄉', '溪口鄉', '新港鄉', '六腳鄉', '東石鄉', '義竹鄉', '鹿草鄉', '水上鄉', '中埔鄉', '竹崎鄉', '梅山鄉', '番路鄉', '大埔鄉', '阿里山鄉'],
-  '台南市': ['東區', '北區', '中西區', '安平區', '安南區', '永康區', '南區', '新營區', '善化區', '新市區', '歸仁區', '仁德區', '麻豆區', '佳里區', '白河區', '柳營區', '後壁區', '東山區', '下營區', '六甲區', '官田區', '大內區', '西港區', '七股區', '將軍區', '北門區', '學甲區', '鹽水區', '安定區', '山上區', '玉井區', '楠西區', '南化區', '左鎮區', '關廟區', '龍崎區'],
-  '高雄市': ['左營區', '三民區', '鼓山區', '苓雅區', '前鎮區', '新興區', '前金區', '楠梓區', '小港區', '鳳山區', '鹽埕區', '旗津區', '仁武區', '大社區', '岡山區', '路竹區', '阿蓮區', '田寮區', '燕巢區', '橋頭區', '梓官區', '彌陀區', '永安區', '湖內區', '大寮區', '林園區', '鳥松區', '大樹區', '旗山區', '美濃區', '六龜區', '內門區', '杉林區', '甲仙區', '桃源區', '那瑪夏區', '茂林區', '茄萣區'],
-  '屏東縣': ['屏東市', '潮州鎮', '東港鎮', '恆春鎮', '萬丹鄉', '長治鄉', '麟洛鄉', '九如鄉', '里港鄉', '鹽埔鄉', '高樹鄉', '萬巒鄉', '內埔鄉', '竹田鄉', '新埤鄉', '枋寮鄉', '新園鄉', '崁頂鄉', '林邊鄉', '南州鄉', '佳冬鄉', '琉球鄉', '車城鄉', '滿州鄉', '枋山鄉', '三地門鄉', '霧臺鄉', '瑪家鄉', '泰武鄉', '來義鄉', '春日鄉', '獅子鄉', '牡丹鄉'],
-  '宜蘭縣': ['宜蘭市', '羅東鎮', '蘇澳鎮', '頭城鎮', '礁溪鄉', '壯圍鄉', '員山鄉', '冬山鄉', '五結鄉', '三星鄉', '大同鄉', '南澳鄉'],
-  '花蓮縣': ['花蓮市', '吉安鄉', '新城鄉', '玉里鎮', '鳳林鎮', '壽豐鄉', '光復鄉', '豐濱鄉', '瑞穗鄉', '富里鄉', '秀林鄉', '萬榮鄉', '卓溪鄉'],
-  '台東縣': ['台東市', '成功鎮', '關山鎮', '卑南鄉', '大武鄉', '太麻里鄉', '東河鄉', '長濱鄉', '鹿野鄉', '池上鄉', '綠島鄉', '延平鄉', '海端鄉', '達仁鄉', '金峰鄉', '蘭嶼鄉'],
-  '澎湖縣': ['馬公市', '湖西鄉', '白沙鄉', '西嶼鄉', '望安鄉', '七美鄉'],
-  '金門縣': ['金城鎮', '金湖鎮', '金沙鎮', '金寧鄉', '烈嶼鄉', '烏坵鄉'],
-  '連江縣': ['南竿鄉', '北竿鄉', '莒光鄉', '東引鄉']
-};
-
-const TAIWAN_CITIES = Object.keys(TAIWAN_DISTRICTS);
+import { saveApplication } from '../utils/adminStorage';
+import { TAIWAN_DISTRICTS, TAIWAN_CITIES } from '../utils/geo';
 
 // 1 到 7 星期定義
 const WEEKDAYS = [
@@ -55,7 +37,7 @@ const WEEKDAYS = [
   { key: 7, name: '週日', num: '7' }
 ];
 
-// 每天 8:00 到 24:00，一小時一格，共 16 格
+// 每天 8:00 到 24:00，一小時一格，共 16 格 (4x4 格子)
 const TIME_SLOTS = Array.from({ length: 16 }, (_, i) => {
   const start = 8 + i;
   const end = start + 1;
@@ -68,7 +50,7 @@ const TIME_SLOTS = Array.from({ length: 16 }, (_, i) => {
   };
 });
 
-// 預設 8:00~24:00 全時段勾選
+// 預設 8:00~24:00 全時段勾選 (共 16 格)
 const getInitialSchedule = () => {
   const sched = {};
   for (let d = 1; d <= 7; d++) {
@@ -79,6 +61,31 @@ const getInitialSchedule = () => {
   return sched;
 };
 
+// 店家身分確認：場館對外聯絡管道（擇一填寫，由官方傳訊核驗）
+const VERIFY_CHANNELS = [
+  {
+    key: 'ig',
+    label: '官方 Instagram 帳號',
+    inputLabel: '官方 Instagram 帳號或連結',
+    placeholder: '例如：@forge_gym_tw 或 https://www.instagram.com/forge_gym_tw',
+    fieldName: 'igHandle'
+  },
+  {
+    key: 'line',
+    label: '官方 LINE ID / 官方帳號',
+    inputLabel: '官方 LINE ID / 官方帳號或連結',
+    placeholder: '例如：@forgegym 或 https://lin.ee/xxxxxx',
+    fieldName: 'officialLine'
+  },
+  {
+    key: 'fb',
+    label: 'Facebook 粉絲專頁網址',
+    inputLabel: 'Facebook 粉絲專頁網址',
+    placeholder: '例如：https://www.facebook.com/forgegym.tw',
+    fieldName: 'fbPageUrl'
+  }
+];
+
 export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegisterSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
@@ -86,21 +93,36 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     district: '大安區',
     address: '',
     phone: '',
-    lineId: '',
+    email: '',
+    verifyChannel: 'ig',
     igHandle: '',
+    officialLine: '',
+    fbPageUrl: '',
+    gymIntro: '',
+    coachIntro: '',
     coverImage: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=900&auto=format&fit=crop',
     hourlyRate: 200,
     studentCleanFee: 0,
     cleanFeeDesc: '免收學員人頭清潔費',
     certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
-    verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
+    verifiedDoc: '已透過場館官方帳號私訊核驗'
   });
 
   const [schedule, setSchedule] = useState(getInitialSchedule);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [venuePhotos, setVenuePhotos] = useState([]);
+  const photoInputRef = useRef(null);
+  const [coverPhoto, setCoverPhoto] = useState(null);
+  const coverInputRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittedSuccess, setIsSubmittedSuccess] = useState(false);
   const [submittedGymData, setSubmittedGymData] = useState(null);
+
+  // SECTION 8: 合作條款閱讀與簽署狀態
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  const [isAgreedTerms, setIsAgreedTerms] = useState(false);
+  const [agreedTermsTimestamp, setAgreedTermsTimestamp] = useState(null);
+  const termsScrollRef = useRef(null);
 
   const selectedSlotsCount = useMemo(() => {
     return Object.values(schedule).filter(Boolean).length;
@@ -201,11 +223,81 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     }));
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const files = Array.from(e.target.files).map(f => f.name);
-      setUploadedFiles(prev => [...new Set([...prev, ...files])]);
+  const processNewPhotos = (files) => {
+    if (!files || files.length === 0) return;
+    
+    const imageFiles = files.filter(f => f.type ? f.type.startsWith('image/') : true);
+    if (imageFiles.length === 0) {
+      alert('請選取圖片檔案（支援 JPG、PNG、WEBP）');
+      return;
     }
+
+    if (venuePhotos.length >= 10) {
+      alert('最多只能上傳 10 張場館照片，如需更換請先刪除已有照片。');
+      return;
+    }
+
+    const availableSlots = 10 - venuePhotos.length;
+    let filesToAdd = imageFiles;
+    if (imageFiles.length > availableSlots) {
+      alert(`場館照片至多 10 張，已自動為您選取前 ${availableSlots} 張。`);
+      filesToAdd = imageFiles.slice(0, availableSlots);
+    }
+
+    const newPhotos = filesToAdd.map(file => ({
+      name: file.name,
+      preview: URL.createObjectURL(file)
+    }));
+    setVenuePhotos(prev => [...prev, ...newPhotos]);
+  };
+
+  const handlePhotoUpload = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      processNewPhotos(Array.from(e.target.files));
+      e.target.value = '';
+    }
+  };
+
+  const setCoverFromFile = (file) => {
+    if (!file) return;
+    if (file.type && !file.type.startsWith('image/')) {
+      alert('請選取圖片檔案（支援 JPG、PNG、WEBP）');
+      return;
+    }
+    setCoverPhoto(prev => {
+      if (prev && prev.preview && prev.preview.startsWith('blob:')) {
+        try { URL.revokeObjectURL(prev.preview); } catch (_) {}
+      }
+      return { name: file.name, preview: URL.createObjectURL(file) };
+    });
+  };
+
+  const handleCoverUpload = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setCoverFromFile(e.target.files[0]);
+      e.target.value = '';
+    }
+  };
+
+  const removeCover = () => {
+    setCoverPhoto(prev => {
+      if (prev && prev.preview && prev.preview.startsWith('blob:')) {
+        try { URL.revokeObjectURL(prev.preview); } catch (_) {}
+      }
+      return null;
+    });
+  };
+
+  const removePhoto = (indexToRemove) => {
+    setVenuePhotos(prev => {
+      const target = prev[indexToRemove];
+      if (target && target.preview && target.preview.startsWith('blob:')) {
+        try {
+          URL.revokeObjectURL(target.preview);
+        } catch (_) {}
+      }
+      return prev.filter((_, idx) => idx !== indexToRemove);
+    });
   };
 
   const handleVerifyOnGoogleMaps = () => {
@@ -213,12 +305,53 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
   };
 
+  const handleOpenTermsModal = () => {
+    setIsTermsModalOpen(true);
+  };
+
+  const handleTermsScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollTop + clientHeight >= scrollHeight - 25) {
+      setHasScrolledToBottom(true);
+    }
+  };
+
+  const handleAgreeTerms = () => {
+    setIsAgreedTerms(true);
+    setAgreedTermsTimestamp(new Date().toLocaleString());
+    setIsTermsModalOpen(false);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const selectedChannelObj = VERIFY_CHANNELS.find(c => c.key === formData.verifyChannel) || VERIFY_CHANNELS[0];
+    const verifyAccountValue = (formData[selectedChannelObj.fieldName] || '').trim();
+    if (!verifyAccountValue) {
+      alert(`請於「2. 店家身分確認」填寫「${selectedChannelObj.label}」，我們將會傳訊息至此帳號做確認！`);
+      return;
+    }
+    if (!coverPhoto) {
+      alert('請上傳「首頁圖」（顯示於首頁場館卡片的封面圖）');
+      return;
+    }
+    if (venuePhotos.length < 4) {
+      alert(`請至少上傳 4 張場館／器材照片（目前已選取 ${venuePhotos.length} 張，還差 ${4 - venuePhotos.length} 張）`);
+      return;
+    }
+    if (venuePhotos.length > 10) {
+      alert(`場館／器材照片至多上傳 10 張（目前已選取 ${venuePhotos.length} 張）`);
+      return;
+    }
+    if (!isAgreedTerms) {
+      alert('請先點擊第 8 點「查閱合作條款」，滾動至最下方並按下「我已詳閱並同意」後方可提交！');
+      return;
+    }
     setIsSubmitting(true);
 
     setTimeout(() => {
       const hourlyPrice = Number(formData.hourlyRate) || 200;
+      const coachIntroText = formData.coachIntro?.trim() || '無特殊介紹';
+      const gymIntroText = formData.gymIntro?.trim() || '無場館介紹';
       const newGym = {
         id: `gym-reg-${Date.now()}`,
         name: formData.name || '新進駐場租健身房',
@@ -232,9 +365,17 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
         rating: 5.0,
         reviewCount: 1,
         phone: formData.phone || '02-8888-9999',
-        lineId: formData.lineId || '@new_gym',
-        igHandle: formData.igHandle || 'gym.tw',
-        coverImage: formData.coverImage,
+        email: formData.email,
+        lineId: formData.verifyChannel === 'line' ? verifyAccountValue : (formData.officialLine || ''),
+        igHandle: formData.verifyChannel === 'ig' ? verifyAccountValue : (formData.igHandle || 'gym.tw'),
+        fbPageUrl: formData.verifyChannel === 'fb' ? verifyAccountValue : (formData.fbPageUrl || ''),
+        verifyChannel: selectedChannelObj.key,
+        verifyChannelLabel: selectedChannelObj.label,
+        verifyAccount: verifyAccountValue,
+        gymIntro: gymIntroText,
+        coachIntro: coachIntroText,
+        coverImage: coverPhoto ? coverPhoto.preview : formData.coverImage,
+        photos: venuePhotos.map(p => p.preview),
         pricing: {
           hourlyRate: hourlyPrice,
           offPeakPerHour: hourlyPrice,
@@ -263,7 +404,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           cprRequired: true,
           indoorShoesOnly: true,
           insuranceIncluded: '已投保公共意外責任險',
-          cancellationPolicy: '開課前 6 小時可線上取消'
+          cancellationPolicy: '一經預約即無法取消'
         },
         tags: [
           Number(formData.studentCleanFee) === 0 ? '免學員費' : '',
@@ -271,7 +412,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
         ].filter(Boolean),
         isVerified: true,
         isFeatured: true,
-        verifiedDoc: formData.verifiedDoc
+        verifiedDoc: formData.verifiedDoc,
+        agreedTerms: true,
+        agreedTermsAt: agreedTermsTimestamp
       };
 
       // Confetti burst
@@ -280,6 +423,41 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
         spread: 80,
         origin: { y: 0.5 }
       });
+
+      // 儲存至管理員審核隊列 (Pending Application Queue)
+      const newApp = {
+        id: newGym.id,
+        name: newGym.name,
+        brand: newGym.brand,
+        city: newGym.city,
+        district: newGym.district,
+        address: newGym.address,
+        phone: newGym.phone,
+        email: newGym.email,
+        verifyChannel: selectedChannelObj.key,
+        verifyChannelLabel: selectedChannelObj.label,
+        verifyAccount: verifyAccountValue,
+        officialLine: formData.verifyChannel === 'line' ? verifyAccountValue : (formData.officialLine || ''),
+        igHandle: formData.verifyChannel === 'ig' ? verifyAccountValue : (formData.igHandle || ''),
+        fbPageUrl: formData.verifyChannel === 'fb' ? verifyAccountValue : (formData.fbPageUrl || ''),
+        gymIntro: gymIntroText,
+        coachIntro: coachIntroText,
+        hourlyRate: hourlyPrice,
+        studentCleanFee: Number(formData.studentCleanFee) || 0,
+        cleanFeeDesc: formData.cleanFeeDesc,
+        certRequired: formData.certRequired,
+        verifiedDoc: formData.verifiedDoc,
+        coverImage: newGym.coverImage,
+        photos: newGym.photos,
+        openSlotsCount: selectedSlotsCount,
+        availableSchedule: schedule,
+        agreedTerms: true,
+        agreedTermsAt: agreedTermsTimestamp,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        reviewerNote: ''
+      };
+      saveApplication(newApp);
 
       if (onRegisterSuccess) {
         onRegisterSuccess(newGym);
@@ -301,17 +479,26 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       district: '大安區',
       address: '',
       phone: '',
-      lineId: '',
+      email: '',
+      verifyChannel: 'ig',
       igHandle: '',
+      officialLine: '',
+      fbPageUrl: '',
+      gymIntro: '',
+      coachIntro: '',
       coverImage: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=900&auto=format&fit=crop',
       hourlyRate: 200,
       studentCleanFee: 0,
       cleanFeeDesc: '免收學員人頭清潔費',
       certRequired: '需具備合格國際體適能證照 (ACE / NASM / ACSM / NSCA)',
-      verifiedDoc: '營利事業登記證、消防安檢審查、公共意外責任險證明'
+      verifiedDoc: '已透過場館官方帳號私訊核驗'
     });
     setSchedule(getInitialSchedule());
-    setUploadedFiles([]);
+    setVenuePhotos([]);
+    setCoverPhoto(null);
+    setIsAgreedTerms(false);
+    setAgreedTermsTimestamp(null);
+    setHasScrolledToBottom(false);
   };
 
   return (
@@ -323,6 +510,22 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       position: 'relative',
       overflowX: 'hidden'
     }}>
+      {/* Dark Gym Background (fixed) with brand-green accents */}
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundImage: [
+          'radial-gradient(ellipse at 50% 0%, rgba(180, 255, 4, 0.18) 0%, rgba(7, 10, 16, 0) 55%)',
+          'radial-gradient(ellipse at 100% 100%, rgba(180, 255, 4, 0.10) 0%, rgba(7, 10, 16, 0) 50%)',
+          'linear-gradient(180deg, rgba(7, 10, 16, 0.78) 0%, rgba(7, 10, 16, 0.88) 100%)',
+          "url('/gym-dark-bg.jpg')"
+        ].join(', '),
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
       {/* Background Ambient Glow */}
       <div style={{
         position: 'absolute',
@@ -364,7 +567,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
             margin: '0 auto',
             lineHeight: 1.6
           }}>
-            提交您的場館地址、核驗證明文件與場租報價表，審核通過後即時在 <strong style={{ color: '#ffffff', textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>Google Maps 場租地圖</strong> 上線，免費吸引全台自由教練進駐帶課！
+            免收公文、免查統編！提交您的場館地址、官方聯絡管道與場租報價表，確認身分後即時在 <strong style={{ color: '#ffffff', textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>Google Maps 場租地圖</strong> 上線，免費吸引全台自由教練進駐帶課！
           </p>
         </div>
 
@@ -433,6 +636,27 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 <div>小時制場租：<strong style={{ color: '#b4ff04' }}>NT$ {submittedGymData.pricing.hourlyRate || submittedGymData.pricing.offPeakPerHour}</strong> / hr</div>
                 <div>每週開放時段：<strong style={{ color: '#ffffff' }}>{submittedGymData.openSlotsCount || 112} / 112 個小時格</strong></div>
               </div>
+              <div style={{ fontSize: '12.5px', color: '#94a3b8', paddingTop: '10px', marginTop: '10px', borderTop: '1px solid #192335', lineHeight: 1.5 }}>
+                <strong style={{ color: '#cbd5e1' }}>給教練的介紹：</strong>
+                <span style={{ color: submittedGymData.coachIntro && submittedGymData.coachIntro !== '無特殊介紹' ? '#e2e8f0' : '#64748b', marginLeft: '4px' }}>
+                  {submittedGymData.coachIntro || '無特殊介紹'}
+                </span>
+              </div>
+              {submittedGymData.verifyAccount && (
+                <div style={{
+                  marginTop: '12px',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  background: 'rgba(180, 255, 4, 0.08)',
+                  border: '1px solid rgba(180, 255, 4, 0.28)',
+                  fontSize: '12.5px',
+                  color: '#b4ff04',
+                  fontWeight: 700,
+                  lineHeight: 1.5
+                }}>
+                  💬 我們將會傳訊息至您的「{submittedGymData.verifyChannelLabel}：{submittedGymData.verifyAccount}」做確認，請留意訊息！
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}
@@ -452,6 +676,24 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 }}
               >
                 前往地圖查看
+              </button>
+              <button
+                onClick={() => {
+                  window.history.pushState({}, '', '/admin');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
+                style={{
+                  background: 'rgba(180, 255, 4, 0.12)',
+                  color: '#b4ff04',
+                  border: '1px solid rgba(180, 255, 4, 0.3)',
+                  borderRadius: '12px',
+                  padding: '12px 22px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                前往管理後台審核 (/admin)
               </button>
               <button
                 onClick={handleResetForm}
@@ -636,7 +878,153 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
               </div>
 
-              {/* SECTION 2: 小時制場租費用與每週開放時段 */}
+              {/* SECTION 2: 店家身分確認（免收公文、免查統編，透過官方帳號傳訊確認） */}
+              <div style={{
+                background: '#0a0f1a',
+                padding: '24px',
+                borderRadius: '16px',
+                border: '1px solid #192336'
+              }}>
+                <div style={{
+                  marginBottom: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '8px'
+                }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    2. 店家身分確認
+                  </h3>
+                  <span style={{
+                    fontSize: '11.5px',
+                    fontWeight: 700,
+                    padding: '3px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(180, 255, 4, 0.12)',
+                    color: '#b4ff04',
+                    border: '1px solid rgba(180, 255, 4, 0.3)'
+                  }}>
+                    免收公文・免查統編
+                  </span>
+                </div>
+
+                <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, marginBottom: '18px' }}>
+                  審查完成後，將把您的店家放上<span style={{ color: '#b4ff04', fontWeight: 800 }}>網站地圖</span>，並以 <span style={{ color: '#b4ff04', fontWeight: 800 }}>Gmail</span> 通知您。
+                </p>
+
+                {/* 場館對外的聯絡管道（擇一） */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '13.5px', color: '#e2e8f0', fontWeight: 700, marginBottom: '10px' }}>
+                    場館對外的「聯絡管道（三選一）」 <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+
+                  {/* 3 Channel Radio Cards */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+                    gap: '12px',
+                    marginBottom: '16px'
+                  }}>
+                    {VERIFY_CHANNELS.map(channel => {
+                      const isSelected = formData.verifyChannel === channel.key;
+                      return (
+                        <button
+                          key={channel.key}
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, verifyChannel: channel.key }))}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '13px 15px',
+                            borderRadius: '11px',
+                            background: isSelected ? 'rgba(180, 255, 4, 0.12)' : '#121927',
+                            border: isSelected ? '1.5px solid #b4ff04' : '1px solid #243248',
+                            color: isSelected ? '#ffffff' : '#cbd5e1',
+                            fontSize: '13.5px',
+                            fontWeight: isSelected ? 800 : 600,
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            boxShadow: isSelected ? '0 0 14px rgba(180, 255, 4, 0.16)' : 'none',
+                            transition: 'all 0.15s ease'
+                          }}
+                        >
+                          <span style={{
+                            width: '18px',
+                            height: '18px',
+                            borderRadius: '50%',
+                            border: isSelected ? '5px solid #b4ff04' : '2px solid #475569',
+                            background: '#0a0f1a',
+                            flexShrink: 0,
+                            boxSizing: 'border-box',
+                            transition: 'all 0.15s ease'
+                          }} />
+                          <span>{channel.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Selected Channel Input */}
+                  {(() => {
+                    const activeChannel = VERIFY_CHANNELS.find(c => c.key === formData.verifyChannel) || VERIFY_CHANNELS[0];
+                    return (
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12.5px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
+                          {activeChannel.inputLabel} <span style={{ color: '#ef4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name={activeChannel.fieldName}
+                          required
+                          placeholder={activeChannel.placeholder}
+                          value={formData[activeChannel.fieldName]}
+                          onChange={handleChange}
+                          style={{
+                            width: '100%',
+                            background: '#121927',
+                            border: '1px solid #243248',
+                            borderRadius: '10px',
+                            padding: '12px 14px',
+                            color: '#fff',
+                            fontSize: '14px',
+                            outline: 'none',
+                            boxSizing: 'border-box',
+                            transition: 'border-color 0.2s ease'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
+                          onBlur={(e) => e.target.style.borderColor = '#243248'}
+                        />
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Confirmation Message Notice */}
+                <div style={{
+                  marginTop: '16px',
+                  padding: '14px 16px',
+                  borderRadius: '12px',
+                  background: 'rgba(180, 255, 4, 0.08)',
+                  border: '1px solid rgba(180, 255, 4, 0.28)',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '10px'
+                }}>
+                  <MessageSquare size={18} color="#b4ff04" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div style={{ fontSize: '13px', lineHeight: 1.6 }}>
+                    <div style={{ color: '#b4ff04', fontWeight: 800 }}>
+                      我們將會傳訊息至此帳號做確認，請留意訊息！
+                    </div>
+                    <div style={{ color: '#cbd5e1', fontSize: '12.5px', marginTop: '2px' }}>
+                      平台官方帳號將發送一則確認訊息給貴店（若填寫 IG 或 Facebook 粉專，請一併留意陌生訊息匣），回覆確認即完成店家身分審核。
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 3: 小時制場租費用與每週開放時段 */}
               <div style={{
                 background: '#0a0f1a',
                 padding: '24px',
@@ -646,10 +1034,10 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 {/* Section Header */}
                 <div style={{ marginBottom: '18px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    2. 小時制場租費用與每週開放時段
+                    3. 小時制場租費用與每週開放時段
                   </h3>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
-                    設定統一小時制場租收費，並在下方時間表格勾選可以場租的時段
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
+                    設定統一小時制場租收費（統一價錢收費，不做多堂優惠），並在下方時間表格勾選可以場租的時段
                   </div>
                 </div>
 
@@ -667,7 +1055,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       max="5000"
                       value={formData.hourlyRate ?? ''}
                       onChange={handleChange}
-                      placeholder="例如：200"
+                      placeholder="統一價錢收費，不做多堂優惠（例如：200）"
                       style={{
                         width: '100%',
                         background: '#121927',
@@ -682,42 +1070,13 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
-                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
-                      每小時公定場租費率（每小時一格計費）
-                    </div>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      學員清潔費 (0 代表免收)
-                    </label>
-                    <input
-                      type="number"
-                      name="studentCleanFee"
-                      value={formData.studentCleanFee ?? ''}
-                      onChange={handleChange}
-                      placeholder="0"
-                      style={{
-                        width: '100%',
-                        background: '#121927',
-                        border: '1px solid #243248',
-                        borderRadius: '10px',
-                        padding: '11px 14px',
-                        color: '#fff',
-                        fontSize: '15px',
-                        fontWeight: 600,
-                        outline: 'none'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                      onBlur={(e) => e.target.style.borderColor = '#243248'}
-                    />
-                    <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '5px' }}>
-                      若向學員酌收人頭清潔費可填寫，無則填 0
+                    <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '6px', fontWeight: 600 }}>
+                      統一價錢收費，不做多堂優惠（每小時一格計費）
                     </div>
                   </div>
                 </div>
 
-                {/* SCHEDULE TABLE SECTION: 1 到 7，每天 8. 到 24. */}
+                {/* SCHEDULE TABLE SECTION: 1 到 7，每天 8:00 到 24:00 */}
                 <div style={{
                   background: '#070b13',
                   borderRadius: '14px',
@@ -737,7 +1096,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   }}>
                     <div>
                       <h4 style={{ fontSize: '14.5px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                        每週開放時段勾選 (1 到 7，每天 8. 到 24.)
+                        每週開放時段勾選 (1 到 7，每天 08:00 到 24:00)
                       </h4>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '3px' }}>
                         可以的時段請勾選起來（預設全時段開放，可直接點擊格子或利用快速按鈕）
@@ -874,7 +1233,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                             textAlign: 'center',
                             width: '115px'
                           }}>
-                            時段 (8.-24.)
+                            時段 (08:00-24:00)
                           </th>
                           {WEEKDAYS.map(d => {
                             const isDayAllChecked = TIME_SLOTS.every(s => schedule[`${d.key}-${s.hour}`]);
@@ -944,7 +1303,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                                   <td
                                     key={d.key}
                                     onClick={() => toggleSlot(d.key, slot.hour)}
-                                    title={`${d.name} ${slot.label}：${isChecked ? '可約場租 (點擊取消)' : '未開放 (點擊勾選)'}`}
+                                    title={`${d.name} ${slot.label}：${isChecked ? '可預約場租 (點擊取消)' : '未開放 (點擊勾選)'}`}
                                     style={{
                                       padding: '5px 4px',
                                       textAlign: 'center',
@@ -978,7 +1337,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                                           margin: 0
                                         }}
                                       />
-                                      <span>{isChecked ? '可約' : '—'}</span>
+                                      <span>{isChecked ? '可預約' : '—'}</span>
                                     </div>
                                   </td>
                                 );
@@ -992,76 +1351,100 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
               </div>
 
-              {/* SECTION 3: 證明文件審核 */}
-              <div style={{
-                background: '#0a0f1a',
-                padding: '24px',
-                borderRadius: '16px',
-                border: '1px solid #192336'
-              }}>
-                <div style={{ marginBottom: '10px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    3. 證明文件審核 (營利登記、消防與公共責任險)
-                  </h3>
-                </div>
-
-                <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, marginBottom: '16px' }}>
-                  為維護自由教練與學員安全，經審核合格後將獲得 <span style={{ color: '#b4ff04', fontWeight: 800 }}>「已查核認證標章」</span>，大幅提升教練預約意願。
-                </p>
-
-                <div style={{
-                  border: '2px dashed #243248',
-                  borderRadius: '12px',
-                  padding: '28px 20px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  background: '#121927',
-                  transition: 'all 0.2s ease'
-                }}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                    const files = Array.from(e.dataTransfer.files).map(f => f.name);
-                    setUploadedFiles(prev => [...new Set([...prev, ...files])]);
-                  }
-                }}
-                >
-                  <Upload size={32} color="#64748b" style={{ margin: '0 auto 10px' }} />
-                  <div style={{ fontSize: '14px', color: '#cbd5e1', fontWeight: 700 }}>
-                    點擊上傳或拖曳文件檔案至此
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
-                    支援 PDF、JPG、PNG（營登執照、消防合格證明、公共意外責任險保單）
-                  </div>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={handleFileChange}
-                    style={{ display: 'block', margin: '14px auto 0', color: '#94a3b8', fontSize: '12px' }}
-                  />
-                </div>
-
-                {uploadedFiles.length > 0 && (
-                  <div style={{
-                    marginTop: '14px',
-                    padding: '12px 16px',
-                    borderRadius: '10px',
-                    background: 'rgba(180, 255, 4, 0.08)',
-                    border: '1px solid rgba(180, 255, 4, 0.25)',
-                    fontSize: '13px',
-                    color: '#b4ff04',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
+              {/* SECTION 4 / 5: 場館介紹 與 給教練的話或規則 */}
+              {[
+                {
+                  num: '4',
+                  name: 'gymIntro',
+                  title: '場館介紹',
+                  hint: '介紹您的場館環境特色、器材與氛圍（若未填寫，前台將自動顯示「無場館介紹」）',
+                  placeholder: '例如：本館位於大安區捷運站旁，空間約 80 坪，配備 4 座深蹲架、自由重量區與衝刺草皮區，採光明亮、空調舒適...'
+                },
+                {
+                  num: '5',
+                  name: 'coachIntro',
+                  title: '給教練的話或規則',
+                  hint: '給進駐教練的叮嚀、帶課規範或入場須知（若未填寫，前台將自動顯示「無特殊介紹」）',
+                  placeholder: '例如：入場需穿著乾淨室內訓練鞋；深蹲架與衝刺草皮區熱門時段請禮貌輪替；器材使用完畢請歸位並擦拭...'
+                }
+              ].map(sec => {
+                const len = formData[sec.name]?.length || 0;
+                return (
+                  <div key={sec.name} style={{
+                    background: '#0a0f1a',
+                    padding: '24px',
+                    borderRadius: '16px',
+                    border: '1px solid #192336'
                   }}>
-                    <CheckCircle2 size={16} />
-                    <span>已選取 {uploadedFiles.length} 個憑證檔案：{uploadedFiles.join(', ')}</span>
-                  </div>
-                )}
-              </div>
+                    <div style={{
+                      marginBottom: '14px',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '8px'
+                    }}>
+                      <div>
+                        <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>{sec.num}. {sec.title}</span>
+                          <span style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            background: '#121927',
+                            color: '#94a3b8',
+                            border: '1px solid #243248'
+                          }}>
+                            選填
+                          </span>
+                        </h3>
+                        <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '6px' }}>
+                          {sec.hint}
+                        </div>
+                      </div>
 
-              {/* SECTION 4: 聯絡資訊 */}
+                      <div style={{
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        padding: '4px 10px',
+                        borderRadius: '6px',
+                        background: len >= 300 ? 'rgba(239, 68, 68, 0.15)' : '#121927',
+                        color: len >= 300 ? '#ef4444' : '#64748b',
+                        border: '1px solid ' + (len >= 300 ? 'rgba(239, 68, 68, 0.4)' : '#243248')
+                      }}>
+                        {len} / 300 字
+                      </div>
+                    </div>
+
+                    <textarea
+                      name={sec.name}
+                      maxLength={300}
+                      rows={4}
+                      placeholder={sec.placeholder}
+                      value={formData[sec.name] || ''}
+                      onChange={handleChange}
+                      style={{
+                        width: '100%',
+                        background: '#121927',
+                        border: '1px solid #243248',
+                        borderRadius: '10px',
+                        padding: '12px 14px',
+                        color: '#fff',
+                        fontSize: '14px',
+                        outline: 'none',
+                        resize: 'vertical',
+                        lineHeight: 1.6,
+                        boxSizing: 'border-box'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
+                      onBlur={(e) => e.target.style.borderColor = '#243248'}
+                    />
+                  </div>
+                );
+              })}
+
+              {/* SECTION 5: 場館聯繫管道 */}
               <div style={{
                 background: '#0a0f1a',
                 padding: '24px',
@@ -1070,7 +1453,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
               }}>
                 <div style={{ marginBottom: '18px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    4. 場館聯繫管道 (方便教練預約對接)
+                    6. 場館聯繫管道
                   </h3>
                 </div>
 
@@ -1103,13 +1486,16 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
 
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                      場租專用 LINE ID (方便教練私訊)
+                      場租專用 Gmail <span style={{ color: '#ef4444' }}>*</span>
                     </label>
                     <input
-                      type="text"
-                      name="lineId"
-                      placeholder="例如：@gym_rental"
-                      value={formData.lineId}
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="例如：gymspot.tw@gmail.com"
+                      pattern="[A-Za-z0-9._%+\-]+@gmail\.com"
+                      title="請輸入 Gmail 信箱 (@gmail.com)"
+                      value={formData.email}
                       onChange={handleChange}
                       style={{
                         width: '100%',
@@ -1124,7 +1510,446 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                       onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
+                    <div style={{ fontSize: '12px', color: '#b4ff04', marginTop: '6px', fontWeight: 600 }}>
+                      Gmail 用於自動發送教練預約通知
+                    </div>
                   </div>
+                </div>
+              </div>
+
+              {/* SECTION 6: 提供場館照片及器材照片 */}
+              <div style={{
+                background: '#0a0f1a',
+                padding: '24px',
+                borderRadius: '16px',
+                border: '1px solid #192336'
+              }}>
+                <div style={{
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '10px'
+                }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                        7. 首頁圖與場館／器材照片
+                      </h3>
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        background: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? 'rgba(180, 255, 4, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                        color: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? '#b4ff04' : '#f59e0b',
+                        border: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)'
+                      }}>
+                        至少 4 張，至多 10 張 <span style={{ color: '#ef4444' }}>*</span>
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '6px' }}>
+                      左側上傳 1 張首頁圖；右側上傳 4～10 張場館／器材照片（建議：場地全貌、深蹲架、自由重量區、有氧及特色器材）
+                    </div>
+                  </div>
+
+                  {/* Status / Count Pill */}
+                  <div style={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    background: venuePhotos.length >= 4 ? 'rgba(180, 255, 4, 0.12)' : venuePhotos.length > 0 ? 'rgba(245, 158, 11, 0.15)' : '#121927',
+                    color: venuePhotos.length >= 4 ? '#b4ff04' : venuePhotos.length > 0 ? '#f59e0b' : '#94a3b8',
+                    border: venuePhotos.length >= 4 ? '1px solid rgba(180, 255, 4, 0.3)' : venuePhotos.length > 0 ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid #243248',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    {venuePhotos.length >= 4 ? (
+                      <CheckCircle2 size={14} color="#b4ff04" />
+                    ) : (
+                      <AlertCircle size={14} color={venuePhotos.length > 0 ? '#f59e0b' : '#94a3b8'} />
+                    )}
+                    <span>
+                      {venuePhotos.length === 0 && '尚未上傳（至少 4 張，至多 10 張）'}
+                      {venuePhotos.length > 0 && venuePhotos.length < 4 && `已選 ${venuePhotos.length} / 10 張（還差 ${4 - venuePhotos.length} 張）`}
+                      {venuePhotos.length >= 4 && venuePhotos.length < 10 && `已選 ${venuePhotos.length} / 10 張（已達標，可再新增 ${10 - venuePhotos.length} 張）`}
+                      {venuePhotos.length === 10 && '已選 10 / 10 張（已達上限）'}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+                  gap: '22px',
+                  alignItems: 'start'
+                }}>
+                  {/* 左側：首頁圖 */}
+                  <div>
+                    <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#e2e8f0', marginBottom: '4px' }}>
+                      首頁圖 <span style={{ color: '#ef4444' }}>*</span>
+                      <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#94a3b8', marginLeft: '8px' }}>1 張・顯示於首頁場館卡片</span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>
+                      請選一張最能代表場館的照片作為封面
+                    </div>
+
+                    {coverPhoto ? (
+                      <div style={{
+                        position: 'relative',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        border: '2px solid #b4ff04',
+                        aspectRatio: '4 / 3',
+                        background: '#0d131f'
+                      }}>
+                        <img src={coverPhoto.preview} alt="首頁圖" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                        <div style={{
+                          position: 'absolute', top: '8px', left: '8px',
+                          background: '#b4ff04', color: '#0a1402', fontSize: '11px', fontWeight: 900,
+                          padding: '2px 8px', borderRadius: '5px'
+                        }}>
+                          首頁圖
+                        </div>
+                        <div style={{ position: 'absolute', top: '8px', right: '8px', display: 'flex', gap: '6px' }}>
+                          <button
+                            type="button"
+                            onClick={() => coverInputRef.current && coverInputRef.current.click()}
+                            style={{ background: 'rgba(0,0,0,0.75)', border: 'none', borderRadius: '6px', color: '#fff', fontSize: '11.5px', fontWeight: 700, padding: '4px 8px', cursor: 'pointer' }}
+                          >
+                            更換
+                          </button>
+                          <button
+                            type="button"
+                            onClick={removeCover}
+                            title="刪除首頁圖"
+                            style={{ background: 'rgba(0,0,0,0.75)', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}
+                          >
+                            <Trash2 size={13} color="#ef4444" />
+                          </button>
+                        </div>
+                        <div style={{
+                          position: 'absolute', bottom: 0, left: 0, right: 0,
+                          background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)',
+                          padding: '14px 10px 6px', fontSize: '11px', color: '#e2e8f0',
+                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                        }}>
+                          {coverPhoto.name}
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => coverInputRef.current && coverInputRef.current.click()}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                            setCoverFromFile(e.dataTransfer.files[0]);
+                          }
+                        }}
+                        style={{
+                          border: '2px dashed #243248',
+                          borderRadius: '12px',
+                          aspectRatio: '4 / 3',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          textAlign: 'center',
+                          cursor: 'pointer',
+                          background: '#121927',
+                          padding: '16px'
+                        }}
+                      >
+                        <ImageIcon size={32} color="#64748b" style={{ marginBottom: '10px' }} />
+                        <div style={{ fontSize: '14px', color: '#cbd5e1', fontWeight: 700 }}>點擊上傳首頁圖</div>
+                        <div style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>支援 JPG、PNG、WEBP，僅 1 張</div>
+                      </div>
+                    )}
+                    <input
+                      ref={coverInputRef}
+                      type="file"
+                      accept="image/png, image/jpeg, image/webp"
+                      onChange={handleCoverUpload}
+                      style={{ display: 'none' }}
+                    />
+                  </div>
+
+                  {/* 右側：場館／器材照片 */}
+                  <div>
+                    <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#e2e8f0', marginBottom: '4px' }}>
+                      場館／器材照片 <span style={{ color: '#ef4444' }}>*</span>
+                      <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#94a3b8', marginLeft: '8px' }}>4～10 張・查看場館時的照片牆</span>
+                    </div>
+                    <div style={{ height: '16px' }} />
+                  {/* Upload Zone */}
+                  <div
+                    onClick={() => {
+                      if (venuePhotos.length < 10 && photoInputRef.current) {
+                        photoInputRef.current.click();
+                      }
+                    }}
+                    style={{
+                      border: `2px dashed ${venuePhotos.length >= 10 ? '#334155' : '#243248'}`,
+                      borderRadius: '12px',
+                      padding: '26px 20px',
+                      textAlign: 'center',
+                      cursor: venuePhotos.length >= 10 ? 'default' : 'pointer',
+                      background: venuePhotos.length >= 10 ? '#0d131f' : '#121927',
+                      transition: 'all 0.2s ease',
+                      opacity: venuePhotos.length >= 10 ? 0.8 : 1
+                    }}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        processNewPhotos(Array.from(e.dataTransfer.files));
+                      }
+                    }}
+                  >
+                    <ImageIcon size={32} color={venuePhotos.length >= 10 ? '#475569' : '#64748b'} style={{ margin: '0 auto 10px' }} />
+                    <div style={{ fontSize: '14px', color: venuePhotos.length >= 10 ? '#94a3b8' : '#cbd5e1', fontWeight: 700 }}>
+                      {venuePhotos.length >= 10 ? '已達 10 張照片上限' : '點擊上傳或拖曳場館／器材照片至此'}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#64748b', marginTop: '6px' }}>
+                      {venuePhotos.length >= 10 
+                        ? '如需更換照片，請點擊下方預覽圖右上角的垃圾桶圖示刪除' 
+                        : `支援 JPG、PNG、WEBP，至少 4 張，至多 10 張（目前 ${venuePhotos.length} / 10）`}
+                    </div>
+                    <input
+                      ref={photoInputRef}
+                      type="file"
+                      multiple
+                      accept="image/png, image/jpeg, image/webp"
+                      disabled={venuePhotos.length >= 10}
+                      onChange={handlePhotoUpload}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ display: 'block', margin: '14px auto 0', color: '#94a3b8', fontSize: '12px' }}
+                    />
+                  </div>
+
+                  {/* Photo Previews Grid */}
+                  {venuePhotos.length > 0 && (
+                    <div style={{ marginTop: '16px' }}>
+                      <div style={{
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        marginBottom: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          color: venuePhotos.length >= 4 ? '#b4ff04' : '#f59e0b'
+                        }}>
+                          {venuePhotos.length >= 4 ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                          <span>
+                            已選取 {venuePhotos.length} / 10 張照片
+                            {venuePhotos.length < 4 && `（還需 ${4 - venuePhotos.length} 張才可提交）`}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+                        gap: '12px'
+                      }}>
+                        {venuePhotos.map((photo, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              position: 'relative',
+                              borderRadius: '10px',
+                              overflow: 'hidden',
+                              border: '1px solid #243248',
+                              background: '#0d131f',
+                              aspectRatio: '4 / 3'
+                            }}
+                          >
+                            <img
+                              src={photo.preview}
+                              alt={photo.name}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removePhoto(idx)}
+                              title="刪除照片"
+                              style={{
+                                position: 'absolute',
+                                top: '6px',
+                                right: '6px',
+                                background: 'rgba(0, 0, 0, 0.75)',
+                                border: 'none',
+                                borderRadius: '6px',
+                                color: '#ef4444',
+                                cursor: 'pointer',
+                                padding: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.15s ease'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.9)'}
+                              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0, 0, 0, 0.75)'}
+                            >
+                              <Trash2 size={13} color="#fff" />
+                            </button>
+                            <div style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)',
+                              padding: '4px 6px',
+                              fontSize: '10.5px',
+                              color: '#e2e8f0',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis'
+                            }}>
+                              {idx + 1}. {photo.name}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION 7: 合作條款 */}
+              <div style={{
+                background: '#0a0f1a',
+                padding: '24px',
+                borderRadius: '16px',
+                border: isAgreedTerms ? '1px solid rgba(180, 255, 4, 0.4)' : '1px solid #192336',
+                boxShadow: isAgreedTerms ? '0 0 20px rgba(180, 255, 4, 0.08)' : 'none',
+                transition: 'all 0.2s ease'
+              }}>
+                <div style={{
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '10px'
+                }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                        8. 合作條款
+                      </h3>
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        background: isAgreedTerms ? 'rgba(180, 255, 4, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                        color: isAgreedTerms ? '#b4ff04' : '#f87171',
+                        border: isAgreedTerms ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)'
+                      }}>
+                        必簽署 *
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '6px' }}>
+                      為保障雙方權益與場地安全，請點擊查閱並同意《肌動組 GYMspot 特約場館入駐合作規範》
+                    </div>
+                  </div>
+
+                  {/* Status Pill */}
+                  <div style={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    background: isAgreedTerms ? 'rgba(180, 255, 4, 0.12)' : 'rgba(245, 158, 11, 0.15)',
+                    color: isAgreedTerms ? '#b4ff04' : '#f59e0b',
+                    border: isAgreedTerms ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    {isAgreedTerms ? <CheckCircle2 size={14} color="#b4ff04" /> : <AlertCircle size={14} color="#f59e0b" />}
+                    <span>{isAgreedTerms ? '已完成條款簽署' : '尚未同意合作條款'}</span>
+                  </div>
+                </div>
+
+                {/* Terms Action Block */}
+                <div style={{
+                  background: '#121927',
+                  border: '1px solid #243248',
+                  borderRadius: '12px',
+                  padding: '18px 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '14px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '10px',
+                      background: isAgreedTerms ? 'rgba(180, 255, 4, 0.15)' : '#1a2436',
+                      border: `1px solid ${isAgreedTerms ? '#b4ff04' : '#243248'}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <FileText size={20} color={isAgreedTerms ? '#b4ff04' : '#94a3b8'} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
+                        《肌動組 GYMspot 特約場館入駐合作規範》
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                        {isAgreedTerms 
+                          ? `已於 ${agreedTermsTimestamp} 完成線上詳閱並簽署同意`
+                          : '點擊右方按鈕查閱條款，需滑動滾輪至最下方才可點擊「同意」'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleOpenTermsModal}
+                    style={{
+                      background: isAgreedTerms ? 'transparent' : 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)',
+                      color: isAgreedTerms ? '#b4ff04' : '#0a1402',
+                      border: isAgreedTerms ? '1px solid #b4ff04' : 'none',
+                      borderRadius: '10px',
+                      padding: '10px 22px',
+                      fontSize: '13.5px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: isAgreedTerms ? 'none' : '0 4px 14px rgba(180, 255, 4, 0.35)',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <FileText size={15} />
+                    <span>{isAgreedTerms ? '重新查閱條款' : '點擊查閱條款'}</span>
+                  </button>
                 </div>
               </div>
 
@@ -1158,21 +1983,25 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isAgreedTerms}
+                  title={!isAgreedTerms ? '請先點擊第 8 點查閱並同意合作條款' : '提交'}
                   style={{
-                    background: 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)',
-                    color: '#0a1402',
-                    border: 'none',
+                    background: isAgreedTerms
+                      ? 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)'
+                      : '#1a2333',
+                    color: isAgreedTerms ? '#0a1402' : '#64748b',
+                    border: isAgreedTerms ? 'none' : '1px solid #243248',
                     borderRadius: '12px',
-                    padding: '14px 36px',
+                    padding: '14px 40px',
                     fontSize: '15px',
                     fontWeight: 900,
-                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                    boxShadow: '0 4px 18px rgba(180, 255, 4, 0.45)',
+                    cursor: (isSubmitting || !isAgreedTerms) ? 'not-allowed' : 'pointer',
+                    boxShadow: isAgreedTerms ? '0 4px 18px rgba(180, 255, 4, 0.45)' : 'none',
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '8px',
+                    opacity: isAgreedTerms ? 1 : 0.55
                   }}
                 >
                   {isSubmitting ? (
@@ -1186,13 +2015,10 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                         display: 'inline-block',
                         animation: 'spin 0.8s linear infinite'
                       }} />
-                      審核資料提交中...
+                      提交中...
                     </>
                   ) : (
-                    <>
-                      <Sparkles size={16} />
-                      立即提交入駐審核 (第一波免費)
-                    </>
+                    '提交'
                   )}
                 </button>
               </div>
@@ -1264,6 +2090,310 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           </div>
         </div>
       </footer>
+
+      {/* SECTION 7: 合作條款閱讀與簽署彈窗 (Modal) */}
+      {isTermsModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 2500,
+            background: 'rgba(5, 8, 15, 0.88)',
+            backdropFilter: 'blur(12px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => setIsTermsModalOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: '740px',
+              maxHeight: '86vh',
+              background: '#0d131f',
+              border: '1px solid #243248',
+              borderRadius: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)',
+              overflow: 'hidden'
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{
+              padding: '20px 26px',
+              borderBottom: '1px solid #1e293b',
+              background: '#0a0f1a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: 'rgba(180, 255, 4, 0.12)',
+                  border: '1px solid rgba(180, 255, 4, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <ShieldCheck size={20} color="#b4ff04" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0 }}>
+                    肌動組 GYMspot · 特約場館入駐合作規範
+                  </h3>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                    請向下滾動閱讀完整條款，滑動至最下方方可啟用「我已詳閱並同意」
+                  </div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsTermsModalOpen(false)}
+                title="關閉"
+                style={{
+                  background: '#192336',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background 0.15s ease'
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Scrollable Content Box */}
+            <div
+              ref={termsScrollRef}
+              onScroll={handleTermsScroll}
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '24px 28px',
+                fontSize: '13.5px',
+                color: '#cbd5e1',
+                lineHeight: 1.8,
+                background: '#090e18'
+              }}
+            >
+              <div style={{
+                background: 'rgba(180, 255, 4, 0.08)',
+                border: '1px solid rgba(180, 255, 4, 0.25)',
+                borderRadius: '10px',
+                padding: '12px 16px',
+                marginBottom: '20px',
+                fontSize: '12.5px',
+                color: '#b4ff04',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <AlertCircle size={15} color="#b4ff04" />
+                <span><strong>審閱提醒：</strong> 依據特約合作協議規範，請向下完整滾動至條款最末端，確認您已理解雙方之權利與義務。</span>
+              </div>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '0 0 8px' }}>
+                【立約目的與平台宗旨】
+              </h4>
+              <p style={{ margin: '0 0 16px' }}>
+                肌動組 GYMspot（以下簡稱「本平台」）致力於建立全台最健全、合法、透明之自由教練場租與自主訓練媒合網絡。為維護場地安全、保障場館方合法收費權益，並規範進駐自由教練與學員之使用秩序，特訂定本《特約場館入駐合作規範》（以下簡稱「本規範」）。申請入駐之健身房、體適能工作室或運動訓練空間營運主體（以下簡稱「特約場館」）於送出登記前，應審慎閱讀本規範之全部內容。
+              </p>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第一條：場館資格與合法性擔保
+              </h4>
+              <p style={{ margin: '0 0 10px' }}>
+                1.1 特約場館保證為依法設立之公司、行號或立案團體，具備有效之設立/商業登記證明文件與稅籍編號，且實際營業項目符合運動訓練設施經營之相關法規。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                1.2 特約場館保證場地空間通過當地消防安全檢查，配置合格且在效期內之滅火設備、逃生避難指示與緊急照明設施。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                1.3 特約場館須依法為營業場所投保足額之「公共意外責任保險」，並在特約合作期間內維持保單效力，以保障進場教練與學員之人身財產安全。
+              </p>
+              <p style={{ margin: '0 0 16px' }}>
+                1.4 特約場館保證所提供之深蹲架、槓鈴、啞鈴、有氧器材及功能性訓練器材均經定期維護保養，結構穩固無安全隱患。
+              </p>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第二條：場租收費、透明定價與開放時段維護
+              </h4>
+              <p style={{ margin: '0 0 10px' }}>
+                2.1 特約場館於本平台登記並公開之「小時制場租費用」及「學員清潔費」，即為自由教練帶課預約之最終收費標準。場館承諾不得於教練或學員到場時，額外強制加收未於平台揭露之任何附加費用（如入會費、空調費、淋浴加收等）。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                2.2 特約場館得依自主營運狀況，於本平台自由設定每週 7 天、每日 8:00 至 24:00 各時段之開放預約格數。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                2.3 凡經預約確認之時段，特約場館承諾優先保留相應器材與空間，不得無故重疊預約或拒絕教練入場。
+              </p>
+              <p style={{ margin: '0 0 16px' }}>
+                2.4 若場館欲調整場租價格或清潔費政策，應提前至少 14 日於系統進行更新，已預約成立之訂單仍依預約當時之揭露價格履行。
+              </p>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第三條：進駐自由教練之審查資格與現場公約
+              </h4>
+              <p style={{ margin: '0 0 10px' }}>
+                3.1 本平台嚴格把關進駐教練專業度，教練入場帶課須具備 ACE、NASM、ACSM、NSCA 等國際認證體適能證照，或教育部體育署合格教練證，並持有在效期內之 CPR+AED 急救證照。
+              </p>
+              <p style={{ margin: '0 0 6px' }}>
+                3.2 進駐教練與其學員入場時應共同遵守特約場館現場使用公約，包含但不限於：
+              </p>
+              <ul style={{ margin: '0 0 16px', paddingLeft: '20px' }}>
+                <li>進入訓練區須穿著乾淨室內專用訓練鞋，禁止赤足、穿著拖鞋或室外鞋踩踏草皮與重訓地墊。</li>
+                <li>器材使用完畢後應主動落實槓片歸位、啞鈴擺回架上，並使用場館提供之酒精噴霧擦拭接觸表面。</li>
+                <li>深蹲架與熱門槓鈴器材在尖峰時段應秉持禮貌原則與其他訓練者友善輪替。</li>
+                <li>禁止於公共區域進行喧嘩、惡意重摔器材（非奧林匹克舉重專用區）或私自招攬非自帶學員之場館自有會員。</li>
+              </ul>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第四條：預約取消、變更與不可抗力處置
+              </h4>
+              <p style={{ margin: '0 0 10px' }}>
+                4.1 雙方同意依平台公告之取消退改政策辦理。一經預約成立，除因不可抗力事故外，原則上不予臨時任意取消，以維護場地排程秩序。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                4.2 因地震、颱風等天災經政府主管機關公告停班停課，或場館發生突發停電、管線爆裂等不可抗力事故致無法正常營運時，特約場館應立即通知本平台與預約教練，並無條件全額退還場租或協商順延補課時段。
+              </p>
+              <p style={{ margin: '0 0 16px' }}>
+                4.3 若因特約場館自身疏失（如雙重超收、未依約開門）導致教練或學員無法如期使用，特約場館除全額退費外，應積極協助安排替代時段。
+              </p>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第五條：店家身分核驗與資料安全保護
+              </h4>
+              <p style={{ margin: '0 0 10px' }}>
+                5.1 本平台採行輕量化官方身分核驗機制，不向特約場館收取公司設立公文或查核統一編號，改由平台官方人員傳送確認訊息至場館對外公開之官方聯絡管道（官方 Instagram、官方 LINE 或 Facebook 粉絲專頁）核實場館經營身分。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                5.2 特約場館保證所填寫之場館名稱、實體營業地址及對外聯絡帳號均為真實且具合法經營管理權限，絕無冒用他人品牌或場館名義之情事。
+              </p>
+              <p style={{ margin: '0 0 16px' }}>
+                5.3 本平台依嚴格之資料安全與 Row Level Security (RLS) 列級隔離政策保護場館留存之聯繫資訊，防止未經授權之外部存取或濫用。
+              </p>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第六條：違規處理、停權與特約終止
+              </h4>
+              <p style={{ margin: '0 0 6px' }}>
+                6.1 特約場館若有以下情事之一者，本平台得不經預告立即暫停或終止特約合作，並自場租地圖與列表中下架：
+              </p>
+              <ul style={{ margin: '0 0 10px', paddingLeft: '20px' }}>
+                <li>冒用他人場館名義、填寫虛偽不實之營業地址或非本人管理之官方聯絡帳號。</li>
+                <li>於現場對平台教練或學員進行言語辱罵、肢體衝突或惡意刁難。</li>
+                <li>現場違法任意超收未約定之高額費用，經教練舉證申訴查證屬實且未於期限內改善者。</li>
+                <li>營業場所發生重大公共安全事故且未妥善處置。</li>
+              </ul>
+              <p style={{ margin: '0 0 16px' }}>
+                6.2 特約場館如欲終止特約合作，得提前 30 日通知本平台，已排定並確認之預約時段仍須依約履行完畢。
+              </p>
+
+              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
+                第七條：契約生效、條款修改與準據法
+              </h4>
+              <p style={{ margin: '0 0 10px' }}>
+                7.1 特約場館於線上完成完整條款之瀏覽，並點擊「我已詳閱並同意合作條款」按鈕後，本規範即行生效，並對雙方產生法律約束力。
+              </p>
+              <p style={{ margin: '0 0 10px' }}>
+                7.2 本平台保留依市場機制或法規演進修訂本規範之權利，修訂後之內容將公告於平台或透過留存之官方 Email / LINE 通知特約場館。
+              </p>
+              <p style={{ margin: '0 0 20px' }}>
+                7.3 本規範之解釋與適用，均以中華民國法律為準據法。因本規範所生之任何爭議，雙方合意以臺灣臺北地方法院為第一審管轄法院。
+              </p>
+
+              {/* End of Document marker */}
+              <div style={{
+                textAlign: 'center',
+                padding: '18px 0 8px',
+                borderTop: '1px dashed #243248',
+                color: hasScrolledToBottom ? '#b4ff04' : '#64748b',
+                fontSize: '12.5px',
+                fontWeight: 700
+              }}>
+                {hasScrolledToBottom 
+                  ? '✓ 已閱讀至條款最底部，您現在可以點擊下方「我已詳閱並同意合作條款」按鈕'
+                  : '👇 請繼續向下滾動至最底部以啟用同意按鈕 👇'}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div style={{
+              padding: '16px 26px',
+              borderTop: '1px solid #1e293b',
+              background: '#0a0f1a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              flexWrap: 'wrap'
+            }}>
+              <div style={{ fontSize: '12.5px', color: hasScrolledToBottom ? '#b4ff04' : '#94a3b8' }}>
+                {hasScrolledToBottom ? '✓ 已完整閱讀全部條款' : '⚠️ 需滑動至最下方才可啟用同意按鈕'}
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsTermsModalOpen(false)}
+                  style={{
+                    background: '#1e293b',
+                    color: '#cbd5e1',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '10px 18px',
+                    fontSize: '13.5px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  取消
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!hasScrolledToBottom}
+                  onClick={handleAgreeTerms}
+                  style={{
+                    background: hasScrolledToBottom 
+                      ? 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)' 
+                      : '#192336',
+                    color: hasScrolledToBottom ? '#0a1402' : '#64748b',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '10px 24px',
+                    fontSize: '13.5px',
+                    fontWeight: 900,
+                    cursor: hasScrolledToBottom ? 'pointer' : 'not-allowed',
+                    boxShadow: hasScrolledToBottom ? '0 4px 14px rgba(180, 255, 4, 0.4)' : 'none',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <Check size={16} />
+                  <span>我已詳閱並同意合作條款</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

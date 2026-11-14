@@ -5,6 +5,7 @@ import {
   User, 
   FileText, 
   LogOut, 
+  LogIn,
   Building2, 
   ShieldCheck, 
   ChevronRight,
@@ -22,10 +23,13 @@ export default function Navbar({
   onOpenRegister, 
   onOpenTopUp,
   onNavigateHome,
+  onOpenAdmin,
   currentPath = '/',
   points = 0,
   isLoggedIn = true, 
-  onToggleLogin 
+  userRole = 'coach',
+  onToggleLogin,
+  onOpenAuth
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -78,16 +82,15 @@ export default function Navbar({
           height: '54px'
         }}
       >
-        {/* 圖標不用動 */}
+        {/* 圖標 100% 去背 */}
         <img 
           className="brand-icon-img"
-          src="/brand-icon.png" 
+          src="/brand-icon-transparent.png" 
           alt="肌動組圖標"
           style={{
             height: '48px',
             width: 'auto',
             objectFit: 'contain',
-            mixBlendMode: 'screen',
             flexShrink: 0
           }}
         />
@@ -95,13 +98,12 @@ export default function Navbar({
         {/* 字稍微下移一點、往右移適當間距、並且保持大字體 */}
         <img 
           className="brand-text-img"
-          src="/brand-text.png" 
+          src="/brand-text-transparent.png" 
           alt="肌動組 GYMspot"
           style={{
             height: '33px',
             width: 'auto',
             objectFit: 'contain',
-            mixBlendMode: 'screen',
             marginLeft: '6px', // 往右移一點，與圖標保持適度舒適間距
             transform: 'translateY(3px)',
             flexShrink: 0
@@ -273,7 +275,11 @@ export default function Navbar({
                 <div 
                   onClick={() => {
                     setIsMenuOpen(false);
-                    onOpenProfile();
+                    if (userRole === 'venue') {
+                      if (onOpenRegister) onOpenRegister();
+                    } else {
+                      onOpenProfile();
+                    }
                   }}
                   style={{
                     display: 'flex',
@@ -282,43 +288,42 @@ export default function Navbar({
                     padding: '12px 14px',
                     background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%)',
                     borderRadius: '14px',
-                    border: '1px solid #243248',
+                    border: userRole === 'venue' ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid #243248',
                     marginBottom: '10px',
                     cursor: 'pointer',
                     transition: 'all 0.18s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.4)';
+                    e.currentTarget.style.borderColor = userRole === 'venue' ? 'rgba(56, 189, 248, 0.7)' : 'rgba(180, 255, 4, 0.4)';
                     e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#243248';
+                    e.currentTarget.style.borderColor = userRole === 'venue' ? 'rgba(56, 189, 248, 0.35)' : '#243248';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #b4ff04 0%, #ffffff 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '15px',
-                    color: '#0a1402',
-                    boxShadow: '0 0 14px rgba(180, 255, 4, 0.4)',
-                    flexShrink: 0
-                  }}>
-                    AL
-                  </div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <div style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>
-                      林峻 (Alex Lin)
+                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#f8fafc' }}>
+                      {userRole === 'venue' ? 'FitBox 健身工坊' : '林峻 (Alex Lin)'}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#b4ff04', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 700, marginTop: '2px' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#b4ff04', display: 'inline-block', boxShadow: '0 0 6px #b4ff04' }}></span>
-                      認證自由教練
+                    <div style={{ 
+                      fontSize: '11px', 
+                      color: userRole === 'venue' ? '#38bdf8' : '#b4ff04', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '5px', 
+                      fontWeight: 700, 
+                      marginTop: '3px' 
+                    }}>
+                      <span style={{ 
+                        width: '6px', 
+                        height: '6px', 
+                        borderRadius: '50%', 
+                        background: userRole === 'venue' ? '#38bdf8' : '#b4ff04', 
+                        display: 'inline-block', 
+                        boxShadow: userRole === 'venue' ? '0 0 6px #38bdf8' : '0 0 6px #b4ff04' 
+                      }}></span>
+                      {userRole === 'venue' ? '合作場館' : '自由教練'}
                     </div>
                   </div>
                   <ChevronRight size={18} color="#94a3b8" />
@@ -336,9 +341,14 @@ export default function Navbar({
                     您目前為訪客模式
                   </div>
                   <button
+                    id="menu-btn-guest-login"
                     onClick={() => {
-                      onToggleLogin();
                       setIsMenuOpen(false);
+                      if (onOpenAuth) {
+                        onOpenAuth();
+                      } else {
+                        onToggleLogin();
+                      }
                     }}
                     style={{
                       width: '100%',
@@ -352,7 +362,7 @@ export default function Navbar({
                       cursor: 'pointer'
                     }}
                   >
-                    以教練身份登入
+                    登入/註冊
                   </button>
                 </div>
               )}
@@ -554,6 +564,37 @@ export default function Navbar({
                 <span style={{ fontSize: '11px', color: '#b4ff04' }}>審核中</span>
               </button>
 
+              {/* Menu Item 5.5: 審核管理後台 (Admin Panel) */}
+              <button
+                id="menu-btn-admin"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  if (onOpenAdmin) onOpenAdmin();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: currentPath === '/admin' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
+                  border: currentPath === '/admin' ? '1px solid rgba(180, 255, 4, 0.28)' : '1px solid transparent',
+                  borderRadius: '12px',
+                  color: '#e2e8f0',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
+                onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/admin' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+              >
+                <ShieldCheck size={18} color="#b4ff04" />
+                <span style={{ flex: 1 }}>場館入駐審核後台</span>
+                <span style={{ fontSize: '10.5px', color: '#b4ff04', background: 'rgba(180, 255, 4, 0.12)', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>ADMIN</span>
+              </button>
+
               {/* Menu Item 6: 點數儲值 */}
               <button
                 id="menu-btn-topup"
@@ -597,7 +638,15 @@ export default function Navbar({
                 id="menu-btn-logout"
                 onClick={() => {
                   setIsMenuOpen(false);
-                  onToggleLogin();
+                  if (isLoggedIn) {
+                    onToggleLogin();
+                  } else {
+                    if (onOpenAuth) {
+                      onOpenAuth();
+                    } else {
+                      onToggleLogin();
+                    }
+                  }
                 }}
                 style={{
                   display: 'flex',
@@ -622,8 +671,12 @@ export default function Navbar({
                   e.currentTarget.style.background = isLoggedIn ? 'rgba(239, 68, 68, 0.08)' : 'rgba(180, 255, 4, 0.08)';
                 }}
               >
-                <LogOut size={16} color={isLoggedIn ? '#f87171' : '#b4ff04'} />
-                <span>{isLoggedIn ? '退出登入' : '登入教練帳號'}</span>
+                {isLoggedIn ? (
+                  <LogOut size={16} color="#f87171" />
+                ) : (
+                  <LogIn size={16} color="#b4ff04" />
+                )}
+                <span>{isLoggedIn ? '退出登入' : '登入/註冊'}</span>
               </button>
 
               <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569' }}>

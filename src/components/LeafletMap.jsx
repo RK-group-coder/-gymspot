@@ -17,6 +17,11 @@ export default function LeafletMap({
   const markersRef = useRef({});
   const userMarkerRef = useRef(null);
   const tileLayerRef = useRef(null);
+  const onOpenDetailRef = useRef(onOpenDetail);
+
+  useEffect(() => {
+    onOpenDetailRef.current = onOpenDetail;
+  }, [onOpenDetail]);
 
   // Map Style: 'google' (Google Maps standard) | 'dark' (Google Maps dark) | 'satellite' (Google Hybrid)
   const [mapStyle, setMapStyle] = useState('google');
@@ -36,11 +41,14 @@ export default function LeafletMap({
     const mapInstance = L.map(mapContainerRef.current, {
       center: [initialLat, initialLng],
       zoom: 14,
-      zoomControl: false
+      zoomControl: false,
+      touchZoom: true
     });
 
-    // Zoom control at bottom-right
-    L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+    // Zoom control at bottom-right (desktop only; mobile uses pinch-to-zoom)
+    if (window.innerWidth > 768) {
+      L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+    }
 
     setMap(mapInstance);
 
@@ -141,12 +149,16 @@ export default function LeafletMap({
     // Add or update markers
     gyms.forEach((gym) => {
       const isSelected = selectedGym && selectedGym.id === gym.id;
-      const priceText = `$${gym.pricing.offPeakPerHour}`;
+      const hourlyRate = gym.pricing?.hourlyRate || gym.pricing?.offPeakPerHour || 200;
+      const priceText = `$${hourlyRate}`;
       const bubbleClass = `pin-bubble ${isSelected ? 'active' : ''}`;
 
       const iconHtml = `
-        <div class="${bubbleClass}">
-          <span>${priceText}/h</span>
+        <div class="${bubbleClass}" title="${gym.name} (${priceText}/h)">
+          <span class="pin-dot"></span>
+          <span class="pin-gym-name">${gym.name}</span>
+          <span class="pin-divider"></span>
+          <span class="pin-price-badge">${priceText}/h</span>
           <div class="pin-tail"></div>
         </div>
       `;
@@ -154,65 +166,75 @@ export default function LeafletMap({
       const customIcon = L.divIcon({
         className: 'custom-gym-pin',
         html: iconHtml,
-        iconSize: [80, 36],
-        iconAnchor: [40, 36]
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
+        popupAnchor: [0, -36]
       });
+
+      const createPopupElement = () => {
+        const container = document.createElement('div');
+        container.style.cssText = 'width: 245px; padding: 14px; font-family: system-ui, sans-serif;';
+        container.innerHTML = `
+          <div style="font-size: 11px; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.6); font-weight: 800; margin-bottom: 3px;">
+            ${gym.city} · ${gym.district}
+          </div>
+          <div style="font-size: 15px; font-weight: 800; color: #f8fafc; margin-bottom: 10px; line-height: 1.3;">
+            ${gym.name}
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; background: #0c121e; padding: 9px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #1a2436;">
+            <span style="font-size: 12px; color: #94a3b8; font-weight: 600;">小時制場租</span>
+            <div style="display: flex; align-items: baseline; gap: 2px;">
+              <span style="font-size: 18px; font-weight: 900; color: #b4ff04;">$${hourlyRate}</span>
+              <span style="font-size: 12px; color: #94a3b8; font-weight: 700;">/小時</span>
+            </div>
+          </div>
+          <button type="button" class="popup-view-gym-btn" style="
+            width: 100%;
+            text-align: center;
+            background: #b4ff04;
+            color: #0a1402;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 7px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+          ">
+            查看場館
+          </button>
+        `;
+        const viewBtn = container.querySelector('.popup-view-gym-btn');
+        if (viewBtn) {
+          viewBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (onOpenDetailRef.current) {
+              onOpenDetailRef.current(gym);
+            }
+          });
+        }
+        return container;
+      };
 
       if (markersRef.current[gym.id]) {
         markersRef.current[gym.id].setIcon(customIcon);
         markersRef.current[gym.id].setLatLng([gym.lat, gym.lng]);
+        markersRef.current[gym.id].setZIndexOffset(isSelected ? 1000 : 0);
+        markersRef.current[gym.id].setPopupContent(createPopupElement());
       } else {
-        const marker = L.marker([gym.lat, gym.lng], { icon: customIcon }).addTo(map);
+        const marker = L.marker([gym.lat, gym.lng], { 
+          icon: customIcon,
+          zIndexOffset: isSelected ? 1000 : 0 
+        }).addTo(map);
 
         marker.on('click', () => {
           onSelectGym(gym);
         });
 
-        // Popup Content
-        const googleRouteUrl = buildGoogleMapsRouteUrl(gym.address, userLat, userLng);
-        const popupHtml = `
-          <div style="width: 250px; padding: 14px; font-family: system-ui, sans-serif;">
-            <div style="font-size: 11px; color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.6); font-weight: 800; margin-bottom: 2px;">
-              ${gym.city} · ${gym.district}
-            </div>
-            <div style="font-size: 15px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; line-height: 1.3;">
-              ${gym.name}
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; background: #0c121e; padding: 8px 10px; border-radius: 8px; margin-bottom: 10px;">
-              <div>
-                <span style="font-size: 11px; color: #94a3b8;">離峰</span>
-                <span style="font-size: 16px; font-weight: 800; color: #b4ff04; margin-left: 4px;">$${gym.pricing.offPeakPerHour}</span>
-              </div>
-              <div>
-                <span style="font-size: 11px; color: #94a3b8;">尖峰</span>
-                <span style="font-size: 15px; font-weight: 800; color: #f1f5f9; margin-left: 4px;">$${gym.pricing.peakPerHour}</span>
-              </div>
-            </div>
-            <div style="font-size: 12px; color: #b4ff04; font-weight: 700; margin-bottom: 10px;">
-              ${gym.pricing.studentCleanFee === 0 ? '✓ 學員完全免收清潔費' : `• 學員清潔費 $${gym.pricing.studentCleanFee}`}
-            </div>
-            <div style="display: flex; gap: 6px;">
-              <a href="${googleRouteUrl}" target="_blank" rel="noopener noreferrer" style="
-                flex: 1; 
-                text-align: center;
-                background: #b4ff04; 
-                color: #0a1402; 
-                text-decoration: none; 
-                padding: 7px 10px; 
-                border-radius: 6px; 
-                font-weight: 800; 
-                font-size: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 4px;
-              ">
-                Google 導航
-              </a>
-            </div>
-          </div>
-        `;
-        marker.bindPopup(popupHtml, { maxWidth: 280, minWidth: 240 });
+        marker.bindPopup(createPopupElement(), { maxWidth: 280, minWidth: 240 });
 
         markersRef.current[gym.id] = marker;
       }

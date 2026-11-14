@@ -1,18 +1,10 @@
 import React from 'react';
 import { 
-  MapPin, 
   Navigation, 
-  Star, 
-  ShieldCheck, 
-  Award, 
-  Dumbbell, 
-  Clock, 
-  CheckCircle2, 
-  ExternalLink,
-  MessageCircle,
-  FileText
+  Calendar,
+  Eye
 } from 'lucide-react';
-import { formatDistance, buildGoogleMapsRouteUrl } from '../utils/geo';
+import { formatDistance, buildGoogleMapsRouteUrl, buildGoogleMapsPlaceUrl } from '../utils/geo';
 
 export default function GymCard({ 
   gym, 
@@ -20,11 +12,11 @@ export default function GymCard({
   userLng, 
   isSelected, 
   onSelect, 
-  onOpenDetail 
+  onOpenDetail,
+  onOpenBooking
 }) {
   const googleRouteUrl = buildGoogleMapsRouteUrl(gym.address, userLat, userLng);
-  const isFreeCleanFee = gym.pricing.studentCleanFee === 0;
-
+  const googlePlaceUrl = gym.googleMapsUrl || buildGoogleMapsPlaceUrl(gym.name, gym.address);
   return (
     <div
       onClick={onSelect}
@@ -45,7 +37,7 @@ export default function GymCard({
       }}
     >
 
-      {/* Top Image + Badges */}
+      {/* Top Image + Distance Badge */}
       <div style={{ position: 'relative', height: '170px', overflow: 'hidden' }}>
         <img
           src={gym.coverImage}
@@ -89,34 +81,13 @@ export default function GymCard({
             <span>距您 {formatDistance(gym.distanceKm)}</span>
           </div>
         )}
-
-        {/* Rating */}
-        <div style={{
-          position: 'absolute',
-          bottom: '10px',
-          left: '12px',
-          background: 'rgba(17, 24, 39, 0.85)',
-          backdropFilter: 'blur(8px)',
-          color: '#fbbf24',
-          fontSize: '12px',
-          fontWeight: 700,
-          padding: '3px 8px',
-          borderRadius: '6px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px'
-        }}>
-          <Star size={13} fill="#fbbf24" color="#fbbf24" />
-          <span>{gym.rating}</span>
-          <span style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 500 }}>({gym.reviewCount})</span>
-        </div>
       </div>
 
       {/* Card Body */}
       <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1, gap: '12px' }}>
-        {/* Name and Verification */}
+        {/* Name and Region */}
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+          <div style={{ marginBottom: '4px' }}>
             <span style={{
               fontSize: '11px',
               color: '#ffffff',
@@ -127,37 +98,16 @@ export default function GymCard({
             }}>
               {gym.city} · {gym.district}
             </span>
-            {gym.isVerified && (
-              <span style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '3px', 
-                color: '#b4ff04', 
-                fontSize: '11px', 
-                fontWeight: 700,
-                background: 'rgba(180, 255, 4, 0.12)',
-                padding: '1px 6px',
-                borderRadius: '4px'
-              }}>
-                <ShieldCheck size={12} /> 已查核營登保險
-              </span>
-            )}
           </div>
           <h3 style={{ 
             fontSize: '17px', 
             fontWeight: 800, 
             color: '#f8fafc', 
             lineHeight: 1.35,
-            marginBottom: '4px'
+            margin: 0
           }}>
             {gym.name}
           </h3>
-          <p style={{ fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <MapPin size={13} color="#64748b" style={{ flexShrink: 0 }} />
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {gym.nearMrt}
-            </span>
-          </p>
         </div>
 
         {/* Pricing Dashboard */}
@@ -170,113 +120,78 @@ export default function GymCard({
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          <div>
-            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>離峰時段場租</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-              <span style={{ fontSize: '22px', fontWeight: 900, color: '#b4ff04' }}>
-                ${gym.pricing.offPeakPerHour}
-              </span>
-              <span style={{ fontSize: '12px', color: '#94a3b8' }}>/小時</span>
-            </div>
-          </div>
-
-          <div style={{ width: '1px', height: '32px', background: '#1e293b' }} />
-
-          <div>
-            <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>尖峰時段場租</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-              <span style={{ fontSize: '20px', fontWeight: 800, color: '#f3f4f6' }}>
-                ${gym.pricing.peakPerHour}
-              </span>
-              <span style={{ fontSize: '12px', color: '#94a3b8' }}>/小時</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Clean Fee Highlight */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          padding: '6px 10px',
-          borderRadius: '8px',
-          background: isFreeCleanFee ? 'rgba(180, 255, 4, 0.12)' : 'rgba(234, 179, 8, 0.08)',
-          border: isFreeCleanFee ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(234, 179, 8, 0.2)'
-        }}>
-          <CheckCircle2 size={14} color={isFreeCleanFee ? '#b4ff04' : '#eab308'} style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '12px', fontWeight: 700, color: isFreeCleanFee ? '#b4ff04' : '#facc15' }}>
-            {isFreeCleanFee ? '學員免人頭清潔費' : `學員清潔費 $${gym.pricing.studentCleanFee}/次`}
-          </span>
-          <span style={{ fontSize: '11px', color: '#94a3b8', marginLeft: 'auto' }}>
-            {gym.pricing.packageDeals?.[0]?.note || '包套另有優惠'}
-          </span>
-        </div>
-
-        {/* Equipment Badges */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          <span style={{
-            fontSize: '11px',
-            background: '#1a2436',
-            color: '#cbd5e1',
-            padding: '3px 8px',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <Dumbbell size={11} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))' }} /> 深蹲架 {gym.equipment.squatRacksCount} 座
-          </span>
-          {gym.equipment.turfZone && (
-            <span style={{
-              fontSize: '11px',
-              background: '#1a2436',
-              color: '#b4ff04',
-              padding: '3px 8px',
-              borderRadius: '6px'
-            }}>
-              🌿 專用草皮
+          <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600 }}>小時制場租</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
+            <span style={{ fontSize: '24px', fontWeight: 900, color: '#b4ff04' }}>
+              ${gym.pricing.hourlyRate || gym.pricing.offPeakPerHour || 200}
             </span>
-          )}
-          {gym.equipment.eleikoPlates && (
-            <span style={{
-              fontSize: '11px',
-              background: '#1a2436',
-              color: '#fbbf24',
-              padding: '3px 8px',
-              borderRadius: '6px'
-            }}>
-              ⭐ Eleiko賽事槓
-            </span>
-          )}
+            <span style={{ fontSize: '12px', color: '#94a3b8' }}>/小時</span>
+          </div>
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', paddingTop: '6px' }}>
-          {/* Detail View Button */}
+        <div style={{ display: 'flex', gap: '6px', marginTop: 'auto', paddingTop: '6px' }}>
+          {/* Booking Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onOpenDetail(gym);
+              if (onOpenBooking) {
+                onOpenBooking(gym);
+              } else {
+                onOpenDetail(gym, 'booking');
+              }
             }}
             style={{
               flex: 1,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px',
+              gap: '4px',
               background: '#1e293b',
               color: '#f8fafc',
               border: '1px solid #334155',
               borderRadius: '10px',
-              padding: '9px 12px',
-              fontSize: '13px',
+              padding: '9px 6px',
+              fontSize: '12.5px',
               fontWeight: 700,
               cursor: 'pointer',
-              transition: 'background 0.18s'
+              transition: 'background 0.18s',
+              whiteSpace: 'nowrap'
             }}
           >
-            <FileText size={15} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))' }} />
-            <span>看完整報價</span>
+            <Calendar size={14} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))' }} />
+            <span>預約上課</span>
+          </button>
+
+          {/* View Venue on Google Maps Button (查看場館) */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenDetail(gym, 'view');
+            }}
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '4px',
+              background: '#162235',
+              color: '#f8fafc',
+              border: '1px solid #2a3b53',
+              borderRadius: '10px',
+              padding: '9px 6px',
+              fontSize: '12.5px',
+              fontWeight: 700,
+              textDecoration: 'none',
+              cursor: 'pointer',
+              transition: 'background 0.18s',
+              whiteSpace: 'nowrap'
+            }}
+            title="查看場館所有照片與場館介紹"
+          >
+            <Eye size={14} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))' }} />
+            <span>查看場館</span>
           </button>
 
           {/* Google Maps Route Button */}
@@ -286,19 +201,21 @@ export default function GymCard({
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             style={{
+              flex: 1,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px',
+              gap: '4px',
               background: 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)',
               color: '#0a1402',
               textDecoration: 'none',
               borderRadius: '10px',
-              padding: '9px 14px',
-              fontSize: '13px',
+              padding: '9px 6px',
+              fontSize: '12.5px',
               fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: '0 4px 10px rgba(180, 255, 4, 0.35)'
+              boxShadow: '0 4px 10px rgba(180, 255, 4, 0.35)',
+              whiteSpace: 'nowrap'
             }}
             title="開啟 Google Maps 路線導航"
           >

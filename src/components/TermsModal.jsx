@@ -76,11 +76,6 @@ export default function TermsModal({ isOpen, onClose }) {
             <h2 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0, letterSpacing: '0.3px' }}>
               肌動組 GYMspot · 使用者服務條款暨個人資料隱私保障協議
             </h2>
-            <p style={{ fontSize: '11px', color: '#94a3b8', margin: '3px 0 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ color: '#b4ff04', fontWeight: 700 }}>● 合約版本 V2.4</span>
-              <span>·</span>
-              <span>生效日期：2026 年 10 月 · 適用於全體教練、場館與使用者</span>
-            </p>
           </div>
 
           <button

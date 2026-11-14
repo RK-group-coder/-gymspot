@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
+import { TAIWAN_DISTRICTS } from './utils/geo';
 import CoachMapFilter from './components/CoachMapFilter';
 import LeafletMap from './components/LeafletMap';
 import GymCard from './components/GymCard';
 import GymDetailModal from './components/GymDetailModal';
+import GymBookingModal from './components/GymBookingModal';
 import MonetizationModal from './components/MonetizationModal';
 import CoachProModal from './components/CoachProModal';
 import ProfileModal from './components/ProfileModal';
@@ -11,22 +13,34 @@ import TermsModal from './components/TermsModal';
 import TopUpModal from './components/TopUpModal';
 import AboutPage from './components/AboutPage';
 import GymRegisterPage from './components/GymRegisterPage';
+import AdminDashboard from './components/AdminDashboard';
+import AuthModal from './components/AuthModal';
+import { supabase } from './lib/supabase';
 import { INITIAL_GYMS, PRESET_LOCATIONS } from './data/mockGyms';
 import { calculateDistanceKm, getCurrentPositionAsync } from './utils/geo';
+import { getApprovedGyms } from './utils/adminStorage';
 import { 
   MapPin, 
   Map as MapIcon, 
   ListFilter, 
   Dumbbell, 
   AlertCircle, 
-  CheckCircle2,
-  Building2,
-  Navigation
+  CheckCircle2, 
+  Building2, 
+  Navigation 
 } from 'lucide-react';
 
 export default function App() {
-  // Master Gyms List (supports dynamic additions from registration form)
-  const [gyms, setGyms] = useState(INITIAL_GYMS);
+  // Master Gyms List (supports dynamic additions from registration form and admin approval)
+  const [gyms, setGyms] = useState(() => {
+    try {
+      const approved = getApprovedGyms();
+      if (Array.isArray(approved) && approved.length > 0) {
+        return [...approved, ...INITIAL_GYMS];
+      }
+    } catch (e) {}
+    return INITIAL_GYMS;
+  });
 
   // User Location State (Default: 台北大安商圈)
   const [userLocation, setUserLocation] = useState({
@@ -47,12 +61,16 @@ export default function App() {
   // UI Selection & Modals
   const [selectedGym, setSelectedGym] = useState(null);
   const [detailModalGym, setDetailModalGym] = useState(null);
+  const [detailModalMode, setDetailModalMode] = useState('view');
+  const [bookingModalGym, setBookingModalGym] = useState(null);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isMonetizationModalOpen, setIsMonetizationModalOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userRole, setUserRole] = useState('coach'); // 'coach' | 'venue'
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Lightweight SPA path routing (supports direct URL e.g. /about)
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
@@ -112,22 +130,82 @@ export default function App() {
     setSheetSnap(next);
   };
   const [isTopUpOpen, setIsTopUpOpen] = useState(false);
-  const [points, setPoints] = useState(() => Number(localStorage.getItem('gymspot_points') || 0));
+  const [points, setPoints] = useState(() => {
+    const saved = localStorage.getItem('gymspot_points');
+    return saved !== null ? Number(saved) : 300; // 預設 300 點
+  });
   useEffect(() => { localStorage.setItem('gymspot_points', String(points)); }, [points]);
   const [toastMessage, setToastMessage] = useState(null);
   const [mobileTab, setMobileTab] = useState('split'); // 'split', 'list', 'map'
 
-  const handleToggleLogin = () => {
-    if (isLoggedIn) {
-      setIsLoggedIn(false);
-      setToastMessage('已成功退出登入，切換為訪客模式');
-    } else {
-      setIsLoggedIn(true);
-      setToastMessage('歡迎回來！已登入認證自由教練 (Alex Lin)');
-    }
+  // Supabase Google Auth Session Listener
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setIsLoggedIn(true);
+        const meta = session.user.user_metadata || {};
+        const realName = meta.full_name || meta.name || session.user.email?.split('@')[0] || 'Alex Lin';
+        try {
+          const saved = localStorage.getItem('gymspot_coach_profile');
+          const current = saved ? JSON.parse(saved) : {};
+          localStorage.setItem('gymspot_coach_profile', JSON.stringify({
+            ...current,
+            name: realName,
+            email: session.user.email || current.email
+          }));
+        } catch (e) {}
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setIsLoggedIn(true);
+        const meta = session.user.user_metadata || {};
+        const realName = meta.full_name || meta.name || session.user.email?.split('@')[0] || 'Google 用戶';
+        setToastMessage(`Google 驗證成功！歡迎回來，${realName}`);
+        setTimeout(() => setToastMessage(null), 3500);
+
+        try {
+          const saved = localStorage.getItem('gymspot_coach_profile');
+          const current = saved ? JSON.parse(saved) : {};
+          localStorage.setItem('gymspot_coach_profile', JSON.stringify({
+            ...current,
+            name: realName,
+            email: session.user.email || current.email
+          }));
+        } catch (e) {}
+      } else if (event === 'SIGNED_OUT') {
+        setIsLoggedIn(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogin = (userData) => {
+    setIsLoggedIn(true);
+    setUserRole('coach');
+    setIsAuthModalOpen(false);
+    const displayName = userData?.name || 'Alex Lin';
+    setToastMessage(`Google 驗證成功！歡迎回來，${displayName}`);
     setTimeout(() => {
       setToastMessage(null);
-    }, 3000);
+    }, 3500);
+  };
+
+  const handleLoginAsCoach = handleLogin;
+
+  const handleToggleLogin = async () => {
+    if (isLoggedIn) {
+      await supabase.auth.signOut().catch(() => {});
+      setIsLoggedIn(false);
+      setToastMessage('已成功退出登入，切換為訪客模式');
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+    } else {
+      setIsAuthModalOpen(true);
+    }
   };
 
   // City Map Focus Coordinates
@@ -146,11 +224,17 @@ export default function App() {
       counts[g.city] = (counts[g.city] || 0) + 1;
     });
     const knownOrder = ['台北市', '新北市', '台中市', '高雄市'];
-    const otherCities = Object.keys(counts).filter(c => !knownOrder.includes(c));
-    const sortedCities = [...knownOrder.filter(c => counts[c]), ...otherCities];
+    const allCities = Object.keys(TAIWAN_DISTRICTS);
+    const otherCities = [
+      ...allCities.filter(c => !knownOrder.includes(c)),
+      ...Object.keys(counts).filter(c => !allCities.includes(c))
+    ];
+    const sortedCities = [...knownOrder, ...otherCities];
+    // Cities with gyms first (by known order / count), empty ones after
+    sortedCities.sort((a, b) => (counts[b] ? 1 : 0) - (counts[a] ? 1 : 0));
     return [
       { name: '全部縣市', count: gyms.length },
-      ...sortedCities.map(city => ({ name: city, count: counts[city] }))
+      ...sortedCities.map(city => ({ name: city, count: counts[city] || 0 }))
     ];
   }, [gyms]);
 
@@ -164,10 +248,17 @@ export default function App() {
     relevantGyms.forEach(g => {
       counts[g.district] = (counts[g.district] || 0) + 1;
     });
-    const sortedDistricts = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const allDistricts = activeCity !== '全部縣市' && TAIWAN_DISTRICTS[activeCity]
+      ? TAIWAN_DISTRICTS[activeCity]
+      : [];
+    const names = [...allDistricts, ...Object.keys(counts).filter(d => !allDistricts.includes(d))];
+    const sortedDistricts = names
+      .map((d, i) => ({ d, i }))
+      .sort((a, b) => ((counts[b.d] || 0) - (counts[a.d] || 0)) || (a.i - b.i))
+      .map(x => x.d);
     return [
       { name: '全部行政區', count: relevantGyms.length },
-      ...sortedDistricts.map(district => ({ name: district, count: counts[district] }))
+      ...sortedDistricts.map(district => ({ name: district, count: counts[district] || 0 }))
     ];
   }, [gyms, activeCity]);
 
@@ -260,7 +351,7 @@ export default function App() {
       list = list.filter(gym => 
         gym.name.toLowerCase().includes(q) ||
         gym.address.toLowerCase().includes(q) ||
-        gym.nearMrt.toLowerCase().includes(q) ||
+        (gym.nearMrt && gym.nearMrt.toLowerCase().includes(q)) ||
         gym.district.toLowerCase().includes(q) ||
         gym.city.toLowerCase().includes(q) ||
         (gym.tags && gym.tags.some(t => t.toLowerCase().includes(q)))
@@ -289,6 +380,15 @@ export default function App() {
 
   const verifiedCount = useMemo(() => gyms.filter(g => g.isVerified).length, [gyms]);
 
+  // Full-page /admin route (場館入駐審核管理後台)
+  if (currentPath === '/admin' || currentPath === '/admin/') {
+    return (
+      <AdminDashboard
+        onNavigateHome={() => navigateTo('/')}
+      />
+    );
+  }
+
   // Full-page /about route
   if (currentPath === '/about' || currentPath === '/about/') {
     return (
@@ -299,11 +399,14 @@ export default function App() {
           onOpenTerms={() => setIsTermsModalOpen(true)}
           onOpenAbout={() => navigateTo('/about')}
           onOpenRegister={() => navigateTo('/partner')}
+          onOpenAdmin={() => navigateTo('/admin')}
           onOpenTopUp={() => setIsTopUpOpen(true)}
           currentPath="/about"
           points={points}
           isLoggedIn={isLoggedIn}
+          userRole={userRole}
           onToggleLogin={handleToggleLogin}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
         />
         {isTopUpOpen && (
           <TopUpModal
@@ -331,6 +434,15 @@ export default function App() {
           isOpen={isTermsModalOpen}
           onClose={() => setIsTermsModalOpen(false)}
         />
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onLogin={handleLogin}
+          onOpenVenueRegister={() => {
+            setIsAuthModalOpen(false);
+            navigateTo('/partner');
+          }}
+        />
       </div>
     );
   }
@@ -352,11 +464,14 @@ export default function App() {
           onOpenTerms={() => setIsTermsModalOpen(true)}
           onOpenAbout={() => navigateTo('/about')}
           onOpenRegister={() => navigateTo('/partner')}
+          onOpenAdmin={() => navigateTo('/admin')}
           onOpenTopUp={() => setIsTopUpOpen(true)}
           currentPath="/partner"
           points={points}
           isLoggedIn={isLoggedIn}
+          userRole={userRole}
           onToggleLogin={handleToggleLogin}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
         />
         {isTopUpOpen && (
           <TopUpModal
@@ -383,6 +498,15 @@ export default function App() {
         <TermsModal
           isOpen={isTermsModalOpen}
           onClose={() => setIsTermsModalOpen(false)}
+        />
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onLogin={handleLogin}
+          onOpenVenueRegister={() => {
+            setIsAuthModalOpen(false);
+            navigateTo('/partner');
+          }}
         />
         {toastMessage && (
           <div 
@@ -421,10 +545,13 @@ export default function App() {
         onOpenTerms={() => setIsTermsModalOpen(true)}
         onOpenAbout={() => navigateTo('/about')}
         onOpenRegister={() => navigateTo('/partner')}
+        onOpenAdmin={() => navigateTo('/admin')}
         onOpenTopUp={() => setIsTopUpOpen(true)}
         points={points}
         isLoggedIn={isLoggedIn}
+        userRole={userRole}
         onToggleLogin={handleToggleLogin}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
       {isTopUpOpen && (
         <TopUpModal
@@ -502,9 +629,6 @@ export default function App() {
               <span style={{ fontSize: '14px', fontWeight: 700, color: '#e2e8f0' }}>
                 場租健身房清單 ({processedGyms.length})
               </span>
-              <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 700 }}>
-                ✓ 100% 查核保證
-              </span>
             </div>
 
             {/* Cards List */}
@@ -549,7 +673,11 @@ export default function App() {
                   userLng={userLocation.lng}
                   isSelected={selectedGym && selectedGym.id === gym.id}
                   onSelect={() => setSelectedGym(gym)}
-                  onOpenDetail={(targetGym) => setDetailModalGym(targetGym)}
+                  onOpenBooking={(targetGym) => setBookingModalGym(targetGym)}
+                  onOpenDetail={(targetGym, mode = 'view') => {
+                    setDetailModalGym(targetGym);
+                    setDetailModalMode(mode);
+                  }}
                 />
               ))
             )}
@@ -621,7 +749,32 @@ export default function App() {
           gym={detailModalGym}
           userLat={userLocation.lat}
           userLng={userLocation.lng}
+          mode={detailModalMode}
+          onOpenBooking={(targetGym) => setBookingModalGym(targetGym)}
           onClose={() => setDetailModalGym(null)}
+          userPoints={points}
+          onDeductPoints={(pts) => setPoints(p => Math.max(0, p - pts))}
+          onOpenTopUp={() => setIsTopUpOpen(true)}
+          onBookingSuccess={(receipt) => {
+            setToastMessage(`預約成功！已扣抵 ${receipt.totalPoints} 點，單號 #${receipt.bookingId} (${receipt.dateStr})`);
+            setTimeout(() => setToastMessage(null), 4500);
+          }}
+        />
+      )}
+
+      {/* 6. Gym Booking Modal (小時制場租時段預約) */}
+      {bookingModalGym && (
+        <GymBookingModal
+          gym={bookingModalGym}
+          isOpen={Boolean(bookingModalGym)}
+          onClose={() => setBookingModalGym(null)}
+          userPoints={points}
+          onDeductPoints={(pts) => setPoints(p => Math.max(0, p - pts))}
+          onOpenTopUp={() => setIsTopUpOpen(true)}
+          onBookingSuccess={(receipt) => {
+            setToastMessage(`預約成功！已扣抵 ${receipt.totalPoints} 點，單號 #${receipt.bookingId} (${receipt.dateStr})`);
+            setTimeout(() => setToastMessage(null), 4500);
+          }}
         />
       )}
 
@@ -649,6 +802,17 @@ export default function App() {
       <TermsModal
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
+      />
+
+      {/* Auth Modal (正常的登入/註冊) */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLogin={handleLogin}
+        onOpenVenueRegister={() => {
+          setIsAuthModalOpen(false);
+          navigateTo('/partner');
+        }}
       />
 
       {/* Toast Notification */}

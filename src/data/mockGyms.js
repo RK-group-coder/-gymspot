@@ -47,7 +47,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "場館已投保 3,000 萬公共意外責任險",
-      cancellationPolicy: "上課前 6 小時於系統一鍵取消，免扣點數"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -99,7 +99,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "含公共意外險",
-      cancellationPolicy: "前 12 小時取消免責"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -255,7 +255,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "3,000萬意外責任險",
-      cancellationPolicy: "24 小時前自由取消"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -307,7 +307,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "含公共安全意外險",
-      cancellationPolicy: "課前 8 小時可取消"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -339,7 +339,7 @@ export const INITIAL_GYMS = [
         { hours: 50, price: 7000, note: "贈送專屬置物櫃一個月" }
       ],
       peakHoursRange: "平日 18:00 - 22:00",
-      offPeakHoursRange: "平日 07:00 - 18:00 & 週末全日",
+      offPeakHoursRange: "平日 08:00 - 18:00 & 週末全日",
       minRentalMinutes: 60
     },
     equipment: {
@@ -359,7 +359,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "3,000 萬公共責任險",
-      cancellationPolicy: "24小時前取消退全額"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -411,7 +411,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "含公共意外險",
-      cancellationPolicy: "開課前 12 小時可免費取消"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -515,7 +515,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "完備公共意外險",
-      cancellationPolicy: "2 小時前取消皆可"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -567,7 +567,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "含公共意外責任險",
-      cancellationPolicy: "前 12 小時取消免收費"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -619,7 +619,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "含公共意外險",
-      cancellationPolicy: "4 小時前可彈性延期"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,
@@ -671,7 +671,7 @@ export const INITIAL_GYMS = [
       cprRequired: true,
       indoorShoesOnly: true,
       insuranceIncluded: "公共意外險完備",
-      cancellationPolicy: "開課前 8 小時可取消"
+      cancellationPolicy: "一經預約即無法取消"
     },
     isVerified: true,
     isFeatured: false,

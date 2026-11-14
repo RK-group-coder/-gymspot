@@ -135,12 +135,6 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
           >
             <Check size={17} /> 確認儲值 NT$ {plan.price}
           </button>
-          <div style={{
-            fontSize: '11px', color: '#64748b', textAlign: 'center', marginTop: '12px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px'
-          }}>
-            <ShieldCheck size={12} color="#64748b" /> 示範用流程，尚未串接實際金流
-          </div>
         </div>
       </div>
     </div>

@@ -1,399 +1,855 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
-  User, 
   Award, 
   MapPin, 
-  DollarSign, 
-  Clock, 
-  Dumbbell, 
+  Phone,
+  Mail,
   X, 
   CheckCircle2, 
-  Star, 
-  ShieldCheck, 
-  Phone, 
   Edit3,
-  Calendar,
-  Sparkles
+  Eye,
+  Plus,
+  Trash2,
+  Upload,
+  FileImage,
+  ShieldAlert,
+  Download
 } from 'lucide-react';
+import { getStoredCoachCerts } from '../utils/certUtils';
 
 export default function ProfileModal({ isOpen, onClose }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [coachProfile, setCoachProfile] = useState({
-    name: '林峻 (Alex Lin)',
-    title: '肌力體能自由教練 · NSCA-CSCS',
-    bio: '專注於肌力三項強化、女性無痛阻力訓練與上班族體態雕塑。重視動作控制與安全關節排列，讓學員在沒有運動傷害的前提下穩定突破個人紀錄。',
-    experience: '6 年自由教練帶課資歷',
-    hourlyRate: '1,800 ~ 2,200',
-    primaryAreas: '台北大安 / 信義 / 板橋',
-    instagram: '@alex_coach_fit',
-    lineId: 'coach_alex77',
-    certifications: [
-      'NSCA - Certified Strength and Conditioning Specialist (CSCS)',
-      'ACE - Certified Personal Trainer (ACE-CPT)',
-      '中華民國紅十字會 CPR+AED 急救員認證',
-      'FMS 功能性動作篩檢 Lv.1 & Lv.2'
-    ],
-    specialties: ['肌力與體能', '深蹲硬舉專項', '體態雕塑', '活動度優化', '新手阻力訓練']
+  const [coachProfile, setCoachProfile] = useState(() => {
+    const saved = localStorage.getItem('gymspot_coach_profile');
+    const defaultCerts = getStoredCoachCerts();
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          coachId: parsed.coachId || 'A001',
+          name: parsed.name || '林峻 (Alex Lin)',
+          phone: parsed.phone || '0912-345-678',
+          email: parsed.email || 'alex.lin.fitness@gmail.com',
+          primaryAreas: parsed.primaryAreas || '台北大安 / 信義 / 板橋',
+          instagram: parsed.instagram || '@alex_coach_fit',
+          certifications: Array.isArray(parsed.certifications) && parsed.certifications.length > 0 
+            ? parsed.certifications.map((item, idx) => {
+                if (typeof item === 'string') {
+                  const matched = defaultCerts.find(d => d.name === item);
+                  return matched || {
+                    id: `cert-${idx}`,
+                    name: item,
+                    code: `LIC-${idx + 100}`,
+                    uploadDate: '已檢附',
+                    imageUrl: defaultCerts[0]?.imageUrl || ''
+                  };
+                }
+                return item;
+              })
+            : defaultCerts
+        };
+      } catch (e) {
+        // fallback
+      }
+    }
+    return {
+      coachId: 'A001',
+      name: '林峻 (Alex Lin)',
+      phone: '0912-345-678',
+      email: 'alex.lin.fitness@gmail.com',
+      primaryAreas: '台北大安 / 信義 / 板橋',
+      instagram: '@alex_coach_fit',
+      certifications: defaultCerts
+    };
   });
+
+  // State for adding a new certification
+  const [newCertName, setNewCertName] = useState('');
+  const [newCertImage, setNewCertImage] = useState(null);
+  const [newCertImageName, setNewCertImageName] = useState('');
+  const fileInputRef = useRef(null);
+
+  // State for viewing certificate in Lightbox
+  const [viewingCert, setViewingCert] = useState(null);
 
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   if (!isOpen) return null;
 
+  // Handle image upload via FileReader
+  const handleImageFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('請選取 JPG、PNG 等圖片格式檔案！');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('圖片檔案過大，請選取小於 5MB 的照片！');
+      return;
+    }
+
+    setNewCertImageName(file.name);
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      setNewCertImage(loadEvent.target?.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Add certification - STRICT: MUST ATTACH IMAGE
+  const handleAddCertification = () => {
+    if (!newCertName.trim()) {
+      alert('請先輸入證照全名！例如：NASM-CPT、CPR+AED 等');
+      return;
+    }
+
+    // 關鍵強制限制：必須附上圖片才能新增證照！
+    if (!newCertImage) {
+      alert('【必須檢附證照圖檔】\n\n為保障場館方查核與學員訓練安全，新增證照時「必須檢附證照正面照片或電子證明」！\n請先選取證照圖檔後再點擊新增。');
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+      return;
+    }
+
+    const newCertItem = {
+      id: `cert-custom-${Date.now()}`,
+      name: newCertName.trim(),
+      code: `LIC-SELF-${Math.floor(1000 + Math.random() * 9000)}`,
+      uploadDate: new Date().toLocaleDateString('zh-TW'),
+      imageUrl: newCertImage
+    };
+
+    setCoachProfile(prev => ({
+      ...prev,
+      certifications: [...prev.certifications, newCertItem]
+    }));
+
+    // Reset input fields
+    setNewCertName('');
+    setNewCertImage(null);
+    setNewCertImageName('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Remove certification
+  const handleRemoveCertification = (idToRemove) => {
+    setCoachProfile(prev => ({
+      ...prev,
+      certifications: prev.certifications.filter(c => c.id !== idToRemove)
+    }));
+  };
+
+  // Save changes
   const handleSave = () => {
     setIsEditing(false);
+    try {
+      localStorage.setItem('gymspot_coach_profile', JSON.stringify(coachProfile));
+    } catch (e) {
+      // ignore
+    }
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 2000,
-      background: 'rgba(5, 8, 15, 0.85)',
-      backdropFilter: 'blur(10px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px'
-    }}>
-      {/* Modal Dialog */}
-      <div 
-        id="profile-modal-card"
-        style={{
-          width: '100%',
-          maxWidth: '680px',
-          maxHeight: '90vh',
-          background: '#0d131f',
-          border: '1px solid #243248',
-          borderRadius: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.7)',
-          overflow: 'hidden'
-        }}
-      >
-        {/* Header Cover Banner */}
-        <div style={{
-          height: '90px',
-          background: 'linear-gradient(135deg, #064e3b 0%, #065f46 40%, #0f172a 100%)',
-          position: 'relative',
-          padding: '16px 24px',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'flex-start'
-        }}>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: 'none',
-              color: '#f8fafc',
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <X size={20} />
-          </button>
-        </div>
+    <>
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 2000,
+        background: 'rgba(5, 8, 15, 0.85)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}>
+        {/* Modal Dialog */}
+        <div 
+          id="profile-modal-card"
+          style={{
+            width: '100%',
+            maxWidth: '640px',
+            maxHeight: '90vh',
+            background: '#0d131f',
+            border: '1px solid #243248',
+            borderRadius: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.7)',
+            overflow: 'hidden'
+          }}
+        >
+          {/* GYMspot Brand Header Banner */}
+          <div style={{
+            height: '76px',
+            background: 'linear-gradient(180deg, rgba(8, 12, 20, 0.85) 0%, rgba(13, 19, 31, 0.98) 100%), url("/gym-dark-bg.jpg") center 40%/cover no-repeat',
+            position: 'relative',
+            padding: '14px 24px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid rgba(180, 255, 4, 0.35)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.45)'
+          }}>
+            {/* Left: GYMspot Brand Logo & Text (100% 去背透明圖檔，無黑邊黑框) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', userSelect: 'none' }}>
+              <img 
+                src="/brand-icon-transparent.png" 
+                alt="肌動組圖標" 
+                style={{ 
+                  height: '40px', 
+                  width: 'auto', 
+                  objectFit: 'contain',
+                  flexShrink: 0
+                }} 
+              />
+              <img 
+                src="/brand-text-transparent.png" 
+                alt="肌動組 GYMspot" 
+                style={{ 
+                  height: '25px', 
+                  width: 'auto', 
+                  objectFit: 'contain',
+                  marginLeft: '4px',
+                  transform: 'translateY(1px)',
+                  flexShrink: 0
+                }} 
+              />
+              <span style={{
+                marginLeft: '8px',
+                background: 'rgba(180, 255, 4, 0.12)',
+                border: '1px solid rgba(180, 255, 4, 0.35)',
+                color: '#b4ff04',
+                fontSize: '11px',
+                fontWeight: 800,
+                padding: '3px 8px',
+                borderRadius: '6px',
+                letterSpacing: '0.4px',
+                display: 'inline-flex',
+                alignItems: 'center'
+              }}>
+                教練專區
+              </span>
+            </div>
 
-        {/* Profile Info Summary */}
-        <div style={{
-          padding: '0 24px 16px',
-          position: 'relative',
-          marginTop: '-42px',
-          borderBottom: '1px solid #1e293b'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '16px' }}>
-              {/* Avatar */}
-              <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '20px',
-                background: 'linear-gradient(135deg, #b4ff04 0%, #ffffff 100%)',
+            {/* Right: Close Button */}
+            <button
+              onClick={onClose}
+              style={{
+                background: 'rgba(0, 0, 0, 0.55)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: '#f8fafc',
+                cursor: 'pointer',
+                padding: '7px',
+                borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '4px solid #0d131f',
-                boxShadow: '0 8px 20px rgba(0,0,0,0.4)',
-                fontSize: '28px',
-                fontWeight: 900,
-                color: '#0a1402'
-              }}>
-                AL
-              </div>
-
-              <div style={{ paddingBottom: '4px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    {coachProfile.name}
-                  </h2>
-                  <span style={{
-                    background: 'rgba(180, 255, 4, 0.18)',
-                    color: '#b4ff04',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    padding: '2px 8px',
-                    borderRadius: '9999px',
-                    border: '1px solid rgba(180, 255, 4, 0.3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <ShieldCheck size={12} /> 肌動組 GYMspot 認證教練
-                  </span>
-                </div>
-                <p style={{ fontSize: '13px', color: '#94a3b8', margin: '3px 0 0' }}>
-                  {coachProfile.title}
-                </p>
-              </div>
-            </div>
-
-            {/* Edit / Save Button */}
-            <button
-              onClick={() => {
-                if (isEditing) {
-                  handleSave();
-                } else {
-                  setIsEditing(true);
-                }
+                transition: 'all 0.15s ease',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
               }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: isEditing ? '#b4ff04' : '#1e293b',
-                color: isEditing ? '#0a1402' : '#cbd5e1',
-                border: '1px solid #334155',
-                borderRadius: '8px',
-                padding: '7px 14px',
-                fontSize: '12px',
-                fontWeight: 800,
-                cursor: 'pointer'
-              }}
+              title="關閉"
             >
-              <Edit3 size={14} />
-              <span>{isEditing ? '儲存變更' : '編輯個人簡介'}</span>
+              <X size={18} strokeWidth={2.5} />
             </button>
           </div>
 
-          {savedSuccess && (
-            <div style={{
-              marginTop: '12px',
-              padding: '8px 12px',
-              background: 'rgba(180, 255, 4, 0.15)',
-              border: '1px solid #b4ff04',
-              borderRadius: '8px',
-              color: '#b4ff04',
-              fontSize: '12px',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}>
-              <CheckCircle2 size={14} />
-              個人頁面資料已成功儲存！
-            </div>
-          )}
-        </div>
-
-        {/* Scrollable Body Content */}
-        <div style={{
-          padding: '20px 24px',
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '18px'
-        }}>
-          {/* Key Coach Stats Grid */}
+          {/* Profile Info Summary Header */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '10px'
+            padding: '18px 24px 16px',
+            borderBottom: '1px solid #1e293b'
           }}>
-            {[
-              { label: '本月授課堂數', value: '46 堂', icon: Calendar, color: '#ffffff' },
-              { label: '特約配合場館', value: '6 間', icon: Dumbbell, color: '#b4ff04' },
-              { label: '學員好評推薦', value: '4.95 ⭐', icon: Star, color: '#fbbf24' },
-              { label: '帶課單堂定價', value: `$${coachProfile.hourlyRate}`, icon: DollarSign, color: '#a855f7' }
-            ].map((stat, idx) => {
-              const Icon = stat.icon;
-              return (
-                <div key={idx} style={{
-                  background: '#111827',
-                  border: '1px solid #1f293d',
-                  borderRadius: '12px',
-                  padding: '12px 10px',
-                  textAlign: 'center'
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#f8fafc', margin: 0, letterSpacing: '0.2px' }}>
+                  {coachProfile.name}
+                </h2>
+                <span style={{
+                  background: 'rgba(180, 255, 4, 0.14)',
+                  border: '1px solid rgba(180, 255, 4, 0.45)',
+                  color: '#b4ff04',
+                  fontSize: '12.5px',
+                  fontWeight: 900,
+                  padding: '3px 9px',
+                  borderRadius: '7px',
+                  letterSpacing: '0.6px',
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
                 }}>
-                  <Icon size={18} color={stat.color} style={{ margin: '0 auto 4px' }} />
-                  <div style={{ fontSize: '11px', color: '#64748b' }}>{stat.label}</div>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#f8fafc', marginTop: '2px' }}>
-                    {stat.value}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  {coachProfile.coachId || 'A001'}
+                </span>
+              </div>
 
-          {/* Coach Bio */}
-          <div>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#94a3b8', margin: '0 0 8px' }}>
-              教練自介 / 教學理念
-            </h4>
-            {isEditing ? (
-              <textarea
-                value={coachProfile.bio}
-                onChange={(e) => setCoachProfile({ ...coachProfile, bio: e.target.value })}
-                rows={3}
+              {/* Edit / Save Button */}
+              <button
+                onClick={() => {
+                  if (isEditing) {
+                    handleSave();
+                  } else {
+                    setIsEditing(true);
+                  }
+                }}
                 style={{
-                  width: '100%',
-                  background: '#090d16',
+                  background: isEditing ? '#b4ff04' : '#1e293b',
+                  color: isEditing ? '#0a1402' : '#cbd5e1',
                   border: '1px solid #334155',
                   borderRadius: '8px',
-                  padding: '10px 12px',
-                  color: '#f8fafc',
-                  fontSize: '13px',
-                  lineHeight: '1.6',
-                  outline: 'none'
+                  padding: '7px 14px',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
-              />
-            ) : (
+              >
+                {isEditing ? '儲存變更' : '編輯個人資料'}
+              </button>
+            </div>
+
+            {savedSuccess && (
               <div style={{
-                background: '#111827',
-                border: '1px solid #1f293d',
-                borderRadius: '10px',
-                padding: '12px 14px',
-                fontSize: '13px',
-                lineHeight: '1.6',
-                color: '#cbd5e1'
+                marginTop: '12px',
+                padding: '8px 12px',
+                background: 'rgba(180, 255, 4, 0.15)',
+                border: '1px solid #b4ff04',
+                borderRadius: '8px',
+                color: '#b4ff04',
+                fontSize: '12px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
               }}>
-                {coachProfile.bio}
+                <CheckCircle2 size={14} />
+                個人資料已成功儲存！
               </div>
             )}
           </div>
 
-          {/* Specialities Chips */}
-          <div>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#94a3b8', margin: '0 0 8px' }}>
-              專長項目
-            </h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {coachProfile.specialties.map((spec, i) => (
-                <span key={i} style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255, 255, 255, 0.35)',
-                  boxShadow: '0 0 6px rgba(255, 255, 255, 0.2)',
-                  borderRadius: '8px',
-                  padding: '4px 10px',
-                  fontSize: '12px',
-                  fontWeight: 600
-                }}>
-                  {spec}
-                </span>
-              ))}
-            </div>
-          </div>
+          {/* Scrollable Body Content */}
+          <div style={{
+            padding: '20px 24px',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '22px'
+          }}>
+            {/* 1. 專業證照（教練自主檢附證明，無官方背書字眼） */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '6px' }}>
+                <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                  專業證照（教練自主檢附照片證明）
+                </h4>
+              </div>
 
-          {/* Certifications List */}
-          <div>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#94a3b8', margin: '0 0 8px' }}>
-              專業證照與查核標籤
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {coachProfile.certifications.map((cert, i) => (
-                <div key={i} style={{
+              {/* 證照清單 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {coachProfile.certifications.map((cert) => (
+                  <div key={cert.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    background: '#111827',
+                    border: '1px solid #1f293d',
+                    borderRadius: '10px',
+                    padding: '10px 14px',
+                    transition: 'border-color 0.15s ease'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, overflow: 'hidden' }}>
+                      <CheckCircle2 size={16} color="#b4ff04" style={{ flexShrink: 0 }} />
+                      <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: 600 }}>{cert.name}</span>
+                        {cert.uploadDate && (
+                          <span style={{ fontSize: '11px', color: '#64748b', marginLeft: '6px' }}>({cert.uploadDate})</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                      {/* 查看照片按鈕 */}
+                      {cert.imageUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setViewingCert(cert)}
+                          style={{
+                            background: 'rgba(180, 255, 4, 0.12)',
+                            border: '1px solid rgba(180, 255, 4, 0.4)',
+                            color: '#b4ff04',
+                            borderRadius: '6px',
+                            padding: '4px 10px',
+                            fontSize: '11.5px',
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
+                          title="查看證照證明圖檔"
+                        >
+                          查看照片
+                        </button>
+                      )}
+
+                      {/* 編輯模式下的刪除按鈕 */}
+                      {isEditing && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCertification(cert.id)}
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.15)',
+                            border: '1px solid rgba(239, 68, 68, 0.4)',
+                            color: '#f87171',
+                            borderRadius: '6px',
+                            padding: '4px 8px',
+                            fontSize: '11.5px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}
+                          title="刪除此證照"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 編輯模式下：新增證照表單 (強制必須檢附照片) */}
+              {isEditing && (
+                <div style={{
+                  marginTop: '12px',
+                  background: '#090e17',
+                  border: '1px dashed rgba(180, 255, 4, 0.4)',
+                  borderRadius: '12px',
+                  padding: '14px',
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: '#111827',
-                  border: '1px solid #1f293d',
-                  borderRadius: '8px',
-                  padding: '8px 12px',
-                  fontSize: '12px',
-                  color: '#e2e8f0'
+                  flexDirection: 'column',
+                  gap: '10px'
                 }}>
-                  <CheckCircle2 size={15} color="#b4ff04" />
-                  <span>{cert}</span>
+                  <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Plus size={15} color="#b4ff04" />
+                    <span>新增專業證照（必須檢附照片）</span>
+                  </div>
+
+                  <input
+                    type="text"
+                    value={newCertName}
+                    onChange={(e) => setNewCertName(e.target.value)}
+                    placeholder="請輸入證照名稱（例如：NASM-CPT、CPR+AED 等）"
+                    style={{
+                      width: '100%',
+                      background: '#111827',
+                      border: '1px solid #334155',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      color: '#f8fafc',
+                      fontSize: '12.5px',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+
+                  {/* 證照圖片上傳區域 (必須項目) */}
+                  <div>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageFileChange}
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                    />
+
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{
+                        border: newCertImage ? '1px solid #10b981' : '1px dashed #475569',
+                        borderRadius: '8px',
+                        padding: '10px 14px',
+                        background: newCertImage ? 'rgba(16, 185, 129, 0.08)' : '#111827',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        gap: '10px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                        {newCertImage ? (
+                          <FileImage size={18} color="#10b981" />
+                        ) : (
+                          <Upload size={18} color="#94a3b8" />
+                        )}
+                        <span style={{ fontSize: '12px', color: newCertImage ? '#f8fafc' : '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {newCertImage ? `已選取：${newCertImageName}` : '點擊上傳證照正面照片（支援 JPG / PNG，必填）'}
+                        </span>
+                      </div>
+
+                      <span style={{
+                        fontSize: '11px',
+                        padding: '3px 8px',
+                        borderRadius: '5px',
+                        background: newCertImage ? '#10b981' : '#334155',
+                        color: newCertImage ? '#ffffff' : '#cbd5e1',
+                        fontWeight: 700,
+                        flexShrink: 0
+                      }}>
+                        {newCertImage ? '✓ 照片就緒' : '選取圖片 (必填)'}
+                      </span>
+                    </div>
+
+                    {!newCertImage && (
+                      <div style={{ fontSize: '11px', color: '#f87171', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <ShieldAlert size={12} />
+                        <span>* 必須附上清晰證照圖檔才能新增，以供場館方查驗核對</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAddCertification}
+                    style={{
+                      background: 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)',
+                      color: '#0a1402',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px',
+                      fontSize: '12.5px',
+                      fontWeight: 900,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <Plus size={15} />
+                    確認新增證照（已檢附圖片）
+                  </button>
                 </div>
-              ))}
+              )}
+            </div>
+
+            {/* 2. Contact Details (常駐商圈、電話、Gmail、IG) */}
+            <div>
+              <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px' }}>
+                聯絡方式與常駐商圈
+              </h4>
+
+              {isEditing ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginBottom: '6px', fontWeight: 600 }}>常駐商圈</label>
+                    <input
+                      type="text"
+                      value={coachProfile.primaryAreas}
+                      onChange={(e) => setCoachProfile({ ...coachProfile, primaryAreas: e.target.value })}
+                      placeholder="例如：台北大安 / 信義 / 板橋"
+                      style={{
+                        width: '100%',
+                        background: '#090d16',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '9px 12px',
+                        color: '#f8fafc',
+                        fontSize: '13px',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginBottom: '6px', fontWeight: 600 }}>聯絡電話</label>
+                    <input
+                      type="text"
+                      value={coachProfile.phone}
+                      onChange={(e) => setCoachProfile({ ...coachProfile, phone: e.target.value })}
+                      placeholder="例如：0912-345-678"
+                      style={{
+                        width: '100%',
+                        background: '#090d16',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '9px 12px',
+                        color: '#f8fafc',
+                        fontSize: '13px',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Gmail / 電子信箱</label>
+                    <input
+                      type="email"
+                      value={coachProfile.email}
+                      onChange={(e) => setCoachProfile({ ...coachProfile, email: e.target.value })}
+                      placeholder="例如：alex.lin@gmail.com"
+                      style={{
+                        width: '100%',
+                        background: '#090d16',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '9px 12px',
+                        color: '#f8fafc',
+                        fontSize: '13px',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginBottom: '6px', fontWeight: 600 }}>Instagram</label>
+                    <input
+                      type="text"
+                      value={coachProfile.instagram}
+                      onChange={(e) => setCoachProfile({ ...coachProfile, instagram: e.target.value })}
+                      placeholder="例如：@alex_coach_fit"
+                      style={{
+                        width: '100%',
+                        background: '#090d16',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '9px 12px',
+                        color: '#f8fafc',
+                        fontSize: '13px',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                  {/* 1. 常駐商圈 */}
+                  <div style={{
+                    background: '#111827',
+                    border: '1px solid #1f293d',
+                    borderRadius: '10px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '13px',
+                    color: '#cbd5e1'
+                  }}>
+                    <MapPin size={16} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))', flexShrink: 0 }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      常駐：<strong style={{ color: '#f8fafc' }}>{coachProfile.primaryAreas}</strong>
+                    </span>
+                  </div>
+
+                  {/* 2. 聯絡電話 */}
+                  <div style={{
+                    background: '#111827',
+                    border: '1px solid #1f293d',
+                    borderRadius: '10px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '13px',
+                    color: '#cbd5e1'
+                  }}>
+                    <Phone size={16} color="#b4ff04" style={{ filter: 'drop-shadow(0 0 3px rgba(180, 255, 4, 0.5))', flexShrink: 0 }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      電話：<strong style={{ color: '#f8fafc' }}>{coachProfile.phone}</strong>
+                    </span>
+                  </div>
+
+                  {/* 3. Gmail 信箱 */}
+                  <div style={{
+                    background: '#111827',
+                    border: '1px solid #1f293d',
+                    borderRadius: '10px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '13px',
+                    color: '#cbd5e1'
+                  }}>
+                    <Mail size={16} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 3px rgba(56, 189, 248, 0.5))', flexShrink: 0 }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      Gmail：<strong style={{ color: '#f8fafc' }}>{coachProfile.email}</strong>
+                    </span>
+                  </div>
+
+                  {/* 4. Instagram */}
+                  <div style={{
+                    background: '#111827',
+                    border: '1px solid #1f293d',
+                    borderRadius: '10px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '13px',
+                    color: '#cbd5e1'
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      IG：<strong style={{ color: '#f8fafc' }}>{coachProfile.instagram}</strong>
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Contact Details */}
-          <div>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#94a3b8', margin: '0 0 8px' }}>
-              聯絡方式與常駐商圈
-            </h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div style={{
-                background: '#111827',
-                border: '1px solid #1f293d',
+          {/* Footer */}
+          <div style={{
+            padding: '14px 24px',
+            borderTop: '1px solid #1e293b',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            background: '#090d16'
+          }}>
+            <button
+              onClick={onClose}
+              style={{
+                background: '#1e293b',
+                color: '#f8fafc',
+                border: '1px solid #334155',
                 borderRadius: '8px',
-                padding: '10px 12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '12px',
-                color: '#cbd5e1'
-              }}>
-                <MapPin size={16} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))' }} />
-                <span>常駐：{coachProfile.primaryAreas}</span>
-              </div>
-              <div style={{
-                background: '#111827',
-                border: '1px solid #1f293d',
-                borderRadius: '8px',
-                padding: '10px 12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '12px',
-                color: '#cbd5e1'
-              }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-                <span>IG: {coachProfile.instagram}</span>
-              </div>
-            </div>
+                padding: '8px 18px',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              關閉頁面
+            </button>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div style={{
-          padding: '14px 24px',
-          borderTop: '1px solid #1e293b',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          background: '#090d16'
-        }}>
-          <button
-            onClick={onClose}
-            style={{
-              background: '#1e293b',
-              color: '#f8fafc',
-              border: '1px solid #334155',
-              borderRadius: '8px',
-              padding: '8px 18px',
-              fontSize: '13px',
-              fontWeight: 600,
-              cursor: 'pointer'
-            }}
-          >
-            關閉頁面
-          </button>
         </div>
       </div>
-    </div>
+
+      {/* Certificate Photo Lightbox Modal (檢視證照證明照片) */}
+      {viewingCert && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 3000,
+          background: 'rgba(3, 6, 12, 0.92)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px'
+        }}>
+          <div style={{
+            background: '#0b111c',
+            border: '1px solid #233148',
+            borderRadius: '18px',
+            width: '100%',
+            maxWidth: '680px',
+            maxHeight: '92vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 60px rgba(0,0,0,0.85), 0 0 30px rgba(180, 255, 4, 0.2)',
+            overflow: 'hidden'
+          }}>
+            {/* Lightbox Header */}
+            <div style={{
+              padding: '14px 20px',
+              borderBottom: '1px solid #1c2738',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: '#070c14'
+            }}>
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>
+                  {viewingCert.name}
+                </div>
+                <div style={{ fontSize: '11px', color: '#10b981', marginTop: '2px' }}>
+                  教練自主檢附之合格證明圖檔 · 供店家現場查核核驗
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewingCert(null)}
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  border: 'none',
+                  color: '#cbd5e1',
+                  borderRadius: '6px',
+                  padding: '5px',
+                  cursor: 'pointer'
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Lightbox Image Preview */}
+            <div style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#04070e'
+            }}>
+              <img 
+                src={viewingCert.imageUrl} 
+                alt={viewingCert.name}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '62vh',
+                  borderRadius: '10px',
+                  border: '1px solid #233148',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+
+            {/* Lightbox Footer */}
+            <div style={{
+              padding: '12px 20px',
+              borderTop: '1px solid #1c2738',
+              background: '#070c14',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <span style={{ fontSize: '11.5px', color: '#64748b' }}>
+                檔案狀態：已檢附 · 證號：{viewingCert.code || 'LICENSE-VERIFIED'}
+              </span>
+              <button
+                type="button"
+                onClick={() => setViewingCert(null)}
+                style={{
+                  background: '#1e293b',
+                  color: '#f8fafc',
+                  border: '1px solid #334155',
+                  borderRadius: '8px',
+                  padding: '6px 14px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                關閉預覽
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

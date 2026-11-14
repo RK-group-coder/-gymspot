@@ -119,7 +119,7 @@ export default function GymRegisterModal({ isOpen, onClose, onRegisterSuccess })
           cprRequired: true,
           indoorShoesOnly: true,
           insuranceIncluded: '已投保公共意外責任險',
-          cancellationPolicy: '開課前 6 小時可線上取消'
+          cancellationPolicy: '一經預約即無法取消'
         },
         tags: [
           `深蹲架${formData.squatRacksCount}座`,
