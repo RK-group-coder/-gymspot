@@ -117,7 +117,7 @@ export default function Navbar({
         id="navbar-points-badge"
         className="nav-points"
         onClick={onOpenTopUp}
-        title="點擊儲值"
+        title="購買媒合方案"
         style={{
           display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px',
           borderRadius: '12px', background: 'rgba(180,255,4,0.08)', border: '1px solid rgba(180,255,4,0.5)',
@@ -400,7 +400,7 @@ export default function Navbar({
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span style={{ fontSize: '15px', fontWeight: 900, color: '#b4ff04' }}>{points} 點</span>
-                  <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px' }}>儲值</span>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px' }}>購買方案</span>
                 </div>
               </div>
 
@@ -595,7 +595,7 @@ export default function Navbar({
                 <span style={{ fontSize: '10.5px', color: '#b4ff04', background: 'rgba(180, 255, 4, 0.12)', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>ADMIN</span>
               </button>
 
-              {/* Menu Item 6: 點數儲值 */}
+              {/* Menu Item 6: 預約媒合方案 */}
               <button
                 id="menu-btn-topup"
                 onClick={() => { 
@@ -622,7 +622,7 @@ export default function Navbar({
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <Wallet size={18} color="#ffffff" />
-                <span style={{ flex: 1 }}>點數儲值方案</span>
+                <span style={{ flex: 1 }}>預約媒合方案</span>
                 <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 800 }}>{points} 點</span>
               </button>
             </div>

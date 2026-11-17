@@ -229,8 +229,8 @@ export default function GymBookingModal({
       return {
         type: 'insufficient_points',
         label: '點數不足',
-        canClick: true, // 點擊時跳出提醒引導儲值，不加入選取
-        tooltip: `剩餘點數不足以選取此時段（目前可用 ${Math.max(0, remainingUsablePoints)} 點，需 30 點），點擊可前往儲值`
+        canClick: true, // 點擊時跳出提醒引導購買方案，不加入選取
+        tooltip: `剩餘點數不足以選取此時段（目前可用 ${Math.max(0, remainingUsablePoints)} 點，需 30 點），點擊可前往加購方案`
       };
     }
 
@@ -279,7 +279,7 @@ export default function GymBookingModal({
         `• 目前已選取：${selectedSlotHours.length} 小時（已抵扣 ${currentUsedPoints} 點）\n` +
         `• 剩餘可用點數：${Math.max(0, remainingUsablePoints)} 點\n` +
         `• 加選此時段需：${pointsPerSlot} 點\n\n` +
-        `在點數不夠時無法繼續選取時段！請先儲值點數或取消其他已選時段。`
+        `在點數額度不夠時無法繼續選取時段！請先加購媒合方案或取消其他已選時段。`
       );
       if (onOpenTopUp) {
         onOpenTopUp();
@@ -311,7 +311,7 @@ export default function GymBookingModal({
     }
 
     if (currentPoints < totalPointsNeeded) {
-      alert(`目前帳戶剩餘點數不足！\n您的剩餘點數：${currentPoints} 點\n本次預約需扣抵：${totalPointsNeeded} 點\n請先儲值點數後再進行預約。`);
+      alert(`目前帳戶剩餘點數額度不足！\n您的剩餘點數：${currentPoints} 點\n本次預約需扣抵：${totalPointsNeeded} 點\n請先加購媒合方案後再進行預約。`);
       if (onOpenTopUp) onOpenTopUp();
       return;
     }
@@ -992,9 +992,9 @@ export default function GymBookingModal({
                     fontWeight: 800,
                     cursor: 'pointer'
                   }}
-                  title="儲值更多點數"
+                  title="購買媒合方案"
                 >
-                  + 儲值
+                  + 購買方案
                 </button>
               )}
             </div>

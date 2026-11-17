@@ -44,10 +44,10 @@ export default function MonetizationModal({ isOpen, onClose }) {
     {
       icon: Layers,
       color: '#8b5cf6',
-      title: '4. 全台跨館通用「課時點數包 (Token Pass)」',
-      timeline: '龐大現金流與儲值金池',
-      desc: '教練帶課常因學生地點換場地，平台發行「跨館時數卡」，教練預先儲值 30 / 50 小時，可在雙北或台中多家合作特約館打卡扣點，平台賺取沉澱資金與手續費。',
-      pricing: '收費預估：時數包預付儲值現金流 + 5% 營運管理費'
+      title: '4. 全台跨館通用「課時媒合包 (Token Pass)」',
+      timeline: '穩定現金流與單次數位媒合服務',
+      desc: '教練帶課常因學生地點換場地，平台提供「跨館預約方案」，教練單次購買 30 / 50 次媒合方案，可在雙北或台中多家合作特約館打卡扣抵，平台賺取技術手續費。',
+      pricing: '收費預估：媒合方案單次付清 + 5% 營運技術服務費'
     },
     {
       icon: ShieldCheck,

@@ -415,7 +415,7 @@ export default function App() {
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
-              setToastMessage(`儲值成功！已加值 ${pts} 點 (NT$ ${price})`);
+              setToastMessage(`方案購買成功！已開通 ${pts} 點額度 (NT$ ${price})`);
             }}
           />
         )}
@@ -480,7 +480,7 @@ export default function App() {
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
-              setToastMessage(`儲值成功！已加值 ${pts} 點 (NT$ ${price})`);
+              setToastMessage(`方案購買成功！已開通 ${pts} 點額度 (NT$ ${price})`);
             }}
           />
         )}
@@ -560,7 +560,7 @@ export default function App() {
           onTopUp={(pts, price) => {
             setPoints(p => p + pts);
             setIsTopUpOpen(false);
-            setToastMessage(`儲值成功！已加值 ${pts} 點 (NT$ ${price})`);
+            setToastMessage(`方案購買成功！已開通 ${pts} 點額度 (NT$ ${price})`);
           }}
         />
       )}
