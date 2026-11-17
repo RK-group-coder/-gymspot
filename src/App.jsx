@@ -412,6 +412,7 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
+            onOpenTerms={() => setIsTermsModalOpen(true)}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
@@ -477,6 +478,7 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
+            onOpenTerms={() => setIsTermsModalOpen(true)}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
@@ -557,6 +559,7 @@ export default function App() {
         <TopUpModal
           points={points}
           onClose={() => setIsTopUpOpen(false)}
+          onOpenTerms={() => setIsTermsModalOpen(true)}
           onTopUp={(pts, price) => {
             setPoints(p => p + pts);
             setIsTopUpOpen(false);

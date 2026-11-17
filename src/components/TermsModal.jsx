@@ -39,7 +39,7 @@ export default function TermsModal({ isOpen, onClose }) {
     <div style={{
       position: 'fixed',
       inset: 0,
-      zIndex: 2000,
+      zIndex: 3500,
       background: 'rgba(0, 0, 0, 0.85)',
       backdropFilter: 'blur(12px)',
       display: 'flex',

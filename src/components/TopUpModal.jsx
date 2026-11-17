@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Lock } from 'lucide-react';
+import { X, Check, Lock, FileText } from 'lucide-react';
 
 export const PLANS = [
   {
@@ -41,19 +41,23 @@ export const PLANS = [
   }
 ];
 
-export default function TopUpModal({ points, onClose, onTopUp }) {
+export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
   const [selected, setSelected] = useState('p2');
   const [checkoutStep, setCheckoutStep] = useState(false);
+  const [buyerName, setBuyerName] = useState('');
+  const [buyerPhone, setBuyerPhone] = useState('0903-383-712');
   const [buyerEmail, setBuyerEmail] = useState('a0903383712@gmail.com');
   const [cardNumber, setCardNumber] = useState('4242 •••• •••• 4242');
   const [cardExpiry, setCardExpiry] = useState('12/28');
   const [cardCvc, setCardCvc] = useState('888');
+  const [agreedTerms, setAgreedTerms] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const plan = PLANS.find((p) => p.id === selected) || PLANS[1];
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
+    if (!agreedTerms) return;
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
@@ -69,7 +73,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
           position: fixed;
           inset: 0;
           z-index: 3000;
-          background: rgba(0, 0, 0, 0.78);
+          background: rgba(0, 0, 0, 0.8);
           backdrop-filter: blur(4px);
           display: flex;
           align-items: center;
@@ -79,12 +83,13 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
         .topup-dialog {
           width: 100%;
           max-width: 500px;
+          max-height: 92vh;
+          overflow-y: auto;
           background: #000000;
           border: 1px solid #262626;
           border-radius: 18px;
-          box-shadow: 0 24px 48px rgba(0, 0, 0, 0.9);
+          box-shadow: 0 24px 48px rgba(0, 0, 0, 0.92);
           color: #ffffff;
-          overflow: hidden;
         }
         .topup-drag-bar {
           display: none;
@@ -119,6 +124,21 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
           background: #1c1c1c;
           border-color: #b4ff04;
         }
+        .topup-input {
+          width: 100%;
+          box-sizing: border-box;
+          background: #141414;
+          border: 1px solid #262626;
+          border-radius: 8px;
+          padding: 10px 12px;
+          color: #ffffff;
+          font-size: 13.5px;
+          outline: none;
+          transition: border-color 0.15s ease;
+        }
+        .topup-input:focus {
+          border-color: #b4ff04;
+        }
         @keyframes sheetUp {
           from { transform: translateY(100%); }
           to { transform: translateY(0); }
@@ -130,6 +150,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
           }
           .topup-dialog {
             max-width: none;
+            max-height: 92vh;
             border-radius: 20px 20px 0 0;
             border-bottom: none;
             animation: sheetUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
@@ -160,6 +181,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
         <div className="topup-drag-bar" />
 
         {!checkoutStep ? (
+          /* ================= STEP 1: 選擇方案 ================= */
           <div className="topup-body">
             {/* Top Bar */}
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '18px' }}>
@@ -314,45 +336,65 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
               <span>信用卡付款 NT$ {plan.price}</span>
             </button>
 
-            {/* Clean, Understated Compliance Footer */}
+            {/* Footer with Terms link */}
             <div style={{
               marginTop: '14px',
               paddingTop: '12px',
               borderTop: '1px solid #1f1f1f',
               fontSize: '11px',
               color: '#737373',
-              lineHeight: 1.55
+              lineHeight: 1.6
             }}>
               <div>
                 新台幣 (TWD) 計價 · 支援 Visa / MasterCard / JCB 一次付清，付款完成立即開通額度。
               </div>
-              <div style={{ marginTop: '2px' }}>
-                購買 7 日內若未使用任何預約可申請全額退刷 · 客服 a0903383712@gmail.com / 0903-383-712
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
+                <span>購買 7 日內未使用可全額退刷 · 客服 a0903383712@gmail.com / 0903-383-712</span>
+                {onOpenTerms && (
+                  <button
+                    type="button"
+                    onClick={onOpenTerms}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      color: '#b4ff04',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    服務條款與退費規範
+                  </button>
+                )}
               </div>
             </div>
           </div>
         ) : (
-          /* Step 2: Clean Credit Card Checkout View inside the same modal */
+          /* ================= STEP 2: 完整信用卡結帳與條款確認 ================= */
           <div className="topup-body">
+            {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 800, color: '#ffffff' }}>
-                  信用卡安全付款
+                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>
+                  線上信用卡結帳
                 </h2>
-                <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#a3a3a3' }}>
-                  {plan.name} · {plan.times} 次場位預約媒合（{plan.points} 點）
+                <p style={{ margin: '3px 0 0', fontSize: '12px', color: '#a3a3a3' }}>
+                  藍新金流 NewebPay · 256-bit SSL 安全加密交易
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setCheckoutStep(false)}
                 style={{
-                  padding: '5px 10px',
-                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  borderRadius: '8px',
                   background: '#141414',
                   border: '1px solid #2e2e2e',
                   color: '#d4d4d4',
                   fontSize: '12px',
+                  fontWeight: 600,
                   cursor: 'pointer'
                 }}
               >
@@ -360,40 +402,108 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
               </button>
             </div>
 
+            {/* 1. 訂單明細框 (Order Summary Card) */}
+            <div style={{
+              background: '#141414',
+              border: '1px solid #262626',
+              borderRadius: '12px',
+              padding: '14px 16px',
+              marginBottom: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              fontSize: '12.5px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#a3a3a3' }}>購買方案</span>
+                <span style={{ color: '#ffffff', fontWeight: 700 }}>
+                  肌動組 GYMspot — {plan.name}（{plan.times} 次預約媒合）
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#a3a3a3' }}>開通額度</span>
+                <span style={{ color: '#d4d4d4', fontWeight: 600 }}>
+                  {plan.points} 點（每次場館鎖位扣抵 30 點）
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#a3a3a3' }}>付款方式</span>
+                <span style={{ color: '#d4d4d4' }}>信用卡一次付清（新台幣 TWD）</span>
+              </div>
+              <div style={{
+                borderTop: '1px solid #262626',
+                paddingTop: '8px',
+                marginTop: '2px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline'
+              }}>
+                <span style={{ color: '#ffffff', fontWeight: 700 }}>應付總額</span>
+                <span style={{ color: '#b4ff04', fontSize: '18px', fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
+                  NT$ {plan.price}
+                </span>
+              </div>
+            </div>
+
+            {/* 2. 持卡人與信用卡表單 */}
             <form onSubmit={handlePaymentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ fontSize: '12px', color: '#a3a3a3', display: 'block', marginBottom: '5px' }}>
+                    持卡人姓名
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="請輸入真實姓名"
+                    value={buyerName}
+                    onChange={(e) => setBuyerName(e.target.value)}
+                    className="topup-input"
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', color: '#a3a3a3', display: 'block', marginBottom: '5px' }}>
+                    聯絡手機號碼
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="09xx-xxx-xxx"
+                    value={buyerPhone}
+                    onChange={(e) => setBuyerPhone(e.target.value)}
+                    className="topup-input"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label style={{ fontSize: '12px', color: '#a3a3a3', display: 'block', marginBottom: '5px' }}>
-                  電子收據通知信箱
+                  電子收據與交易通知信箱
                 </label>
                 <input
                   type="email"
                   required
                   value={buyerEmail}
                   onChange={(e) => setBuyerEmail(e.target.value)}
-                  style={{
-                    width: '100%',
-                    boxSizing: 'border-box',
-                    background: '#141414',
-                    border: '1px solid #262626',
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    color: '#ffffff',
-                    fontSize: '13.5px',
-                    outline: 'none'
-                  }}
+                  className="topup-input"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: '12px', color: '#a3a3a3', display: 'block', marginBottom: '5px' }}>
-                  信用卡資訊（Visa / MasterCard / JCB）
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                  <label style={{ fontSize: '12px', color: '#a3a3a3' }}>
+                    信用卡資訊
+                  </label>
+                  <span style={{ fontSize: '11px', color: '#737373', fontWeight: 700, letterSpacing: '0.04em' }}>
+                    VISA / MasterCard / JCB
+                  </span>
+                </div>
                 <input
                   type="text"
                   required
                   value={cardNumber}
                   onChange={(e) => setCardNumber(e.target.value)}
-                  placeholder="卡號"
+                  placeholder="卡號 0000 0000 0000 0000"
                   style={{
                     width: '100%',
                     boxSizing: 'border-box',
@@ -413,7 +523,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                     required
                     value={cardExpiry}
                     onChange={(e) => setCardExpiry(e.target.value)}
-                    placeholder="MM/YY"
+                    placeholder="有效期限 MM/YY"
                     style={{
                       width: '100%',
                       boxSizing: 'border-box',
@@ -433,7 +543,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                     required
                     value={cardCvc}
                     onChange={(e) => setCardCvc(e.target.value)}
-                    placeholder="CVC"
+                    placeholder="背面末三碼 CVC"
                     style={{
                       width: '100%',
                       boxSizing: 'border-box',
@@ -452,34 +562,103 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                 </div>
               </div>
 
+              {/* 3. 消費者保護條款與 7 日退費政策勾選框 (金流審核必要項目) */}
+              <div style={{
+                background: '#141414',
+                border: agreedTerms ? '1px solid #3f3f46' : '1px solid #ef4444',
+                borderRadius: '10px',
+                padding: '12px 14px',
+                marginTop: '2px'
+              }}>
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '10px',
+                  cursor: 'pointer',
+                  userSelect: 'none'
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={agreedTerms}
+                    onChange={(e) => setAgreedTerms(e.target.checked)}
+                    style={{
+                      accentColor: '#b4ff04',
+                      width: '16px',
+                      height: '16px',
+                      marginTop: '2px',
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}
+                  />
+                  <div style={{ fontSize: '12px', color: '#d4d4d4', lineHeight: 1.5 }}>
+                    <span style={{ fontWeight: 700, color: '#ffffff' }}>
+                      我已詳細閱讀並同意遵守
+                    </span>{' '}
+                    {onOpenTerms ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onOpenTerms();
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          color: '#b4ff04',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        《平台服務條款與 7 日猶豫期退費政策》
+                      </button>
+                    ) : (
+                      <span style={{ color: '#b4ff04', fontWeight: 700 }}>
+                        《平台服務條款與 7 日猶豫期退費政策》
+                      </span>
+                    )}
+                    <div style={{ fontSize: '11px', color: '#8a8a8a', marginTop: '4px', lineHeight: 1.5 }}>
+                      • 數位服務即時交付：完成線上刷卡授權後，系統立即開通所購之場位預約媒合額度。<br />
+                      • 7日猶豫期保障：自購買日起 7 日內若完全未使用任何場位預約，可聯繫客服申請原卡全額退刷。<br />
+                      • 客服專線：0903-383-712 · 客服信箱：a0903383712@gmail.com
+                    </div>
+                  </div>
+                </label>
+              </div>
+
               <button
                 type="submit"
-                disabled={isProcessing}
+                disabled={isProcessing || !agreedTerms}
                 style={{
                   width: '100%',
                   height: '46px',
                   borderRadius: '10px',
-                  background: '#b4ff04',
-                  color: '#000000',
+                  background: agreedTerms ? '#b4ff04' : '#262626',
+                  color: agreedTerms ? '#000000' : '#737373',
                   border: 'none',
                   fontSize: '15px',
                   fontWeight: 800,
-                  cursor: 'pointer',
+                  cursor: agreedTerms ? 'pointer' : 'not-allowed',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '6px',
-                  marginTop: '4px'
+                  marginTop: '2px',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 <Lock size={15} />
-                <span>{isProcessing ? '授權處理中...' : `確認付款 NT$ ${plan.price}`}</span>
+                <span>
+                  {isProcessing
+                    ? '安全授權處理中...'
+                    : agreedTerms
+                    ? `確認授權付款 NT$ ${plan.price}`
+                    : '請先勾選同意服務條款與退費政策'}
+                </span>
               </button>
             </form>
-
-            <div style={{ fontSize: '11px', color: '#737373', textAlign: 'center', marginTop: '12px' }}>
-              透過藍新金流 256-bit SSL 加密傳輸 · 商店代號核發後自動切換正式刷卡閘道
-            </div>
           </div>
         )}
       </div>
