@@ -288,9 +288,8 @@ export default function LeafletMap({
           boxShadow: '0 4px 14px rgba(0, 0, 0, 0.5)'
         }}>
           {[
-            { id: 'google', label: '🗺️ Google 街道' },
-            { id: 'dark', label: '🌙 暗黑模式' },
-            { id: 'satellite', label: '🛰️ Google 衛星' }
+            { id: 'google', label: 'Google 街道' },
+            { id: 'satellite', label: 'Google 衛星' }
           ].map(s => (
             <button
               key={s.id}
