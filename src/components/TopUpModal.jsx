@@ -69,7 +69,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
           position: fixed;
           inset: 0;
           z-index: 3000;
-          background: rgba(0, 0, 0, 0.72);
+          background: rgba(0, 0, 0, 0.78);
           backdrop-filter: blur(4px);
           display: flex;
           align-items: center;
@@ -79,11 +79,11 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
         .topup-dialog {
           width: 100%;
           max-width: 500px;
-          background: #0b0f17;
-          border: 1px solid #1e293b;
+          background: #000000;
+          border: 1px solid #262626;
           border-radius: 18px;
-          box-shadow: 0 24px 48px rgba(0, 0, 0, 0.75);
-          color: #f8fafc;
+          box-shadow: 0 24px 48px rgba(0, 0, 0, 0.9);
+          color: #ffffff;
           overflow: hidden;
         }
         .topup-drag-bar {
@@ -104,19 +104,19 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
           cursor: pointer;
           padding: 16px;
           border-radius: 12px;
-          background: #111827;
-          border: 1.5px solid #1e293b;
-          color: #f8fafc;
+          background: #141414;
+          border: 1.5px solid #262626;
+          color: #ffffff;
           transition: border-color 0.15s ease, background 0.15s ease;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
         }
         .topup-card:hover {
-          border-color: #334155;
+          border-color: #3f3f46;
         }
         .topup-card.is-active {
-          background: #141e2e;
+          background: #1c1c1c;
           border-color: #b4ff04;
         }
         @keyframes sheetUp {
@@ -139,7 +139,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
             display: block;
             width: 36px;
             height: 4px;
-            background: #334155;
+            background: #404040;
             border-radius: 2px;
             margin: 10px auto 0;
           }
@@ -167,21 +167,21 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                 <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.01em' }}>
                   場位預約媒合方案
                 </h2>
-                <p style={{ margin: '4px 0 0', fontSize: '12.5px', color: '#94a3b8' }}>
+                <p style={{ margin: '4px 0 0', fontSize: '12.5px', color: '#a3a3a3' }}>
                   單次購買 · 每次預約鎖位扣抵 30 點
                 </p>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
-                  background: '#151e2e',
-                  border: '1px solid #26354d',
+                  background: '#141414',
+                  border: '1px solid #2e2e2e',
                   borderRadius: '8px',
                   padding: '5px 10px',
                   fontSize: '12px',
-                  color: '#cbd5e1',
+                  color: '#d4d4d4',
                   fontWeight: 600,
-                   fontVariantNumeric: 'tabular-nums'
+                  fontVariantNumeric: 'tabular-nums'
                 }}>
                   可用 <strong style={{ color: '#b4ff04', fontWeight: 800 }}>{points}</strong> 點
                 </div>
@@ -194,9 +194,9 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                     width: '32px',
                     height: '32px',
                     borderRadius: '8px',
-                    background: 'transparent',
-                    border: '1px solid #1e293b',
-                    color: '#94a3b8',
+                    background: '#141414',
+                    border: '1px solid #2e2e2e',
+                    color: '#a3a3a3',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -222,7 +222,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                   >
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <span style={{ fontSize: '12.5px', fontWeight: 700, color: active ? '#b4ff04' : '#94a3b8' }}>
+                        <span style={{ fontSize: '12.5px', fontWeight: 700, color: active ? '#b4ff04' : '#a3a3a3' }}>
                           {p.name}
                         </span>
                         {active ? (
@@ -231,7 +231,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                             height: '18px',
                             borderRadius: '50%',
                             background: '#b4ff04',
-                            color: '#0b0f17',
+                            color: '#000000',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -242,8 +242,8 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                           <span style={{
                             fontSize: '10.5px',
                             fontWeight: 700,
-                            color: p.hot ? '#0b0f17' : '#cbd5e1',
-                            background: p.hot ? '#b4ff04' : '#1e293b',
+                            color: p.hot ? '#000000' : '#d4d4d4',
+                            background: p.hot ? '#b4ff04' : '#262626',
                             padding: '2px 6px',
                             borderRadius: '4px'
                           }}>
@@ -257,11 +257,11 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                       </div>
                     </div>
 
-                    <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '15px', fontWeight: 800, color: '#f8fafc', fontVariantNumeric: 'tabular-nums' }}>
+                    <div style={{ marginTop: '14px', paddingTop: '10px', borderTop: '1px solid #262626', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', fontVariantNumeric: 'tabular-nums' }}>
                         NT$ {p.price}
                       </span>
-                      <span style={{ fontSize: '11px', color: '#64748b', fontVariantNumeric: 'tabular-nums' }}>
+                      <span style={{ fontSize: '11px', color: '#8a8a8a', fontVariantNumeric: 'tabular-nums' }}>
                         {p.points} 點 · ${p.unitPrice}/次
                       </span>
                     </div>
@@ -272,8 +272,8 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
 
             {/* Selected Summary Bar */}
             <div style={{
-              background: '#111827',
-              border: '1px solid #1e293b',
+              background: '#141414',
+              border: '1px solid #262626',
               borderRadius: '10px',
               padding: '11px 14px',
               marginBottom: '12px',
@@ -282,7 +282,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
               justifyContent: 'space-between',
               fontSize: '13px'
             }}>
-              <span style={{ color: '#cbd5e1' }}>
+              <span style={{ color: '#d4d4d4' }}>
                 已選 <strong style={{ color: '#ffffff' }}>{plan.name}（{plan.times} 次預約 / {plan.points} 點）</strong>
               </span>
               <span style={{ fontWeight: 800, color: '#b4ff04', fontSize: '15px', fontVariantNumeric: 'tabular-nums' }}>
@@ -302,7 +302,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                 border: 'none',
                 cursor: 'pointer',
                 background: '#b4ff04',
-                color: '#090d14',
+                color: '#000000',
                 fontWeight: 800,
                 fontSize: '15px',
                 display: 'flex',
@@ -318,9 +318,9 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
             <div style={{
               marginTop: '14px',
               paddingTop: '12px',
-              borderTop: '1px solid #161f2e',
+              borderTop: '1px solid #1f1f1f',
               fontSize: '11px',
-              color: '#64748b',
+              color: '#737373',
               lineHeight: 1.55
             }}>
               <div>
@@ -339,7 +339,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                 <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 800, color: '#ffffff' }}>
                   信用卡安全付款
                 </h2>
-                <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#94a3b8' }}>
+                <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#a3a3a3' }}>
                   {plan.name} · {plan.times} 次場位預約媒合（{plan.points} 點）
                 </p>
               </div>
@@ -349,9 +349,9 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                 style={{
                   padding: '5px 10px',
                   borderRadius: '6px',
-                  background: '#151e2e',
-                  border: '1px solid #26354d',
-                  color: '#cbd5e1',
+                  background: '#141414',
+                  border: '1px solid #2e2e2e',
+                  color: '#d4d4d4',
                   fontSize: '12px',
                   cursor: 'pointer'
                 }}
@@ -362,7 +362,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
 
             <form onSubmit={handlePaymentSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8', display: 'block', marginBottom: '5px' }}>
+                <label style={{ fontSize: '12px', color: '#a3a3a3', display: 'block', marginBottom: '5px' }}>
                   電子收據通知信箱
                 </label>
                 <input
@@ -373,8 +373,8 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                   style={{
                     width: '100%',
                     boxSizing: 'border-box',
-                    background: '#111827',
-                    border: '1px solid #1e293b',
+                    background: '#141414',
+                    border: '1px solid #262626',
                     borderRadius: '8px',
                     padding: '10px 12px',
                     color: '#ffffff',
@@ -385,7 +385,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
               </div>
 
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8', display: 'block', marginBottom: '5px' }}>
+                <label style={{ fontSize: '12px', color: '#a3a3a3', display: 'block', marginBottom: '5px' }}>
                   信用卡資訊（Visa / MasterCard / JCB）
                 </label>
                 <input
@@ -397,8 +397,8 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                   style={{
                     width: '100%',
                     boxSizing: 'border-box',
-                    background: '#111827',
-                    border: '1px solid #1e293b',
+                    background: '#141414',
+                    border: '1px solid #262626',
                     borderRadius: '8px 8px 0 0',
                     padding: '10px 12px',
                     color: '#ffffff',
@@ -417,8 +417,8 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                     style={{
                       width: '100%',
                       boxSizing: 'border-box',
-                      background: '#111827',
-                      border: '1px solid #1e293b',
+                      background: '#141414',
+                      border: '1px solid #262626',
                       borderTop: 'none',
                       borderRadius: '0 0 0 8px',
                       padding: '10px 12px',
@@ -437,8 +437,8 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                     style={{
                       width: '100%',
                       boxSizing: 'border-box',
-                      background: '#111827',
-                      border: '1px solid #1e293b',
+                      background: '#141414',
+                      border: '1px solid #262626',
                       borderTop: 'none',
                       borderLeft: 'none',
                       borderRadius: '0 0 8px 0',
@@ -460,7 +460,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
                   height: '46px',
                   borderRadius: '10px',
                   background: '#b4ff04',
-                  color: '#090d14',
+                  color: '#000000',
                   border: 'none',
                   fontSize: '15px',
                   fontWeight: 800,
@@ -477,7 +477,7 @@ export default function TopUpModal({ points, onClose, onTopUp }) {
               </button>
             </form>
 
-            <div style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginTop: '12px' }}>
+            <div style={{ fontSize: '11px', color: '#737373', textAlign: 'center', marginTop: '12px' }}>
               透過藍新金流 256-bit SSL 加密傳輸 · 商店代號核發後自動切換正式刷卡閘道
             </div>
           </div>
