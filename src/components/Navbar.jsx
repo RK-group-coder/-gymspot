@@ -121,10 +121,10 @@ export default function Navbar({
         style={{
           display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px',
           borderRadius: '12px', background: 'rgba(180,255,4,0.08)', border: '1px solid rgba(180,255,4,0.5)',
-          color: '#b4ff04', fontWeight: 900, fontSize: '14px', cursor: 'pointer', userSelect: 'none'
+          color: '#b4ff04', fontWeight: 900, fontSize: '13.5px', cursor: 'pointer', userSelect: 'none'
         }}
       >
-        <Coins size={16} color="#b4ff04" /> {points} 點
+        可預約 {Math.floor(points / 30)} 次
       </div>
       <div ref={menuRef} style={{ position: 'relative' }}>
         <button
@@ -395,11 +395,10 @@ export default function Navbar({
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Coins size={18} color="#b4ff04" />
-                  <span style={{ fontSize: '13px', color: '#e2e8f0', fontWeight: 700 }}>帳戶餘額</span>
+                  <span style={{ fontSize: '13px', color: '#e2e8f0', fontWeight: 700 }}>可用預約次數</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#b4ff04' }}>{points} 點</span>
+                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#b4ff04' }}>{Math.floor(points / 30)} 次</span>
                   <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px' }}>購買方案</span>
                 </div>
               </div>
@@ -623,7 +622,7 @@ export default function Navbar({
               >
                 <Wallet size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>預約媒合方案</span>
-                <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 800 }}>{points} 點</span>
+                <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 800 }}>可預約 {Math.floor(points / 30)} 次</span>
               </button>
             </div>
 

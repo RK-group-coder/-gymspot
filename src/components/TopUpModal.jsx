@@ -190,7 +190,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
                   場位預約媒合方案
                 </h2>
                 <p style={{ margin: '4px 0 0', fontSize: '12.5px', color: '#a3a3a3' }}>
-                  單次購買 · 每次預約鎖位扣抵 30 點
+                  單次購買 · 每次預約時段使用 1 次額度
                 </p>
               </div>
 
@@ -205,7 +205,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
                   fontWeight: 600,
                   fontVariantNumeric: 'tabular-nums'
                 }}>
-                  可用 <strong style={{ color: '#b4ff04', fontWeight: 800 }}>{points}</strong> 點
+                  可預約 <strong style={{ color: '#b4ff04', fontWeight: 800 }}>{Math.floor(points / 30)}</strong> 次
                 </div>
 
                 <button
@@ -284,7 +284,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
                         NT$ {p.price}
                       </span>
                       <span style={{ fontSize: '11px', color: '#8a8a8a', fontVariantNumeric: 'tabular-nums' }}>
-                        {p.points} 點 · ${p.unitPrice}/次
+                        平均 ${p.unitPrice}/次
                       </span>
                     </div>
                   </button>
@@ -305,7 +305,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
               fontSize: '13px'
             }}>
               <span style={{ color: '#d4d4d4' }}>
-                已選 <strong style={{ color: '#ffffff' }}>{plan.name}（{plan.times} 次預約 / {plan.points} 點）</strong>
+                已選 <strong style={{ color: '#ffffff' }}>{plan.name}（包含 {plan.times} 次場位預約）</strong>
               </span>
               <span style={{ fontWeight: 800, color: '#b4ff04', fontSize: '15px', fontVariantNumeric: 'tabular-nums' }}>
                 NT$ {plan.price}
@@ -423,7 +423,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ color: '#a3a3a3' }}>開通額度</span>
                 <span style={{ color: '#d4d4d4', fontWeight: 600 }}>
-                  {plan.points} 點（每次場館鎖位扣抵 30 點）
+                  共 {plan.times} 次（每次場館時段鎖位使用 1 次）
                 </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

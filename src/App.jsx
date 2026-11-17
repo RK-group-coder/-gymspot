@@ -416,7 +416,7 @@ export default function App() {
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
-              setToastMessage(`方案購買成功！已開通 ${pts} 點額度 (NT$ ${price})`);
+              setToastMessage(`方案購買成功！已開通 ${Math.floor(pts / 30)} 次預約額度 (NT$ ${price})`);
             }}
           />
         )}
@@ -482,7 +482,7 @@ export default function App() {
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
-              setToastMessage(`方案購買成功！已開通 ${pts} 點額度 (NT$ ${price})`);
+              setToastMessage(`方案購買成功！已開通 ${Math.floor(pts / 30)} 次預約額度 (NT$ ${price})`);
             }}
           />
         )}
@@ -563,7 +563,7 @@ export default function App() {
           onTopUp={(pts, price) => {
             setPoints(p => p + pts);
             setIsTopUpOpen(false);
-            setToastMessage(`方案購買成功！已開通 ${pts} 點額度 (NT$ ${price})`);
+            setToastMessage(`方案購買成功！已開通 ${Math.floor(pts / 30)} 次預約額度 (NT$ ${price})`);
           }}
         />
       )}

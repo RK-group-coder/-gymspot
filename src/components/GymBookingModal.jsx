@@ -223,29 +223,29 @@ export default function GymBookingModal({
       };
     }
 
-    // 6. 點數不足檢查：若未選此時段，且目前剩餘可用點數小於 30 點 (無法再選)
+    // 6. 額度不足檢查：若未選此時段，且目前剩餘可用額度小於 1 次 (無法再選)
     const remainingUsablePoints = currentPoints - (selectedSlotHours.length * pointsPerSlot);
     if (remainingUsablePoints < pointsPerSlot) {
       return {
         type: 'insufficient_points',
-        label: '點數不足',
+        label: '額度不足',
         canClick: true, // 點擊時跳出提醒引導購買方案，不加入選取
-        tooltip: `剩餘點數不足以選取此時段（目前可用 ${Math.max(0, remainingUsablePoints)} 點，需 30 點），點擊可前往加購方案`
+        tooltip: `可用預約次數不足以選取此時段（目前可用 ${Math.max(0, Math.floor(remainingUsablePoints / pointsPerSlot))} 次），點擊可前往購買方案`
       };
     }
 
-    // 7. 可預約 (正常開放預約，每時段 30 點)
+    // 7. 可預約 (正常開放預約，每時段扣抵 1 次額度)
     return {
       type: 'available',
-      label: '可預約 30點',
+      label: '可預約',
       canClick: true,
-      tooltip: `點擊預約 ${slot.label} (扣抵 30 點)`
+      tooltip: `點擊預約 ${slot.label} (使用 1 次預約額度)`
     };
   };
 
   // 切換選取時段
   const toggleSlotSelection = (hour, dayKey, dateStr) => {
-    // 1. 如果此時段已被選取，點擊永遠允許取消選取 (釋放點數)
+    // 1. 如果此時段已被選取，點擊永遠允許取消選取
     if (selectedSlotHours.includes(hour)) {
       setSelectedSlotHours(prev => prev.filter(h => h !== hour));
       return;
@@ -267,19 +267,18 @@ export default function GymBookingModal({
       return;
     }
 
-    // 2. 關鍵限制：在點數不夠時 無法繼續選取時段！
+    // 2. 關鍵限制：在預約額度不夠時 無法繼續選取時段！
     const currentUsedPoints = selectedSlotHours.length * pointsPerSlot;
     const remainingUsablePoints = currentPoints - currentUsedPoints;
     const nextPointsNeeded = (selectedSlotHours.length + 1) * pointsPerSlot;
 
     if (nextPointsNeeded > currentPoints) {
       alert(
-        `【點數不足，無法繼續選取時段】\n\n` +
-        `• 您的帳戶目前點數：${currentPoints} 點\n` +
-        `• 目前已選取：${selectedSlotHours.length} 小時（已抵扣 ${currentUsedPoints} 點）\n` +
-        `• 剩餘可用點數：${Math.max(0, remainingUsablePoints)} 點\n` +
-        `• 加選此時段需：${pointsPerSlot} 點\n\n` +
-        `在點數額度不夠時無法繼續選取時段！請先加購媒合方案或取消其他已選時段。`
+        `【可用預約次數不足，無法繼續選取時段】\n\n` +
+        `• 您的帳戶總可用額度：${Math.floor(currentPoints / pointsPerSlot)} 次\n` +
+        `• 目前已選取：${selectedSlotHours.length} 小時（使用 ${selectedSlotHours.length} 次額度）\n` +
+        `• 剩餘可用額度：${Math.max(0, Math.floor(remainingUsablePoints / pointsPerSlot))} 次\n\n` +
+        `在預約額度不夠時無法繼續選取時段！請先購買媒合方案或取消其他已選時段。`
       );
       if (onOpenTopUp) {
         onOpenTopUp();
@@ -287,11 +286,11 @@ export default function GymBookingModal({
       return;
     }
 
-    // 點數足夠，加入選取
+    // 額度足夠，加入選取
     setSelectedSlotHours(prev => [...prev, hour].sort((a, b) => a - b));
   };
 
-  // 計算點數與金額 (每時段固定 30 點)
+  // 計算次數與金額
   const totalHours = selectedSlotHours.length;
   const totalPointsNeeded = totalHours * pointsPerSlot;
   const totalPrice = totalHours * hourlyRate;
@@ -311,7 +310,7 @@ export default function GymBookingModal({
     }
 
     if (currentPoints < totalPointsNeeded) {
-      alert(`目前帳戶剩餘點數額度不足！\n您的剩餘點數：${currentPoints} 點\n本次預約需扣抵：${totalPointsNeeded} 點\n請先加購媒合方案後再進行預約。`);
+      alert(`目前帳戶可用預約額度不足！\n您的可用額度：${Math.floor(currentPoints / pointsPerSlot)} 次\n本次預約需使用：${totalHours} 次\n請先購買媒合方案後再進行預約。`);
       if (onOpenTopUp) onOpenTopUp();
       return;
     }
@@ -360,7 +359,7 @@ export default function GymBookingModal({
       `日期：${bookingReceipt.dateStr} (${bookingReceipt.dayName})\n` +
       `時段：${bookingReceipt.slots.join('、')}\n` +
       `課程：${bookingReceipt.courseType}\n` +
-      `預約扣抵：${bookingReceipt.totalPoints} 點\n` +
+      `使用媒合額度：${bookingReceipt.totalHours} 次\n` +
       `📜 教練專業證照：已隨單檢附 ${receiptCoachCerts.length} 張證照證明照片（店家現場可直接查驗核對）\n` +
       `備註：${bookingReceipt.bookingNote}\n` +
       `預約單號：#${bookingReceipt.bookingId}`
@@ -447,9 +446,9 @@ export default function GymBookingModal({
               <span style={{ color: '#b4ff04', fontWeight: 700 }}>{bookingReceipt.courseType}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #141d2c', paddingBottom: '8px' }}>
-              <span style={{ color: '#64748b' }}>預約扣抵點數</span>
+              <span style={{ color: '#64748b' }}>使用預約額度</span>
               <strong style={{ color: '#b4ff04', fontSize: '16px' }}>
-                {bookingReceipt.totalPoints} 點 <span style={{ fontSize: '11px', color: '#94a3b8' }}>(剩餘：{bookingReceipt.remainingPoints} 點)</span>
+                {bookingReceipt.totalHours} 次 <span style={{ fontSize: '11px', color: '#94a3b8' }}>(剩餘：{Math.floor(bookingReceipt.remainingPoints / pointsPerSlot)} 次)</span>
               </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #141d2c', paddingBottom: '8px' }}>
@@ -774,11 +773,11 @@ export default function GymBookingModal({
               </h2>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', fontSize: '12.5px' }}>
-              <span style={{ color: '#94a3b8' }}>預約點數：</span>
-              <strong style={{ color: '#b4ff04', fontSize: '14px' }}>30 點 / 小時</strong>
+              <span style={{ color: '#94a3b8' }}>預約規則：</span>
+              <strong style={{ color: '#b4ff04', fontSize: '14px' }}>每小時使用 1 次額度</strong>
               <span style={{ color: '#334155' }}>|</span>
-              <span style={{ color: '#94a3b8' }}>目前剩餘：</span>
-              <strong style={{ color: '#b4ff04', fontSize: '14px' }}>{currentPoints} 點</strong>
+              <span style={{ color: '#94a3b8' }}>可用額度：</span>
+              <strong style={{ color: '#b4ff04', fontSize: '14px' }}>{Math.floor(currentPoints / pointsPerSlot)} 次</strong>
             </div>
           </div>
 
@@ -922,12 +921,12 @@ export default function GymBookingModal({
                   fontSize: '11px',
                   fontWeight: 900
                 }}>
-                  已選 {totalHours} 小時 ({totalPointsNeeded} 點)
+                  已選 {totalHours} 小時 (使用 {totalHours} 次額度)
                 </span>
               )}
             </label>
 
-            {/* 點數達上限警示標籤 */}
+            {/* 額度達上限警示標籤 */}
             {currentPoints - totalPointsNeeded < pointsPerSlot && totalHours > 0 && (
               <span style={{
                 background: 'rgba(245, 158, 11, 0.15)',
@@ -938,11 +937,11 @@ export default function GymBookingModal({
                 fontSize: '11px',
                 fontWeight: 800
               }}>
-                ⚠️ 點數已達上限，無法再選
+                ⚠️ 可用額度已達上限，無法再選
               </span>
             )}
 
-            {/* 這個框上方顯示剩餘點數 */}
+            {/* 這個框上方顯示可用預約額度 */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -959,18 +958,17 @@ export default function GymBookingModal({
                 ? '0 0 12px rgba(245, 158, 11, 0.15)'
                 : '0 0 12px rgba(180, 255, 4, 0.15)'
             }}>
-              <Coins size={15} color={currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04'} />
-              <span style={{ fontSize: '12px', color: '#cbd5e1', fontWeight: 600 }}>剩餘點數：</span>
+              <span style={{ fontSize: '12px', color: '#cbd5e1', fontWeight: 600 }}>可用額度：</span>
               <strong style={{ 
                 color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04', 
                 fontSize: '14.5px', 
                 fontWeight: 900 
               }}>
-                {Math.max(0, currentPoints - totalPointsNeeded)} 點
+                {Math.max(0, Math.floor((currentPoints - totalPointsNeeded) / pointsPerSlot))} 次
               </strong>
               {totalHours > 0 && (
                 <span style={{ fontSize: '11px', color: '#64748b' }}>
-                  (總額 {currentPoints})
+                  (共 {Math.floor(currentPoints / pointsPerSlot)} 次)
                 </span>
               )}
               {onOpenTopUp && (
@@ -1167,12 +1165,12 @@ export default function GymBookingModal({
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '3px' }}>
-            <span style={{ fontSize: '12px', color: '#64748b' }}>預約扣抵點數：</span>
+            <span style={{ fontSize: '12px', color: '#64748b' }}>本次使用預約額度：</span>
             <span style={{ fontSize: '22px', fontWeight: 900, color: '#b4ff04' }}>
-              {totalPointsNeeded}
+              {totalHours}
             </span>
             <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-              點 (每時段 30 點 × {totalHours}小時)
+              次 (每小時使用 1 次額度)
             </span>
           </div>
         </div>
@@ -1225,11 +1223,11 @@ export default function GymBookingModal({
           >
             <span>
               {isSubmitting 
-                ? '扣點處理中...' 
+                ? '預約處理中...' 
                 : totalPointsNeeded > currentPoints 
-                  ? `點數不足 (差 ${totalPointsNeeded - currentPoints} 點)` 
+                  ? `額度不足 (差 ${totalHours - Math.floor(currentPoints / pointsPerSlot)} 次)` 
                   : totalHours > 0 
-                    ? `確認送出 (扣抵 ${totalPointsNeeded} 點)` 
+                    ? `確認送出預約 (使用 ${totalHours} 次額度)` 
                     : '確認送出預約上課'}
             </span>
             <ArrowRight size={16} />
