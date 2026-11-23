@@ -53,6 +53,7 @@ export default function LeafletMap({
       maxBoundsViscosity: 1.0,
       worldCopyJump: false,
       zoomControl: false,
+      attributionControl: false,
       touchZoom: true
     });
 
