@@ -54,6 +54,7 @@ export default function Navbar({
   }, [isMenuOpen]);
 
   return (
+    <>
     <header className="app-header" style={{
       position: 'sticky',
       top: 0,
@@ -158,8 +159,10 @@ export default function Navbar({
           <Menu size={22} color="#ffffff" />
         </button>
       </div>
+      </div>
+    </header>
 
-      {/* 3. Full Right-Side Slide-out Drawer */}
+      {/* 3. Full Right-Side Slide-out Drawer (Rendered outside <header> so backdrop-filter doesn't trap fixed positioning over the header) */}
       {isMenuOpen && (
         <>
           {/* Backdrop Overlay */}
@@ -170,9 +173,7 @@ export default function Navbar({
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(0, 0, 0, 0.68)',
-              backdropFilter: 'blur(5px)',
-              WebkitBackdropFilter: 'blur(5px)',
+              background: 'rgba(0, 0, 0, 0.35)',
               zIndex: 2500,
               cursor: 'pointer'
             }}
@@ -685,7 +686,6 @@ export default function Navbar({
           </aside>
         </>
       )}
-      </div>
-    </header>
+    </>
   );
 }
