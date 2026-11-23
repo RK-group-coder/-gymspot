@@ -529,7 +529,7 @@ export default function Navbar({
                 onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/about' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
               >
                 <Info size={18} color="#ffffff" />
-                <span style={{ flex: 1 }}>關於我們</span>
+                <span style={{ flex: 1 }}>關於/聯絡我們</span>
                 <span style={{ fontSize: '11px', color: '#64748b' }}>品牌理念</span>
               </button>
 
