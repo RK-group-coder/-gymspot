@@ -38,12 +38,32 @@ export default function LeafletMap({
     const initialLat = userLat || 25.0428;
     const initialLng = userLng || 121.5512;
 
+    // 限制世界地圖單一邊界（裁切極端南極洲麥卡托拉伸區，並鎖死不可超出邊界）
+    const worldBounds = L.latLngBounds(
+      L.latLng(-72, -180),
+      L.latLng(82, 180)
+    );
+
     const mapInstance = L.map(mapContainerRef.current, {
       center: [initialLat, initialLng],
       zoom: 14,
+      minZoom: 3,
+      maxZoom: 20,
+      maxBounds: worldBounds,
+      maxBoundsViscosity: 1.0,
+      worldCopyJump: false,
       zoomControl: false,
       touchZoom: true
     });
+
+    const updateMinZoomToFillViewport = () => {
+      const coverZoom = mapInstance.getBoundsZoom(worldBounds, true);
+      mapInstance.setMinZoom(Math.max(3, coverZoom));
+      if (mapInstance.getZoom() < mapInstance.getMinZoom()) {
+        mapInstance.setZoom(mapInstance.getMinZoom());
+      }
+    };
+    updateMinZoomToFillViewport();
 
     // Zoom control at bottom-right (desktop only; mobile uses pinch-to-zoom)
     if (window.innerWidth > 768) {
@@ -55,13 +75,16 @@ export default function LeafletMap({
     // Trigger invalidateSize to smoothly recalculate full viewport size
     const timer1 = setTimeout(() => {
       mapInstance.invalidateSize();
+      updateMinZoomToFillViewport();
     }, 100);
     const timer2 = setTimeout(() => {
       mapInstance.invalidateSize();
+      updateMinZoomToFillViewport();
     }, 400);
 
     const handleResize = () => {
       mapInstance.invalidateSize();
+      updateMinZoomToFillViewport();
     };
     window.addEventListener('resize', handleResize);
 
@@ -97,7 +120,10 @@ export default function LeafletMap({
 
     const tileLayer = L.tileLayer(url, {
       subdomains: ['0', '1', '2', '3'],
+      minZoom: 3,
       maxZoom: 20,
+      noWrap: true,
+      bounds: L.latLngBounds(L.latLng(-72, -180), L.latLng(82, 180)),
       className,
       attribution: '&copy; Google Maps'
     }).addTo(map);
