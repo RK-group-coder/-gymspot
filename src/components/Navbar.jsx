@@ -582,8 +582,9 @@ export default function Navbar({
                 <span>{isLoggedIn ? '退出登入' : '登入/註冊'}</span>
               </button>
 
-              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569' }}>
-                肌動組 GYMspot • 自由教練場租媒合平台
+              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569', lineHeight: 1.5 }}>
+                <div>肌動組 GYMspot • 自由教練場租媒合平台</div>
+                <div style={{ color: '#64748b' }}>聯絡信箱：official@gymspot.space</div>
               </div>
             </div>
           </aside>

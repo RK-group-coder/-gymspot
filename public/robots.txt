@@ -32,3 +32,4 @@ Allow: /
 Sitemap: https://www.gymspot.space/sitemap.xml
 # LLMs.txt AI 知識庫標準索引
 # https://www.gymspot.space/llms.txt
+

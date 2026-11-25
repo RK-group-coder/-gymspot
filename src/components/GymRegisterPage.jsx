@@ -1878,6 +1878,8 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
 
       {/* Footer */}
       <footer style={{
+        position: 'relative',
+        zIndex: 1,
         background: '#04060a',
         borderTop: '1px solid #1e293b',
         padding: '36px 24px'
@@ -1895,7 +1897,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
             onClick={onNavigateHome}
             style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
           >
-            <img src="/brand-icon.png" alt="肌動組" style={{ height: '30px', width: 'auto', mixBlendMode: 'screen' }} />
+            <img src="/brand-icon-transparent.png" alt="肌動組" style={{ height: '30px', width: 'auto' }} />
             <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
           </div>
 
@@ -1908,10 +1910,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
             color: '#94a3b8'
           }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Mail size={13} color="#b4ff04" /> 客服信箱：contact@gymspot.tw
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <MessageSquare size={13} color="#b4ff04" /> 官方 LINE 合作諮詢：@gymspot
+              <Mail size={13} color="#b4ff04" /> 客服與聯絡信箱：official@gymspot.space
             </span>
           </div>
 

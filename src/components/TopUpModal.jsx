@@ -349,7 +349,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
                 新台幣 (TWD) 計價 · 支援 Visa / MasterCard / JCB 一次付清，付款完成立即開通額度。
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
-                <span>購買 7 日內未使用可全額退刷 · 客服 a0903383712@gmail.com / 0903-383-712</span>
+                <span>購買 7 日內未使用可全額退刷 · 客服 official@gymspot.space / 0903-383-712</span>
                 {onOpenTerms && (
                   <button
                     type="button"
@@ -622,7 +622,7 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
                     <div style={{ fontSize: '11px', color: '#8a8a8a', marginTop: '4px', lineHeight: 1.5 }}>
                       • 數位服務即時交付：完成線上刷卡授權後，系統立即開通所購之場位預約媒合額度。<br />
                       • 7日猶豫期保障：自購買日起 7 日內若完全未使用任何場位預約，可聯繫客服申請原卡全額退刷。<br />
-                      • 客服專線：0903-383-712 · 客服信箱：a0903383712@gmail.com
+                      • 客服專線：0903-383-712 · 客服信箱：official@gymspot.space
                     </div>
                   </div>
                 </label>
