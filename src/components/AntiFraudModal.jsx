@@ -171,9 +171,8 @@ export default function AntiFraudModal({ isOpen, onClose }) {
                 <strong style={{ color: '#ffffff' }}>official@gymspot.space</strong>
               </div>
               <div>
-                <span style={{ color: '#8a8a8a' }}>客服專線：</span>
-                <strong style={{ color: '#ffffff' }}>0903-383-712</strong>
-                <span style={{ color: '#737373', fontSize: '11.5px' }}> (10:00-18:00)</span>
+                <span style={{ color: '#8a8a8a' }}>客服時間：</span>
+                <strong style={{ color: '#ffffff' }}>週一至週五 10:00-18:00</strong>
               </div>
               <div>
                 <span style={{ color: '#8a8a8a' }}>官方 Instagram：</span>

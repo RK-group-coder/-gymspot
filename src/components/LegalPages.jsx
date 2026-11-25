@@ -225,7 +225,7 @@ export function AntiFraudPage({ onNavigateHome, onNavigateTerms, onNavigateAntiF
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontWeight: 700, color: '#111827' }}>
             <div>客服聯絡信箱：official@gymspot.space</div>
-            <div>客服專線：0903-383-712 (10:00-18:00)</div>
+            <div>客服服務時間：週一至週五 10:00-18:00</div>
             <div>
               官方 Instagram：{' '}
               <a
@@ -365,7 +365,6 @@ export function TermsPage({ onNavigateHome, onNavigateTerms, onNavigateAntiFraud
               <ul style={{ margin: '6px 0', paddingLeft: '20px' }}>
                 <li>營運品牌：肌動組 GYMspot 運動空間媒合平台</li>
                 <li>客服專用信箱：<strong>official@gymspot.space</strong></li>
-                <li>客服專用電話：<strong>0903-383-712</strong></li>
                 <li>客服服務時間：週一至週五 10:00 - 18:00（國定假日除外，其餘時間可透過信箱留言）</li>
               </ul>
             </li>
@@ -450,3 +449,4 @@ export function TermsPage({ onNavigateHome, onNavigateTerms, onNavigateAntiFraud
     </div>
   );
 }
+
