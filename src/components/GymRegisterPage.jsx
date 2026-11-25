@@ -89,6 +89,7 @@ const VERIFY_CHANNELS = [
 export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegisterSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
+    shortName: '',
     city: '台北市',
     district: '大安區',
     address: '',
@@ -349,6 +350,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       const newGym = {
         id: `gym-reg-${Date.now()}`,
         name: formData.name || '新進駐場租健身房',
+        shortName: (formData.shortName || formData.name || '新進駐場館').trim(),
         brand: formData.name,
         city: formData.city,
         district: formData.district || '市區',
@@ -360,12 +362,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
         reviewCount: 1,
         phone: formData.phone || '02-8888-9999',
         email: formData.email,
-        lineId: formData.verifyChannel === 'line' ? verifyAccountValue : (formData.officialLine || ''),
-        igHandle: formData.verifyChannel === 'ig' ? verifyAccountValue : (formData.igHandle || 'gym.tw'),
-        fbPageUrl: formData.verifyChannel === 'fb' ? verifyAccountValue : (formData.fbPageUrl || ''),
-        verifyChannel: selectedChannelObj.key,
-        verifyChannelLabel: selectedChannelObj.label,
-        verifyAccount: verifyAccountValue,
+        lineId: formData.officialLine || '',
+        igHandle: formData.igHandle || '',
+        fbPageUrl: formData.fbPageUrl || '',
         gymIntro: gymIntroText,
         coachIntro: coachIntroText,
         coverImage: coverPhoto ? coverPhoto.preview : formData.coverImage,
@@ -422,18 +421,16 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       const newApp = {
         id: newGym.id,
         name: newGym.name,
+        shortName: newGym.shortName,
         brand: newGym.brand,
         city: newGym.city,
         district: newGym.district,
         address: newGym.address,
         phone: newGym.phone,
         email: newGym.email,
-        verifyChannel: selectedChannelObj.key,
-        verifyChannelLabel: selectedChannelObj.label,
-        verifyAccount: verifyAccountValue,
-        officialLine: formData.verifyChannel === 'line' ? verifyAccountValue : (formData.officialLine || ''),
-        igHandle: formData.verifyChannel === 'ig' ? verifyAccountValue : (formData.igHandle || ''),
-        fbPageUrl: formData.verifyChannel === 'fb' ? verifyAccountValue : (formData.fbPageUrl || ''),
+        officialLine: formData.officialLine || '',
+        igHandle: formData.igHandle || '',
+        fbPageUrl: formData.fbPageUrl || '',
         gymIntro: gymIntroText,
         coachIntro: coachIntroText,
         hourlyRate: hourlyPrice,
@@ -469,6 +466,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
     setSubmittedGymData(null);
     setFormData({
       name: '',
+      shortName: '',
       city: '台北市',
       district: '大安區',
       address: '',
@@ -733,31 +731,62 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                    場館全名 <span style={{ color: '#ef4444' }}>*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    placeholder="例如：Forge 鍛造體能運動空間"
-                    value={formData.name}
-                    onChange={handleChange}
-                    style={{
-                      width: '100%',
-                      background: '#121927',
-                      border: '1px solid #243248',
-                      borderRadius: '10px',
-                      padding: '11px 14px',
-                      color: '#fff',
-                      fontSize: '14px',
-                      outline: 'none',
-                      transition: 'border-color 0.2s ease'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                    onBlur={(e) => e.target.style.borderColor = '#243248'}
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
+                      場館全名 <span style={{ color: '#ef4444' }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="例如：Forge 鍛造體能運動空間"
+                      value={formData.name}
+                      onChange={handleChange}
+                      style={{
+                        width: '100%',
+                        background: '#121927',
+                        border: '1px solid #243248',
+                        borderRadius: '10px',
+                        padding: '11px 14px',
+                        color: '#fff',
+                        fontSize: '14px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
+                      onBlur={(e) => e.target.style.borderColor = '#243248'}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
+                      場館簡稱 <span style={{ color: '#ef4444' }}>*</span>
+                      <span style={{ fontSize: '11.5px', color: '#b4ff04', fontWeight: 600, marginLeft: '6px' }}>（地圖地標只顯示此簡稱）</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="shortName"
+                      required
+                      maxLength={14}
+                      placeholder="例如：Forge 鍛造體能"
+                      value={formData.shortName}
+                      onChange={handleChange}
+                      style={{
+                        width: '100%',
+                        background: '#121927',
+                        border: '1px solid #243248',
+                        borderRadius: '10px',
+                        padding: '11px 14px',
+                        color: '#fff',
+                        fontSize: '14px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
+                      onBlur={(e) => e.target.style.borderColor = '#243248'}
+                    />
+                  </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '16px' }}>

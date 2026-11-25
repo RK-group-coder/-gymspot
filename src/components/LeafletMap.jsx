@@ -180,10 +180,11 @@ export default function LeafletMap({
       const priceText = `$${hourlyRate}`;
       const bubbleClass = `pin-bubble ${isSelected ? 'active' : ''}`;
 
+      const displayPinName = (gym.shortName || gym.name || '').trim();
       const iconHtml = `
         <div class="${bubbleClass}" title="${gym.name} (${priceText}/h)">
           <span class="pin-dot"></span>
-          <span class="pin-gym-name">${gym.name}</span>
+          <span class="pin-gym-name">${displayPinName}</span>
           <span class="pin-divider"></span>
           <span class="pin-price-badge">${priceText}/h</span>
           <div class="pin-tail"></div>

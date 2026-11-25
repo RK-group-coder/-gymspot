@@ -3,6 +3,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tp-01",
     name: "IronHub 鐵館體能空間 (大安旗艦館)",
+    shortName: "IronHub 鐵館",
     brand: "IronHub Fitness",
     city: "台北市",
     district: "大安區",
@@ -56,6 +57,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tp-02",
     name: "Pulse 勁能運動工作室 (信義店)",
+    shortName: "Pulse 勁能",
     brand: "Pulse Movement Lab",
     city: "台北市",
     district: "信義區",
@@ -108,6 +110,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tp-03",
     name: "Apex 頂尖專屬私教訓練所 (中山館)",
+    shortName: "Apex 頂尖私教",
     brand: "Apex Athletic",
     city: "台北市",
     district: "中山區",
@@ -160,6 +163,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tp-04",
     name: "ForceLab 原力肌能所 (松山小巨蛋館)",
+    shortName: "ForceLab 原力",
     brand: "ForceLab",
     city: "台北市",
     district: "松山區",
@@ -212,6 +216,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tp-05",
     name: "Titan 泰坦重訓運動空間 (大安森林店)",
+    shortName: "Titan 泰坦重訓",
     brand: "Titan Training",
     city: "台北市",
     district: "大安區",
@@ -264,6 +269,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tp-06",
     name: "NeoFit 紐約客體適能基地 (民生中山館)",
+    shortName: "NeoFit 紐約客",
     brand: "NeoFit Studio",
     city: "台北市",
     district: "中山區",
@@ -316,6 +322,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-ntp-01",
     name: "FlexSpace 自由練體能中心 (板橋旗艦)",
+    shortName: "FlexSpace 自由練",
     brand: "FlexSpace",
     city: "新北市",
     district: "板橋區",
@@ -368,6 +375,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-ntp-02",
     name: "Elevate 頂峰私教運動所 (板橋新埔館)",
+    shortName: "Elevate 頂峰",
     brand: "Elevate Fitness",
     city: "新北市",
     district: "板橋區",
@@ -420,6 +428,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-ntp-03",
     name: "CorePower 核心體能工坊 (中和南勢角館)",
+    shortName: "CorePower 核心",
     brand: "CorePower Studio",
     city: "新北市",
     district: "中和區",
@@ -472,6 +481,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tc-01",
     name: "Formosa 力量工廠 (台中勤美館)",
+    shortName: "Formosa 力量工廠",
     brand: "Formosa Strength",
     city: "台中市",
     district: "西區",
@@ -524,6 +534,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-tc-02",
     name: "Taichung Elite 菁英重訓中心 (七期西屯館)",
+    shortName: "Elite 菁英重訓",
     brand: "Elite Athletic",
     city: "台中市",
     district: "西屯區",
@@ -576,6 +587,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-kh-01",
     name: "SouthPort 南方體能基地 (高雄巨蛋店)",
+    shortName: "SouthPort 南方",
     brand: "SouthPort Performance",
     city: "高雄市",
     district: "左營區",
@@ -628,6 +640,7 @@ export const INITIAL_GYMS = [
   {
     id: "gym-kh-02",
     name: "HarborFit 港都自由訓練所 (鼓山美術館館)",
+    shortName: "HarborFit 港都",
     brand: "HarborFit",
     city: "高雄市",
     district: "鼓山區",
