@@ -382,7 +382,6 @@ export default function GymDetailModal({
               <div style={responsiveCardStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <h3 style={{ ...sectionTitle, marginBottom: 0, fontSize: isMobile ? '14.5px' : '15px' }}>
-                    <ImageIcon size={17} color="#b4ff04" />
                     <span>場館／器材照片牆</span>
                     <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 700 }}>
                       共 {photos.length} 張
@@ -629,7 +628,6 @@ export default function GymDetailModal({
               {/* 場館介紹 */}
               <div style={responsiveCardStyle}>
                 <h3 style={sectionTitle}>
-                  <FileText size={17} color="#b4ff04" />
                   場館介紹
                 </h3>
                 <p style={{
@@ -646,7 +644,6 @@ export default function GymDetailModal({
               {/* 給教練的話或規則 */}
               <div style={responsiveCardStyle}>
                 <h3 style={sectionTitle}>
-                  <FileText size={17} color="#b4ff04" />
                   給教練的話或規則
                 </h3>
                 <p style={{

@@ -834,7 +834,6 @@ export default function GymBookingModal({
         <div>
           <div style={{ marginBottom: '10px' }}>
             <label style={{ fontSize: '13px', fontWeight: 700, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Calendar size={15} color="#b4ff04" />
               <span>1. 選擇預約日期 (開放未來 7 天)：</span>
             </label>
           </div>
@@ -905,7 +904,6 @@ export default function GymBookingModal({
               flexWrap: 'wrap',
               gap: '6px'
             }}>
-              <Clock size={16} color="#b4ff04" />
               <span>
                 2. 選擇上課時段 · 
                 <span style={{ color: '#b4ff04', marginLeft: '6px' }}>
@@ -1102,7 +1100,6 @@ export default function GymBookingModal({
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
             <label style={{ fontSize: '13px', fontWeight: 700, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <FileText size={15} color="#b4ff04" />
               <span>3. 預約備註需求（選填）：</span>
             </label>
             <span style={{
