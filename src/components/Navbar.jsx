@@ -582,6 +582,61 @@ export default function Navbar({
                 <span>{isLoggedIn ? '退出登入' : '登入/註冊'}</span>
               </button>
 
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', marginTop: '12px' }}>
+                <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.04em' }}>
+                  Follow Us
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <a
+                    href="https://www.instagram.com/gymspot_official?knvt=Njh3OHBiMnkxb2N5&utm_source=qr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Instagram (@gymspot_official)"
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      borderRadius: '7px',
+                      background: '#1e1e1e',
+                      border: '1px solid #333333',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                    </svg>
+                  </a>
+                  <a
+                    href="https://www.threads.com/@gymdpot_official?igshid=NTc4MTIwNjQ2YQ=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Threads (@gymdpot_official)"
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      borderRadius: '7px',
+                      background: '#1e1e1e',
+                      border: '1px solid #333333',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="4" />
+                      <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
               <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569', lineHeight: 1.5 }}>
                 <div>肌動組 GYMspot • 自由教練場租媒合平台</div>
                 <div style={{ color: '#64748b' }}>聯絡信箱：official@gymspot.space</div>
