@@ -202,55 +202,69 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
         <div style={{ height: '40px' }} />
       </main>
 
-      {/* 3. Footer */}
+      {/* 3. Footer (Horizontal Row Layout) */}
       <footer style={{
         position: 'relative',
         zIndex: 1,
         background: '#04060a',
         borderTop: '1px solid #1e293b',
-        padding: '36px 24px'
+        padding: '22px 32px'
       }}>
         <div style={{
-          maxWidth: '920px',
+          maxWidth: '1200px',
           margin: '0 auto',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'row',
           alignItems: 'center',
-          gap: '16px',
-          textAlign: 'center'
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '20px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/brand-icon-transparent.png" alt="肌動組" style={{ height: '30px', width: 'auto' }} />
-            <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
-          </div>
-
-          <div style={{
-            display: 'flex',
-            gap: '24px',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            fontSize: '12.5px',
-            color: '#94a3b8'
-          }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Mail size={13} color="#b4ff04" /> 客服與聯絡信箱：official@gymspot.space
-            </span>
-          </div>
-
-          {/* Follow Us Social Icons */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', margin: '2px 0' }}>
-            <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.04em' }}>
-              Follow Us
+          {/* Left: Brand & Copyright */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <img src="/brand-icon-transparent.png" alt="肌動組" style={{ height: '28px', width: 'auto' }} />
+              <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
             </div>
+            <span style={{ color: '#334155' }}>|</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b' }}>
+              <button
+                onClick={onOpenTerms}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontSize: '12px'
+                }}
+              >
+                服務條款與隱私權協議
+              </button>
+              <span>·</span>
+              <span>© 2026 肌動組 GYMspot All Rights Reserved.</span>
+            </div>
+          </div>
+
+          {/* Right: Email & Follow Us */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#cbd5e1' }}>
+              <Mail size={14} color="#b4ff04" /> 客服與聯絡信箱：official@gymspot.space
+            </span>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.03em' }}>
+                Follow Us
+              </span>
               <a
                 href="https://www.instagram.com/gymspot_official?knvt=Njh3OHBiMnkxb2N5&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Instagram (@gymspot_official)"
                 style={{
-                  width: '38px',
-                  height: '38px',
+                  width: '34px',
+                  height: '34px',
                   borderRadius: '8px',
                   background: '#1e1e1e',
                   border: '1px solid #333333',
@@ -264,7 +278,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#333333'; e.currentTarget.style.color = '#ffffff'; }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
@@ -276,8 +290,8 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
                 rel="noopener noreferrer"
                 title="Threads (@gymdpot_official)"
                 style={{
-                  width: '38px',
-                  height: '38px',
+                  width: '34px',
+                  height: '34px',
                   borderRadius: '8px',
                   background: '#1e1e1e',
                   border: '1px solid #333333',
@@ -291,34 +305,12 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#333333'; e.currentTarget.style.color = '#ffffff'; }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="4" />
                   <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
                 </svg>
               </a>
             </div>
-          </div>
-
-          <div style={{
-            display: 'flex',
-            gap: '14px',
-            fontSize: '11.5px',
-            color: '#64748b'
-          }}>
-            <button
-              onClick={onOpenTerms}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#64748b',
-                cursor: 'pointer',
-                textDecoration: 'underline'
-              }}
-            >
-              服務條款與隱私權協議
-            </button>
-            <span>·</span>
-            <span>© 2026 肌動組 GYMspot All Rights Reserved.</span>
           </div>
         </div>
       </footer>
