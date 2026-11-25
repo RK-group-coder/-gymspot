@@ -15,6 +15,7 @@ import AboutPage from './components/AboutPage';
 import GymRegisterPage from './components/GymRegisterPage';
 import AdminDashboard from './components/AdminDashboard';
 import AuthModal from './components/AuthModal';
+import { TermsPage, AntiFraudPage } from './components/LegalPages';
 import { supabase } from './lib/supabase';
 import { INITIAL_GYMS, PRESET_LOCATIONS } from './data/mockGyms';
 import { calculateDistanceKm, getCurrentPositionAsync } from './utils/geo';
@@ -389,6 +390,79 @@ export default function App() {
     );
   }
 
+  // Full-page /terms or /anti-fraud routes (白底黑字正式條款與防詐騙宣導獨立頁面)
+  if (
+    currentPath === '/terms' ||
+    currentPath === '/terms/' ||
+    currentPath === '/anti-fraud' ||
+    currentPath === '/anti-fraud/'
+  ) {
+    const isAntiFraudRoute = currentPath.startsWith('/anti-fraud');
+    return (
+      <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column' }}>
+        <Navbar
+          onNavigateHome={() => navigateTo('/')}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
+          onOpenTerms={() => navigateTo('/terms')}
+          onOpenAntiFraud={() => navigateTo('/anti-fraud')}
+          onOpenAbout={() => navigateTo('/about')}
+          onOpenRegister={() => navigateTo('/partner')}
+          onOpenAdmin={() => navigateTo('/admin')}
+          onOpenTopUp={() => setIsTopUpOpen(true)}
+          currentPath={isAntiFraudRoute ? '/anti-fraud' : '/terms'}
+          points={points}
+          isLoggedIn={isLoggedIn}
+          userRole={userRole}
+          onToggleLogin={handleToggleLogin}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+        />
+        {isTopUpOpen && (
+          <TopUpModal
+            points={points}
+            onClose={() => setIsTopUpOpen(false)}
+            onOpenTerms={() => {
+              setIsTopUpOpen(false);
+              navigateTo('/terms');
+            }}
+            onTopUp={(pts, price) => {
+              setPoints(p => p + pts);
+              setIsTopUpOpen(false);
+              setToastMessage(`方案購買成功！已開通 ${Math.floor(pts / 30)} 次預約額度 (NT$ ${price})`);
+            }}
+          />
+        )}
+        {isAntiFraudRoute ? (
+          <AntiFraudPage
+            onNavigateHome={() => navigateTo('/')}
+            onNavigateTerms={() => navigateTo('/terms')}
+            onNavigateAntiFraud={() => navigateTo('/anti-fraud')}
+          />
+        ) : (
+          <TermsPage
+            onNavigateHome={() => navigateTo('/')}
+            onNavigateTerms={() => navigateTo('/terms')}
+            onNavigateAntiFraud={() => navigateTo('/anti-fraud')}
+          />
+        )}
+        {isProfileModalOpen && (
+          <ProfileModal
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
+          />
+        )}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onLogin={handleLogin}
+          onOpenVenueRegister={() => {
+            setIsAuthModalOpen(false);
+            navigateTo('/partner');
+          }}
+        />
+      </div>
+    );
+  }
+
   // Full-page /about route
   if (currentPath === '/about' || currentPath === '/about/') {
     return (
@@ -396,7 +470,8 @@ export default function App() {
         <Navbar
           onNavigateHome={() => navigateTo('/')}
           onOpenProfile={() => setIsProfileModalOpen(true)}
-          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenTerms={() => navigateTo('/terms')}
+          onOpenAntiFraud={() => navigateTo('/anti-fraud')}
           onOpenAbout={() => navigateTo('/about')}
           onOpenRegister={() => navigateTo('/partner')}
           onOpenAdmin={() => navigateTo('/admin')}
@@ -412,7 +487,10 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
-            onOpenTerms={() => setIsTermsModalOpen(true)}
+            onOpenTerms={() => {
+              setIsTopUpOpen(false);
+              navigateTo('/terms');
+            }}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
@@ -423,7 +501,8 @@ export default function App() {
         <AboutPage
           onNavigateHome={() => navigateTo('/')}
           onOpenRegister={() => navigateTo('/partner')}
-          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenTerms={() => navigateTo('/terms')}
+          onOpenAntiFraud={() => navigateTo('/anti-fraud')}
         />
         {isProfileModalOpen && (
           <ProfileModal
@@ -462,7 +541,8 @@ export default function App() {
         <Navbar
           onNavigateHome={() => navigateTo('/')}
           onOpenProfile={() => setIsProfileModalOpen(true)}
-          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenTerms={() => navigateTo('/terms')}
+          onOpenAntiFraud={() => navigateTo('/anti-fraud')}
           onOpenAbout={() => navigateTo('/about')}
           onOpenRegister={() => navigateTo('/partner')}
           onOpenAdmin={() => navigateTo('/admin')}
@@ -478,7 +558,10 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
-            onOpenTerms={() => setIsTermsModalOpen(true)}
+            onOpenTerms={() => {
+              setIsTopUpOpen(false);
+              navigateTo('/terms');
+            }}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
               setIsTopUpOpen(false);
@@ -488,7 +571,8 @@ export default function App() {
         )}
         <GymRegisterPage
           onNavigateHome={() => navigateTo('/')}
-          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenTerms={() => navigateTo('/terms')}
+          onOpenAntiFraud={() => navigateTo('/anti-fraud')}
           onRegisterSuccess={handleRegisterSuccess}
         />
         {isProfileModalOpen && (
@@ -544,7 +628,8 @@ export default function App() {
       {/* 1. Header Navbar */}
       <Navbar
         onOpenProfile={() => setIsProfileModalOpen(true)}
-        onOpenTerms={() => setIsTermsModalOpen(true)}
+        onOpenTerms={() => navigateTo('/terms')}
+        onOpenAntiFraud={() => navigateTo('/anti-fraud')}
         onOpenAbout={() => navigateTo('/about')}
         onOpenRegister={() => navigateTo('/partner')}
         onOpenAdmin={() => navigateTo('/admin')}
@@ -559,7 +644,10 @@ export default function App() {
         <TopUpModal
           points={points}
           onClose={() => setIsTopUpOpen(false)}
-          onOpenTerms={() => setIsTermsModalOpen(true)}
+          onOpenTerms={() => {
+            setIsTopUpOpen(false);
+            navigateTo('/terms');
+          }}
           onTopUp={(pts, price) => {
             setPoints(p => p + pts);
             setIsTopUpOpen(false);

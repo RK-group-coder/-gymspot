@@ -87,7 +87,7 @@ const VERIFY_CHANNELS = [
   }
 ];
 
-export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegisterSuccess }) {
+export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAntiFraud, onRegisterSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     shortName: '',
@@ -1953,7 +1953,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
               <span>·</span>
               <button
                 type="button"
-                onClick={() => setIsAntiFraudOpen(true)}
+                onClick={onOpenAntiFraud}
                 style={{
                   background: 'transparent',
                   border: 'none',

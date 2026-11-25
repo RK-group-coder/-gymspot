@@ -20,6 +20,7 @@ import AntiFraudModal from './AntiFraudModal';
 export default function Navbar({ 
   onOpenProfile, 
   onOpenTerms, 
+  onOpenAntiFraud,
   onOpenAbout,
   onOpenRegister, 
   onOpenTopUp,
@@ -646,7 +647,8 @@ export default function Navbar({
                     type="button"
                     onClick={() => {
                       setIsMenuOpen(false);
-                      setIsAntiFraudOpen(true);
+                      if (onOpenAntiFraud) onOpenAntiFraud();
+                      else setIsAntiFraudOpen(true);
                     }}
                     style={{
                       background: 'transparent',

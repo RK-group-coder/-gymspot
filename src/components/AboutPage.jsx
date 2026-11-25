@@ -15,9 +15,7 @@ import {
 } from 'lucide-react';
 import AntiFraudModal from './AntiFraudModal';
 
-export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms }) {
-  const [isAntiFraudOpen, setIsAntiFraudOpen] = useState(false);
-
+export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms, onOpenAntiFraud }) {
   return (
     <div className="about-page-steel-bg" style={{
       fontFamily: 'system-ui, -apple-system, sans-serif'
@@ -248,7 +246,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
               <span>·</span>
               <button
                 type="button"
-                onClick={() => setIsAntiFraudOpen(true)}
+                onClick={onOpenAntiFraud}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -334,7 +332,6 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
           </div>
         </div>
       </footer>
-      <AntiFraudModal isOpen={isAntiFraudOpen} onClose={() => setIsAntiFraudOpen(false)} />
     </div>
   );
 }
