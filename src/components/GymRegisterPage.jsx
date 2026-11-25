@@ -324,12 +324,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const selectedChannelObj = VERIFY_CHANNELS.find(c => c.key === formData.verifyChannel) || VERIFY_CHANNELS[0];
-    const verifyAccountValue = (formData[selectedChannelObj.fieldName] || '').trim();
-    if (!verifyAccountValue) {
-      alert(`請於「2. 店家身分確認」填寫「${selectedChannelObj.label}」，我們將會傳訊息至此帳號做確認！`);
-      return;
-    }
     if (!coverPhoto) {
       alert('請上傳「首頁圖」（顯示於首頁場館卡片的封面圖）');
       return;
@@ -343,7 +337,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
       return;
     }
     if (!isAgreedTerms) {
-      alert('請先點擊第 8 點「查閱合作條款」，滾動至最下方並按下「我已詳閱並同意」後方可提交！');
+      alert('請先點擊第 7 點「查閱合作條款」，滾動至最下方並按下「我已詳閱並同意」後方可提交！');
       return;
     }
     setIsSubmitting(true);
@@ -878,153 +872,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
               </div>
 
-              {/* SECTION 2: 店家身分確認（免收公文、免查統編，透過官方帳號傳訊確認） */}
-              <div style={{
-                background: '#0a0f1a',
-                padding: '24px',
-                borderRadius: '16px',
-                border: '1px solid #192336'
-              }}>
-                <div style={{
-                  marginBottom: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '8px'
-                }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    2. 店家身分確認
-                  </h3>
-                  <span style={{
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    padding: '3px 10px',
-                    borderRadius: '6px',
-                    background: 'rgba(180, 255, 4, 0.12)',
-                    color: '#b4ff04',
-                    border: '1px solid rgba(180, 255, 4, 0.3)'
-                  }}>
-                    免收公文・免查統編
-                  </span>
-                </div>
-
-                <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.5, marginBottom: '18px' }}>
-                  審查完成後，將把您的店家放上<span style={{ color: '#b4ff04', fontWeight: 800 }}>網站地圖</span>，並以 <span style={{ color: '#b4ff04', fontWeight: 800 }}>Gmail</span> 通知您。
-                </p>
-
-                {/* 場館對外的聯絡管道（擇一） */}
-                <div>
-                  <label style={{ display: 'block', fontSize: '13.5px', color: '#e2e8f0', fontWeight: 700, marginBottom: '10px' }}>
-                    場館對外的「聯絡管道（三選一）」 <span style={{ color: '#ef4444' }}>*</span>
-                  </label>
-
-                  {/* 3 Channel Radio Cards */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-                    gap: '12px',
-                    marginBottom: '16px'
-                  }}>
-                    {VERIFY_CHANNELS.map(channel => {
-                      const isSelected = formData.verifyChannel === channel.key;
-                      return (
-                        <button
-                          key={channel.key}
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, verifyChannel: channel.key }))}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            padding: '13px 15px',
-                            borderRadius: '11px',
-                            background: isSelected ? 'rgba(180, 255, 4, 0.12)' : '#121927',
-                            border: isSelected ? '1.5px solid #b4ff04' : '1px solid #243248',
-                            color: isSelected ? '#ffffff' : '#cbd5e1',
-                            fontSize: '13.5px',
-                            fontWeight: isSelected ? 800 : 600,
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            boxShadow: isSelected ? '0 0 14px rgba(180, 255, 4, 0.16)' : 'none',
-                            transition: 'all 0.15s ease'
-                          }}
-                        >
-                          <span style={{
-                            width: '18px',
-                            height: '18px',
-                            borderRadius: '50%',
-                            border: isSelected ? '5px solid #b4ff04' : '2px solid #475569',
-                            background: '#0a0f1a',
-                            flexShrink: 0,
-                            boxSizing: 'border-box',
-                            transition: 'all 0.15s ease'
-                          }} />
-                          <span>{channel.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Selected Channel Input */}
-                  {(() => {
-                    const activeChannel = VERIFY_CHANNELS.find(c => c.key === formData.verifyChannel) || VERIFY_CHANNELS[0];
-                    return (
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12.5px', color: '#cbd5e1', marginBottom: '6px', fontWeight: 600 }}>
-                          {activeChannel.inputLabel} <span style={{ color: '#ef4444' }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name={activeChannel.fieldName}
-                          required
-                          placeholder={activeChannel.placeholder}
-                          value={formData[activeChannel.fieldName]}
-                          onChange={handleChange}
-                          style={{
-                            width: '100%',
-                            background: '#121927',
-                            border: '1px solid #243248',
-                            borderRadius: '10px',
-                            padding: '12px 14px',
-                            color: '#fff',
-                            fontSize: '14px',
-                            outline: 'none',
-                            boxSizing: 'border-box',
-                            transition: 'border-color 0.2s ease'
-                          }}
-                          onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
-                          onBlur={(e) => e.target.style.borderColor = '#243248'}
-                        />
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                {/* Confirmation Message Notice */}
-                <div style={{
-                  marginTop: '16px',
-                  padding: '14px 16px',
-                  borderRadius: '12px',
-                  background: 'rgba(180, 255, 4, 0.08)',
-                  border: '1px solid rgba(180, 255, 4, 0.28)',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '10px'
-                }}>
-                  <MessageSquare size={18} color="#b4ff04" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <div style={{ fontSize: '13px', lineHeight: 1.6 }}>
-                    <div style={{ color: '#b4ff04', fontWeight: 800 }}>
-                      我們將會傳訊息至此帳號做確認，請留意訊息！
-                    </div>
-                    <div style={{ color: '#cbd5e1', fontSize: '12.5px', marginTop: '2px' }}>
-                      平台官方帳號將發送一則確認訊息給貴店（若填寫 IG 或 Facebook 粉專，請一併留意陌生訊息匣），回覆確認即完成店家身分審核。
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* SECTION 3: 小時制場租費用與每週開放時段 */}
+              {/* SECTION 2: 小時制場租費用與每週開放時段 */}
               <div style={{
                 background: '#0a0f1a',
                 padding: '24px',
@@ -1034,7 +882,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 {/* Section Header */}
                 <div style={{ marginBottom: '18px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    3. 小時制場租費用與每週開放時段
+                    2. 小時制場租費用與每週開放時段
                   </h3>
                   <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
                     設定統一小時制場租收費（統一價錢收費，不做多堂優惠），並在下方時間表格勾選可以場租的時段
@@ -1351,17 +1199,17 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 </div>
               </div>
 
-              {/* SECTION 4 / 5: 場館介紹 與 給教練的話或規則 */}
+              {/* SECTION 3 / 4: 場館介紹 與 給教練的話或規則 */}
               {[
                 {
-                  num: '4',
+                  num: '3',
                   name: 'gymIntro',
                   title: '場館介紹',
                   hint: '介紹您的場館環境特色、器材與氛圍（若未填寫，前台將自動顯示「無場館介紹」）',
                   placeholder: '例如：本館位於大安區捷運站旁，空間約 80 坪，配備 4 座深蹲架、自由重量區與衝刺草皮區，採光明亮、空調舒適...'
                 },
                 {
-                  num: '5',
+                  num: '4',
                   name: 'coachIntro',
                   title: '給教練的話或規則',
                   hint: '給進駐教練的叮嚀、帶課規範或入場須知（若未填寫，前台將自動顯示「無特殊介紹」）',
@@ -1453,7 +1301,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
               }}>
                 <div style={{ marginBottom: '18px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                    6. 場館聯繫管道
+                    5. 場館聯繫管道
                   </h3>
                 </div>
 
@@ -1535,7 +1383,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                        7. 首頁圖與場館／器材照片
+                        6. 首頁圖與場館／器材照片
                       </h3>
                       <span style={{
                         fontSize: '11px',
@@ -1853,7 +1701,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                        8. 合作條款
+                        7. 合作條款
                       </h3>
                       <span style={{
                         fontSize: '11px',
