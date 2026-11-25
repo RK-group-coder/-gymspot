@@ -15,6 +15,7 @@ import {
   Info,
   MapPin
 } from 'lucide-react';
+import AntiFraudModal from './AntiFraudModal';
 
 export default function Navbar({ 
   onOpenProfile, 
@@ -32,6 +33,7 @@ export default function Navbar({
   onOpenAuth
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAntiFraudOpen, setIsAntiFraudOpen] = useState(false);
   const menuRef = useRef(null);
 
   // Close on Escape key and prevent background scroll when drawer is open
@@ -637,14 +639,36 @@ export default function Navbar({
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569', lineHeight: 1.5 }}>
-                <div>肌動組 GYMspot • 自由教練場租媒合平台</div>
+              <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '11px', color: '#475569', lineHeight: 1.6 }}>
+                <div>
+                  肌動組 GYMspot • 自由教練場租媒合平台 ·{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsAntiFraudOpen(true);
+                    }}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      padding: 0,
+                      color: '#b4ff04',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    防詐騙宣導
+                  </button>
+                </div>
                 <div style={{ color: '#64748b' }}>聯絡信箱：official@gymspot.space</div>
               </div>
             </div>
           </aside>
         </>
       )}
+      <AntiFraudModal isOpen={isAntiFraudOpen} onClose={() => setIsAntiFraudOpen(false)} />
     </>
   );
 }

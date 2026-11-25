@@ -25,6 +25,7 @@ import {
 import confetti from 'canvas-confetti';
 import { saveApplication } from '../utils/adminStorage';
 import { TAIWAN_DISTRICTS, TAIWAN_CITIES } from '../utils/geo';
+import AntiFraudModal from './AntiFraudModal';
 
 // 1 到 7 星期定義
 const WEEKDAYS = [
@@ -118,8 +119,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
   const [isSubmittedSuccess, setIsSubmittedSuccess] = useState(false);
   const [submittedGymData, setSubmittedGymData] = useState(null);
 
-  // SECTION 8: 合作條款閱讀與簽署狀態
+  // SECTION 7: 合作條款閱讀與簽署狀態
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [isAntiFraudOpen, setIsAntiFraudOpen] = useState(false);
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [isAgreedTerms, setIsAgreedTerms] = useState(false);
   const [agreedTermsTimestamp, setAgreedTermsTimestamp] = useState(null);
@@ -1933,7 +1935,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
               <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
             </div>
             <span style={{ color: '#334155' }}>|</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap' }}>
               <button
                 onClick={onOpenTerms}
                 style={{
@@ -1947,6 +1949,23 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
                 }}
               >
                 服務條款與隱私權協議
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => setIsAntiFraudOpen(true)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  color: '#b4ff04',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}
+              >
+                防詐騙宣導
               </button>
               <span>·</span>
               <span>© 2026 肌動組 GYMspot All Rights Reserved.</span>
@@ -2020,6 +2039,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onRegiste
           </div>
         </div>
       </footer>
+      <AntiFraudModal isOpen={isAntiFraudOpen} onClose={() => setIsAntiFraudOpen(false)} />
 
       {/* SECTION 7: 合作條款閱讀與簽署彈窗 (Modal) */}
       {isTermsModalOpen && (

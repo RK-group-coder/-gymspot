@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -13,8 +13,11 @@ import {
   Mail,
   MessageSquare
 } from 'lucide-react';
+import AntiFraudModal from './AntiFraudModal';
 
 export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms }) {
+  const [isAntiFraudOpen, setIsAntiFraudOpen] = useState(false);
+
   return (
     <div className="about-page-steel-bg" style={{
       fontFamily: 'system-ui, -apple-system, sans-serif'
@@ -227,7 +230,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
               <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
             </div>
             <span style={{ color: '#334155' }}>|</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap' }}>
               <button
                 onClick={onOpenTerms}
                 style={{
@@ -241,6 +244,23 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
                 }}
               >
                 服務條款與隱私權協議
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => setIsAntiFraudOpen(true)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  color: '#b4ff04',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}
+              >
+                防詐騙宣導
               </button>
               <span>·</span>
               <span>© 2026 肌動組 GYMspot All Rights Reserved.</span>
@@ -314,6 +334,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms 
           </div>
         </div>
       </footer>
+      <AntiFraudModal isOpen={isAntiFraudOpen} onClose={() => setIsAntiFraudOpen(false)} />
     </div>
   );
 }
