@@ -186,7 +186,7 @@ export default function TermsModal({ isOpen, onClose }) {
                 <ul style={{ margin: '4px 0', paddingLeft: '20px', color: '#cbd5e1' }}>
                   <li>營運品牌：肌動組 GYMspot 運動空間媒合平台</li>
                   <li>客服專用信箱：<strong>official@gymspot.space</strong></li>
-                  <li>客服服務時間：週一至週五 10:00 - 18:00（國定假日除外，其餘時間可透過信箱留言）</li>
+                  <li>客服服務時間：週一至週日 10:00 - 18:00</li>
                 </ul>
               </li>
             </ol>

@@ -172,7 +172,7 @@ export default function AntiFraudModal({ isOpen, onClose }) {
               </div>
               <div>
                 <span style={{ color: '#8a8a8a' }}>客服時間：</span>
-                <strong style={{ color: '#ffffff' }}>週一至週五 10:00-18:00</strong>
+                <strong style={{ color: '#ffffff' }}>週一至週日 10:00 - 18:00</strong>
               </div>
               <div>
                 <span style={{ color: '#8a8a8a' }}>官方 Instagram：</span>
