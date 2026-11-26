@@ -329,11 +329,11 @@ export function TermsPage({ onNavigateHome, onNavigateTerms, onNavigateAntiFraud
         {/* Section 2 */}
         <section style={{ marginBottom: '26px' }}>
           <h2 style={{ fontSize: '17px', fontWeight: 800, color: '#111827', margin: '0 0 10px' }}>
-            第二條：時程表即時預約、深蹲架鎖位手續費與爽約防制規範
+            第二條：時程表即時預約、場館時段媒合服務費與爽約防制規範
           </h2>
           <ol style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <li>
-              <strong>預約鎖位費之法律性質：</strong>自由教練使用本平台預約系統鎖定指定場館特定時段與深蹲架/場位時，平台將自教練已購之媒合方案中扣抵對應媒合額度（每次預約時段扣抵 1 次額度，約當 NT$ 25 ~ 30 元等值服務）。<strong>該筆費用性質為「平台系統排程演算與排他性時段鎖定之數位技術手續費」，一經系統確認鎖位完成即視為平台技術服務交付完畢。</strong>
+              <strong>預約媒合費之法律性質：</strong>自由教練使用本平台預約系統預約指定場館之特定授課時段時，平台將自教練已購之媒合方案中扣抵對應媒合額度（每次預約時段扣抵 1 次額度，約當 NT$ 25 ~ 30 元等值服務）。<strong>該筆費用性質為「平台系統排程演算與場館時段預約媒合之數位技術手續費」，一經系統確認預約完成即視為平台技術服務交付完畢。</strong>
             </li>
             <li>
               <strong>不予退費與爽約罰則：</strong>除因場館發生重大火警、天災停電等不可抗力致無法營業外，<strong>凡因教練個人排程、學員請假、遲到、忘記或個人疏忽而未到場使用者，該筆預約手續費概不退還。</strong>教練若有連續無故爽約、惡意佔位阻礙他人使用之情事，本平台得逕行暫停或終止該帳號使用權，無須事先通知。
