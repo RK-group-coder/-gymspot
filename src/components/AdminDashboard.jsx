@@ -492,10 +492,10 @@ export default function AdminDashboard({ onNavigateHome }) {
 
           const rangeConfig = {
             day: {
-              label: '今日',
-              labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
-              revSeries: [0, 290, 290, 580, 580, 870, 870, totalRevenue || 870],
-              bookSeries: [0, 1, 2, 3, 4, 5, 6, totalBookings || 6],
+              label: '今日 (24小時)',
+              labels: Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`),
+              revSeries: [0, 0, 0, 0, 0, 0, 0, 0, 0, 290, 290, 290, 580, 580, 580, 580, 870, 870, 870, 870, 870, 870, 870, totalRevenue || 870],
+              bookSeries: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6, 6, totalBookings || 6],
               venueGrowth: '+0',
               memberGrowth: '+1',
               revDelta: '+100%',
@@ -520,6 +520,16 @@ export default function AdminDashboard({ onNavigateHome }) {
               memberGrowth: '+1',
               revDelta: '+42%',
               bookDelta: '+36%'
+            },
+            year: {
+              label: '今年',
+              labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+              revSeries: [0, 0, 0, 0, 0, 0, 0, 580, 1160, 1740, totalRevenue || 2610, totalRevenue || 2610],
+              bookSeries: [0, 0, 0, 0, 0, 0, 0, 4, 9, 14, totalBookings || 18, totalBookings || 18],
+              venueGrowth: `+${totalVenues}`,
+              memberGrowth: '+1',
+              revDelta: '+68%',
+              bookDelta: '+54%'
             },
             total: {
               label: '總計',
@@ -568,6 +578,7 @@ export default function AdminDashboard({ onNavigateHome }) {
                     { key: 'day', label: '日' },
                     { key: 'week', label: '週' },
                     { key: 'month', label: '月' },
+                    { key: 'year', label: '年' },
                     { key: 'total', label: '總共' }
                   ].map((r) => (
                     <button
@@ -640,19 +651,28 @@ export default function AdminDashboard({ onNavigateHome }) {
                       ))}
                       <polygon points={revArea} fill="url(#revGrad)" />
                       <polyline fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinejoin="round" points={revPoints} />
-                      {revCoords.map((pt, i) => (
-                        <g key={i}>
-                          <circle cx={pt.x} cy={pt.y} r="3.5" fill="#111622" stroke="#10b981" strokeWidth="2" />
-                          <text x={pt.x} y={pt.y - 9} fill="#cbd5e1" fontSize="10" textAnchor="middle" fontWeight="600">
-                            {pt.v > 0 ? pt.v.toLocaleString() : ''}
+                      {revCoords.map((pt, i) => {
+                        const showLabel = cfg.labels.length <= 12 || i % 3 === 0 || i === cfg.labels.length - 1;
+                        return (
+                          <g key={i}>
+                            <circle cx={pt.x} cy={pt.y} r={cfg.labels.length > 12 ? 2.5 : 3.5} fill="#111622" stroke="#10b981" strokeWidth="1.8" />
+                            {showLabel && pt.v > 0 && (
+                              <text x={pt.x} y={pt.y - 8} fill="#cbd5e1" fontSize="9.5" textAnchor="middle" fontWeight="600">
+                                {pt.v.toLocaleString()}
+                              </text>
+                            )}
+                          </g>
+                        );
+                      })}
+                      {cfg.labels.map((lbl, i) => {
+                        const showTick = cfg.labels.length <= 12 || i % 3 === 0 || i === cfg.labels.length - 1;
+                        if (!showTick) return null;
+                        return (
+                          <text key={i} x={revCoords[i].x} y="155" fill="#64748b" fontSize="10" textAnchor="middle">
+                            {lbl}
                           </text>
-                        </g>
-                      ))}
-                      {cfg.labels.map((lbl, i) => (
-                        <text key={i} x={revCoords[i].x} y="155" fill="#64748b" fontSize="10.5" textAnchor="middle">
-                          {lbl}
-                        </text>
-                      ))}
+                        );
+                      })}
                     </svg>
                   </div>
                   <div style={{ borderTop: '1px solid #1f2937', paddingTop: '10px', marginTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8' }}>
@@ -691,19 +711,28 @@ export default function AdminDashboard({ onNavigateHome }) {
                       ))}
                       <polygon points={bookArea} fill="url(#bookGrad)" />
                       <polyline fill="none" stroke="#b4ff04" strokeWidth="2.5" strokeLinejoin="round" points={bookPoints} />
-                      {bookCoords.map((pt, i) => (
-                        <g key={i}>
-                          <circle cx={pt.x} cy={pt.y} r="3.5" fill="#111622" stroke="#b4ff04" strokeWidth="2" />
-                          <text x={pt.x} y={pt.y - 9} fill="#cbd5e1" fontSize="10" textAnchor="middle" fontWeight="600">
-                            {pt.v > 0 ? pt.v : ''}
+                      {bookCoords.map((pt, i) => {
+                        const showLabel = cfg.labels.length <= 12 || i % 3 === 0 || i === cfg.labels.length - 1;
+                        return (
+                          <g key={i}>
+                            <circle cx={pt.x} cy={pt.y} r={cfg.labels.length > 12 ? 2.5 : 3.5} fill="#111622" stroke="#b4ff04" strokeWidth="1.8" />
+                            {showLabel && pt.v > 0 && (
+                              <text x={pt.x} y={pt.y - 8} fill="#cbd5e1" fontSize="9.5" textAnchor="middle" fontWeight="600">
+                                {pt.v}
+                              </text>
+                            )}
+                          </g>
+                        );
+                      })}
+                      {cfg.labels.map((lbl, i) => {
+                        const showTick = cfg.labels.length <= 12 || i % 3 === 0 || i === cfg.labels.length - 1;
+                        if (!showTick) return null;
+                        return (
+                          <text key={i} x={bookCoords[i].x} y="155" fill="#64748b" fontSize="10" textAnchor="middle">
+                            {lbl}
                           </text>
-                        </g>
-                      ))}
-                      {cfg.labels.map((lbl, i) => (
-                        <text key={i} x={bookCoords[i].x} y="155" fill="#64748b" fontSize="10.5" textAnchor="middle">
-                          {lbl}
-                        </text>
-                      ))}
+                        );
+                      })}
                     </svg>
                   </div>
                   <div style={{ borderTop: '1px solid #1f2937', paddingTop: '10px', marginTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8' }}>
