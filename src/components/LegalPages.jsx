@@ -129,6 +129,16 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           >
             自由教練服務條款
           </button>
+          <a
+            href="https://forms.gle/FpCdQzzPBmAFdpBr8"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            場館進駐申請表單
+          </a>
         </div>
 
         {/* 4. Right Column: Contact & Follow Us */}
