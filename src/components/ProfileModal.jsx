@@ -227,13 +227,9 @@ export default function ProfileModal({ isOpen, onClose }) {
                   {coachProfile.name}
                 </h2>
                 <span style={{
-                  background: 'rgba(180, 255, 4, 0.14)',
-                  border: '1px solid rgba(180, 255, 4, 0.45)',
                   color: '#b4ff04',
-                  fontSize: '12.5px',
+                  fontSize: '13.5px',
                   fontWeight: 900,
-                  padding: '3px 9px',
-                  borderRadius: '7px',
                   letterSpacing: '0.6px',
                   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
                 }}>
