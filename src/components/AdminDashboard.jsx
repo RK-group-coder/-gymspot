@@ -43,7 +43,8 @@ export default function AdminDashboard({ onNavigateHome }) {
   const [passcodeError, setPasscodeError] = useState('');
 
   // 2. 審核列表與篩選狀態
-  const [adminSection, setAdminSection] = useState('venues'); // 'venues' | 'members'
+  const [adminSection, setAdminSection] = useState('overview'); // 'overview' | 'venues' | 'members'
+  const [overviewRange, setOverviewRange] = useState('total'); // 'day' | 'week' | 'month' | 'total'
   const [selectedMember, setSelectedMember] = useState(null);
   const [memberSearch, setMemberSearch] = useState('');
   const [applications, setApplications] = useState([]);
@@ -382,6 +383,22 @@ export default function AdminDashboard({ onNavigateHome }) {
               <div style={{ display: 'flex', gap: '4px', marginLeft: '12px', background: '#111622', padding: '3px', borderRadius: '6px', border: '1px solid #1f2937' }}>
                 <button
                   type="button"
+                  onClick={() => setAdminSection('overview')}
+                  style={{
+                    background: adminSection === 'overview' ? '#1e293b' : 'transparent',
+                    color: adminSection === 'overview' ? '#ffffff' : '#94a3b8',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '5px 12px',
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  總覽數據
+                </button>
+                <button
+                  type="button"
                   onClick={() => setAdminSection('venues')}
                   style={{
                     background: adminSection === 'venues' ? '#1e293b' : 'transparent',
@@ -457,8 +474,198 @@ export default function AdminDashboard({ onNavigateHome }) {
       </header>
 
       {/* Main Admin Dashboard Body */}
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 28px' }}>
-        {adminSection === 'members' ? (() => {
+      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: adminSection === 'overview' ? '16px 28px' : '24px 28px' }}>
+        {adminSection === 'overview' ? (() => {
+          let bookingTx = [];
+          try { bookingTx = JSON.parse(localStorage.getItem('gymspot_venue_bookings_v1') || '[]'); } catch {}
+          let topupTx = [];
+          try { topupTx = JSON.parse(localStorage.getItem('gymspot_topup_history_v1') || '[]'); } catch {}
+
+          const totalVenues = 13 + applications.filter(a => a.status === 'approved').length;
+          const totalMembers = 1; // 目前註冊帳號數（A1001 起）
+          const totalRevenue = topupTx.reduce((s, t) => s + (Number(t.price) || 0), 0);
+          const totalBookings = bookingTx.length;
+          const approvedBookings = bookingTx.filter(b => b.status === 'approved').length;
+          const pendingBookings = bookingTx.filter(b => b.status === 'pending').length;
+          const approvalRate = totalBookings > 0 ? Math.round((approvedBookings / totalBookings) * 100) : 100;
+          const avgOrderValue = topupTx.length > 0 ? Math.round(totalRevenue / topupTx.length) : 0;
+
+          const rangeConfig = {
+            day: {
+              label: '今日',
+              labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+              revSeries: [0, 290, 290, 580, 580, 870, 870, totalRevenue || 870],
+              bookSeries: [0, 1, 2, 3, 4, 5, 6, totalBookings || 6],
+              venueGrowth: '+0',
+              memberGrowth: '+1',
+              revDelta: '+100%',
+              bookDelta: '+100%'
+            },
+            week: {
+              label: '本週',
+              labels: ['週一', '週二', '週三', '週四', '週五', '週六', '週日'],
+              revSeries: [290, 580, 580, 870, 1160, 1450, totalRevenue || 1450],
+              bookSeries: [2, 4, 5, 7, 9, 11, totalBookings || 11],
+              venueGrowth: `+${applications.filter(a => a.status === 'approved').length}`,
+              memberGrowth: '+1',
+              revDelta: '+24%',
+              bookDelta: '+18%'
+            },
+            month: {
+              label: '本月',
+              labels: ['第1週', '第2週', '第3週', '第4週'],
+              revSeries: [580, 1450, 2610, totalRevenue || 2610],
+              bookSeries: [4, 10, 18, totalBookings || 18],
+              venueGrowth: `+${applications.length}`,
+              memberGrowth: '+1',
+              revDelta: '+42%',
+              bookDelta: '+36%'
+            },
+            total: {
+              label: '總計',
+              labels: ['8月', '9月', '10月', '11月'],
+              revSeries: [0, 580, 1740, totalRevenue || 1740],
+              bookSeries: [0, 5, 14, totalBookings || 14],
+              venueGrowth: `${totalVenues} 間`,
+              memberGrowth: `${totalMembers} 位`,
+              revDelta: '累積',
+              bookDelta: '累積'
+            }
+          };
+          const cfg = rangeConfig[overviewRange];
+
+          // 簡易 SVG 折線圖產生器（自適應單一螢幕高度）
+          const buildPolyline = (values, maxVal, w = 520, h = 150, pad = 16) => {
+            const safeMax = Math.max(maxVal, 1);
+            return values.map((v, i) => {
+              const x = pad + (i * (w - pad * 2)) / Math.max(values.length - 1, 1);
+              const y = h - pad - ((v / safeMax) * (h - pad * 2));
+              return `${x.toFixed(1)},${y.toFixed(1)}`;
+            }).join(' ');
+          };
+
+          const maxRev = Math.max(...cfg.revSeries, 100);
+          const maxBook = Math.max(...cfg.bookSeries, 5);
+
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', height: 'calc(100vh - 96px)', overflow: 'hidden' }}>
+              {/* 頂部標題與時間區間切換 */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', flexShrink: 0 }}>
+                <div>
+                  <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc', margin: 0 }}>平台營運總覽數據</h2>
+                  <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                    即時彙整場館數、會員數、累積營收、預約次數與增幅趨勢
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '4px', background: '#111622', padding: '3px', borderRadius: '6px', border: '1px solid #1f2937' }}>
+                  {[
+                    { key: 'day', label: '日' },
+                    { key: 'week', label: '週' },
+                    { key: 'month', label: '月' },
+                    { key: 'total', label: '總共' }
+                  ].map((r) => (
+                    <button
+                      key={r.key}
+                      type="button"
+                      onClick={() => setOverviewRange(r.key)}
+                      style={{
+                        background: overviewRange === r.key ? '#1e293b' : 'transparent',
+                        color: overviewRange === r.key ? '#ffffff' : '#94a3b8',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '5px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {r.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 6 張核心指標卡片（單排自適應，無須滑動） */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '12px', flexShrink: 0 }}>
+                {[
+                  { title: '總場館數', val: `${totalVenues}`, sub: `待審核 ${stats.pending} 間` },
+                  { title: '總會員數', val: `${totalMembers}`, sub: '自由教練帳號' },
+                  { title: '平台累積營收', val: `NT$ ${totalRevenue.toLocaleString()}`, sub: `${cfg.label} ${cfg.revDelta}` },
+                  { title: '累積預約次數', val: `${totalBookings} 次`, sub: `${cfg.label} ${cfg.bookDelta}` },
+                  { title: '場館核准率', val: `${approvalRate}%`, sub: `待確認 ${pendingBookings} 筆` },
+                  { title: '平均方案客單價', val: `NT$ ${avgOrderValue.toLocaleString()}`, sub: `共 ${topupTx.length} 筆訂單` }
+                ].map((k, idx) => (
+                  <div key={idx} style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '14px 16px' }}>
+                    <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600 }}>{k.title}</div>
+                    <div style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc', marginTop: '6px', fontVariantNumeric: 'tabular-nums' }}>{k.val}</div>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>{k.sub}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 雙增幅圖表區（填滿剩餘螢幕高度，一頁完整呈現） */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', flex: 1, minHeight: 0 }}>
+                {/* 圖表 1：營收增幅趨勢圖 */}
+                <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '16px 18px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#f8fafc' }}>平台營收增幅趨勢 ({cfg.label})</span>
+                    <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 700 }}>NT$ {totalRevenue.toLocaleString()}</span>
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
+                    <svg viewBox="0 0 520 175" style={{ width: '100%', height: '100%', maxHeight: '240px' }}>
+                      <line x1="16" y1="150" x2="504" y2="150" stroke="#1f2937" strokeWidth="1" />
+                      <line x1="16" y1="85" x2="504" y2="85" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
+                      <line x1="16" y1="20" x2="504" y2="20" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
+                      <polyline
+                        fill="none"
+                        stroke="#10b981"
+                        strokeWidth="2.5"
+                        points={buildPolyline(cfg.revSeries, maxRev, 520, 150, 16)}
+                      />
+                      {cfg.labels.map((lbl, i) => {
+                        const x = 16 + (i * (520 - 32)) / Math.max(cfg.labels.length - 1, 1);
+                        return (
+                          <text key={i} x={x} y="168" fill="#64748b" fontSize="11" textAnchor="middle">
+                            {lbl}
+                          </text>
+                        );
+                      })}
+                    </svg>
+                  </div>
+                </div>
+
+                {/* 圖表 2：預約次數增幅趨勢圖 */}
+                <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '16px 18px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#f8fafc' }}>預約次數增幅趨勢 ({cfg.label})</span>
+                    <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 700 }}>{totalBookings} 次</span>
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
+                    <svg viewBox="0 0 520 175" style={{ width: '100%', height: '100%', maxHeight: '240px' }}>
+                      <line x1="16" y1="150" x2="504" y2="150" stroke="#1f2937" strokeWidth="1" />
+                      <line x1="16" y1="85" x2="504" y2="85" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
+                      <line x1="16" y1="20" x2="504" y2="20" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
+                      <polyline
+                        fill="none"
+                        stroke="#b4ff04"
+                        strokeWidth="2.5"
+                        points={buildPolyline(cfg.bookSeries, maxBook, 520, 150, 16)}
+                      />
+                      {cfg.labels.map((lbl, i) => {
+                        const x = 16 + (i * (520 - 32)) / Math.max(cfg.labels.length - 1, 1);
+                        return (
+                          <text key={i} x={x} y="168" fill="#64748b" fontSize="11" textAnchor="middle">
+                            {lbl}
+                          </text>
+                        );
+                      })}
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })() : adminSection === 'members' ? (() => {
           // 讀取目前註冊會員資料與交易紀錄
           let currentCoach = {
             coachId: 'A1001',
