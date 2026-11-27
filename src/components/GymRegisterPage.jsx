@@ -1335,6 +1335,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                   <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
                     5. 場館聯繫管道
                   </h3>
+                  <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '6px', lineHeight: 1.6 }}>
+                    此處填寫之電話、Gmail 不會顯示於前台；Gmail 用於自動發送教練預約通知，電話用於在遇到教練問題時，需確認情況屬實、聯絡場館或是有相關權利的聯絡人。
+                  </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
@@ -1390,9 +1393,6 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                       onFocus={(e) => e.target.style.borderColor = '#b4ff04'}
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
-                    <div style={{ fontSize: '12px', color: '#b4ff04', marginTop: '6px', fontWeight: 600 }}>
-                      Gmail 用於自動發送教練預約通知
-                    </div>
                   </div>
                 </div>
               </div>
