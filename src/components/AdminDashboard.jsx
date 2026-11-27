@@ -371,18 +371,8 @@ export default function AdminDashboard({ onNavigateHome }) {
               <ArrowLeft size={14} /> 前台首頁
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{
-                background: 'rgba(180, 255, 4, 0.15)',
-                color: '#b4ff04',
-                padding: '4px 8px',
-                borderRadius: '6px',
-                fontSize: '11px',
-                fontWeight: 900
-              }}>
-                ADMIN
-              </div>
-              <h1 style={{ fontSize: '18px', fontWeight: 900, color: '#f8fafc', margin: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h1 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc', margin: 0, letterSpacing: '0.01em' }}>
                 場館入駐審核中心
               </h1>
             </div>
@@ -392,52 +382,33 @@ export default function AdminDashboard({ onNavigateHome }) {
             <button
               onClick={() => setShowSqlModal(true)}
               style={{
-                background: '#121927',
-                border: '1px solid #243248',
-                borderRadius: '8px',
-                padding: '8px 14px',
-                color: '#94a3b8',
+                background: '#111622',
+                border: '1px solid #263042',
+                borderRadius: '6px',
+                padding: '7px 12px',
+                color: '#cbd5e1',
                 fontSize: '12.5px',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
               }}
             >
-              <Database size={14} color="#b4ff04" />
-              <span>查看 Supabase RLS 安全腳本</span>
-            </button>
-
-            <button
-              onClick={handleCreateMockApplication}
-              style={{
-                background: '#121927',
-                border: '1px solid #243248',
-                borderRadius: '8px',
-                padding: '8px 14px',
-                color: '#b4ff04',
-                fontSize: '12.5px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <PlusCircle size={14} />
-              <span>產生測試申請件</span>
+              <Database size={14} color="#94a3b8" />
+              <span>資料庫權限設定</span>
             </button>
 
             <button
               onClick={handleLogout}
               style={{
-                background: '#1e293b',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '8px 14px',
-                color: '#94a3b8',
+                background: '#182030',
+                border: '1px solid #263042',
+                borderRadius: '6px',
+                padding: '7px 14px',
+                color: '#cbd5e1',
                 fontSize: '12.5px',
+                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -449,126 +420,90 @@ export default function AdminDashboard({ onNavigateHome }) {
 
       {/* Main Admin Dashboard Body */}
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 28px' }}>
-        {/* Security Alert Banner */}
-        <div style={{
-          background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(14, 23, 38, 0.5) 100%)',
-          border: '1px solid rgba(16, 185, 129, 0.3)',
-          borderRadius: '12px',
-          padding: '14px 20px',
-          marginBottom: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '10px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <ShieldCheck size={20} color="#10b981" />
-            <span style={{ fontSize: '13px', color: '#e2e8f0', lineHeight: 1.5 }}>
-              <strong>安全保護啟用中：</strong> 所有店家上傳之「公司設立登記表、消防證明」均受隔離防護，絕不開放公開目錄存取。
-            </span>
-          </div>
-          <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-            認證模式：RLS 機密存取
-          </span>
-        </div>
-
         {/* Stats Grid */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '16px',
+          gap: '14px',
           marginBottom: '24px'
         }}>
           <div 
             onClick={() => setActiveTab('pending')}
             style={{
-              background: activeTab === 'pending' ? 'rgba(245, 158, 11, 0.12)' : '#0e1524',
-              border: `1px solid ${activeTab === 'pending' ? '#f59e0b' : '#1e293b'}`,
-              borderRadius: '14px',
-              padding: '18px',
+              background: activeTab === 'pending' ? '#161d2b' : '#111622',
+              border: `1px solid ${activeTab === 'pending' ? '#94a3b8' : '#1f2937'}`,
+              borderRadius: '8px',
+              padding: '16px 18px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'border-color 0.15s ease, background 0.15s ease'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>待審核 (Pending)</span>
-              <Clock size={16} color="#f59e0b" />
+              <span style={{ fontSize: '12.5px', color: '#94a3b8', fontWeight: 600 }}>待審核</span>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#f59e0b' }} />
             </div>
-            <div style={{ fontSize: '30px', fontWeight: 900, color: '#f59e0b', marginTop: '6px' }}>
+            <div style={{ fontSize: '28px', fontWeight: 700, color: '#f8fafc', marginTop: '8px', fontVariantNumeric: 'tabular-nums' }}>
               {stats.pending}
-            </div>
-            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
-              需人工核驗營登與場地照片
             </div>
           </div>
 
           <div 
             onClick={() => setActiveTab('approved')}
             style={{
-              background: activeTab === 'approved' ? 'rgba(180, 255, 4, 0.12)' : '#0e1524',
-              border: `1px solid ${activeTab === 'approved' ? '#b4ff04' : '#1e293b'}`,
-              borderRadius: '14px',
-              padding: '18px',
+              background: activeTab === 'approved' ? '#161d2b' : '#111622',
+              border: `1px solid ${activeTab === 'approved' ? '#94a3b8' : '#1f2937'}`,
+              borderRadius: '8px',
+              padding: '16px 18px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'border-color 0.15s ease, background 0.15s ease'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>已核准上架 (Approved)</span>
-              <CheckCircle2 size={16} color="#b4ff04" />
+              <span style={{ fontSize: '12.5px', color: '#94a3b8', fontWeight: 600 }}>已核准上架</span>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981' }} />
             </div>
-            <div style={{ fontSize: '30px', fontWeight: 900, color: '#b4ff04', marginTop: '6px' }}>
+            <div style={{ fontSize: '28px', fontWeight: 700, color: '#f8fafc', marginTop: '8px', fontVariantNumeric: 'tabular-nums' }}>
               {stats.approved}
-            </div>
-            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
-              已發布至前台 Google 地圖
             </div>
           </div>
 
           <div 
             onClick={() => setActiveTab('rejected')}
             style={{
-              background: activeTab === 'rejected' ? 'rgba(239, 68, 68, 0.12)' : '#0e1524',
-              border: `1px solid ${activeTab === 'rejected' ? '#ef4444' : '#1e293b'}`,
-              borderRadius: '14px',
-              padding: '18px',
+              background: activeTab === 'rejected' ? '#161d2b' : '#111622',
+              border: `1px solid ${activeTab === 'rejected' ? '#94a3b8' : '#1f2937'}`,
+              borderRadius: '8px',
+              padding: '16px 18px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'border-color 0.15s ease, background 0.15s ease'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>已駁回／補件 (Rejected)</span>
-              <XCircle size={16} color="#ef4444" />
+              <span style={{ fontSize: '12.5px', color: '#94a3b8', fontWeight: 600 }}>已駁回／退件</span>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#ef4444' }} />
             </div>
-            <div style={{ fontSize: '30px', fontWeight: 900, color: '#ef4444', marginTop: '6px' }}>
+            <div style={{ fontSize: '28px', fontWeight: 700, color: '#f8fafc', marginTop: '8px', fontVariantNumeric: 'tabular-nums' }}>
               {stats.rejected}
-            </div>
-            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
-              營登不符或退件清單
             </div>
           </div>
 
           <div 
             onClick={() => setActiveTab('all')}
             style={{
-              background: activeTab === 'all' ? '#1e293b' : '#0e1524',
-              border: `1px solid ${activeTab === 'all' ? '#64748b' : '#1e293b'}`,
-              borderRadius: '14px',
-              padding: '18px',
+              background: activeTab === 'all' ? '#161d2b' : '#111622',
+              border: `1px solid ${activeTab === 'all' ? '#94a3b8' : '#1f2937'}`,
+              borderRadius: '8px',
+              padding: '16px 18px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'border-color 0.15s ease, background 0.15s ease'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600 }}>全部申請件 (Total)</span>
-              <Building2 size={16} color="#94a3b8" />
+              <span style={{ fontSize: '12.5px', color: '#94a3b8', fontWeight: 600 }}>全部申請件</span>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#64748b' }} />
             </div>
-            <div style={{ fontSize: '30px', fontWeight: 900, color: '#f8fafc', marginTop: '6px' }}>
+            <div style={{ fontSize: '28px', fontWeight: 700, color: '#f8fafc', marginTop: '8px', fontVariantNumeric: 'tabular-nums' }}>
               {stats.total}
-            </div>
-            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '4px' }}>
-              歷史所有申請總計
             </div>
           </div>
         </div>
