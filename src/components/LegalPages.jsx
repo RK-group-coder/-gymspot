@@ -70,6 +70,14 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
             條款與政策
           </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateRows: 'repeat(3, auto)',
+            gridAutoFlow: 'column',
+            columnGap: '32px',
+            rowGap: '7px',
+            justifyItems: 'start'
+          }}>
           <button
             type="button"
             onClick={() => onNavigate('/terms')}
@@ -122,6 +130,7 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           >
             防詐騙宣導
           </button>
+          </div>
         </div>
 
         {/* 3. Middle Column B: 場館專區 */}
