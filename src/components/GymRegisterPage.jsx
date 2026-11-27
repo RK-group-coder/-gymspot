@@ -26,7 +26,7 @@ import confetti from 'canvas-confetti';
 import { saveApplication } from '../utils/adminStorage';
 import { TAIWAN_DISTRICTS, TAIWAN_CITIES } from '../utils/geo';
 import AntiFraudModal from './AntiFraudModal';
-import { VenueTermsContent } from './LegalPages';
+import { VenueTermsContent, LegalFooter } from './LegalPages';
 
 // 1 到 7 星期定義
 const WEEKDAYS = [
@@ -1908,147 +1908,11 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
         )}
       </div>
 
-      {/* Footer (Horizontal Row Layout) */}
-      <footer style={{
-        position: 'relative',
-        zIndex: 1,
-        background: '#04060a',
-        borderTop: '1px solid #1e293b',
-        padding: '22px 32px'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '20px'
-        }}>
-          {/* Left: Brand & Copyright */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            <div 
-              onClick={onNavigateHome}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
-            >
-              <img src="/brand-icon-transparent.png" alt="肌動組" style={{ height: '28px', width: 'auto' }} />
-              <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
-            </div>
-            <span style={{ color: '#334155' }}>|</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={() => onOpenTerms('/terms')}
-                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
-              >
-                通用服務條款
-              </button>
-              <span>·</span>
-              <button
-                type="button"
-                onClick={() => onOpenTerms('/privacy')}
-                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
-              >
-                隱私權政策
-              </button>
-              <span>·</span>
-              <button
-                type="button"
-                onClick={() => onOpenTerms('/venue-terms')}
-                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
-              >
-                合作場館服務條款
-              </button>
-              <span>·</span>
-              <button
-                type="button"
-                onClick={onOpenAntiFraud}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: '#b4ff04',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  fontSize: '12px',
-                  fontWeight: 700
-                }}
-              >
-                防詐騙宣導
-              </button>
-              <span>·</span>
-              <span>© 2026 肌動組 GYMspot All Rights Reserved.</span>
-            </div>
-          </div>
-
-          {/* Right: Email & Follow Us */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#cbd5e1' }}>
-              <Mail size={14} color="#b4ff04" /> 客服與聯絡信箱：official@gymspot.space
-            </span>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.03em' }}>
-                Follow Us
-              </span>
-              <a
-                href="https://www.instagram.com/gymspot_official?knvt=Njh3OHBiMnkxb2N5&utm_source=qr"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Instagram (@gymspot_official)"
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '8px',
-                  background: '#1e1e1e',
-                  border: '1px solid #333333',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textDecoration: 'none',
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#333333'; e.currentTarget.style.color = '#ffffff'; }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </a>
-              <a
-                href="https://www.threads.com/@gymdpot_official?igshid=NTc4MTIwNjQ2YQ=="
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Threads (@gymdpot_official)"
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '8px',
-                  background: '#1e1e1e',
-                  border: '1px solid #333333',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textDecoration: 'none',
-                  transition: 'all 0.15s ease'
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#b4ff04'; e.currentTarget.style.color = '#b4ff04'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#333333'; e.currentTarget.style.color = '#ffffff'; }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="4" />
-                  <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Footer (Multi-Column Horizontal Layout with Stacked Policies) */}
+      <LegalFooter
+        onNavigateHome={onNavigateHome}
+        onNavigate={(path) => onOpenTerms(path)}
+      />
       <AntiFraudModal isOpen={isAntiFraudOpen} onClose={() => setIsAntiFraudOpen(false)} />
 
       {/* SECTION 7: 合作條款閱讀與簽署彈窗 (Modal) */}

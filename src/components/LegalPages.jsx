@@ -16,76 +16,143 @@ export function isLegalRoute(pathname = '') {
   return LEGAL_ROUTES.some((r) => r.path === clean);
 }
 
-function LegalFooter({ onNavigateHome, onNavigate }) {
+export function LegalFooter({ onNavigateHome, onNavigate }) {
+  const linkBtnStyle = {
+    background: 'transparent',
+    border: 'none',
+    padding: 0,
+    color: '#94a3b8',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    fontSize: '12.5px',
+    textAlign: 'left',
+    lineHeight: 1.5
+  };
+
   return (
     <footer style={{
+      position: 'relative',
+      zIndex: 1,
       background: '#04060a',
       borderTop: '1px solid #1e293b',
-      padding: '22px 32px',
+      padding: '28px 32px',
       color: '#ffffff'
     }}>
       <div style={{
-        maxWidth: '1200px',
+        maxWidth: '1160px',
         margin: '0 auto',
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '20px'
+        gap: '32px'
       }}>
-        {/* Left: Brand & Legal Links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+        {/* 1. Left Column: Brand & Copyright */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div
             onClick={onNavigateHome}
             style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
           >
-            <img src="/brand-icon-transparent.png" alt="肌動組" style={{ height: '28px', width: 'auto' }} />
-            <span style={{ fontSize: '14px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
+            <img src="/brand-icon-transparent.png" alt="肌動組" style={{ height: '30px', width: 'auto' }} />
+            <span style={{ fontSize: '15px', fontWeight: 900, color: '#ffffff' }}>肌動組 GYMspot</span>
           </div>
-          <span style={{ color: '#334155' }}>|</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={() => onNavigate('/terms')}
-              style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
-            >
-              通用服務條款
-            </button>
-            <span>·</span>
-            <button
-              type="button"
-              onClick={() => onNavigate('/privacy')}
-              style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
-            >
-              隱私權政策
-            </button>
-            <span>·</span>
-            <button
-              type="button"
-              onClick={() => onNavigate('/refund-policy')}
-              style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
-            >
-              退款與取消政策
-            </button>
-            <span>·</span>
-            <button
-              type="button"
-              onClick={() => onNavigate('/anti-fraud')}
-              style={{ background: 'transparent', border: 'none', padding: 0, color: '#b4ff04', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px', fontWeight: 700 }}
-            >
-              防詐騙宣導
-            </button>
-            <span>·</span>
-            <span>© 2026 肌動組 GYMspot All Rights Reserved.</span>
+          <div style={{ fontSize: '12px', color: '#64748b' }}>
+            全台自由教練與優質場租健身房媒合平台
+          </div>
+          <div style={{ fontSize: '11.5px', color: '#475569', marginTop: '4px' }}>
+            © 2026 肌動組 GYMspot All Rights Reserved.
           </div>
         </div>
 
-        {/* Right: Email & Follow Us */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#cbd5e1' }}>
-            <Mail size={14} color="#b4ff04" /> 客服與聯絡信箱：official@gymspot.space
-          </span>
+        {/* 2. Middle Column A: 平台政策（垂直疊放） */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
+            條款與政策
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate('/terms')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            平台通用服務條款
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/privacy')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            隱私權政策
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/refund-policy')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            退款或取消預約政策
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/anti-fraud')}
+            style={{ ...linkBtnStyle, color: '#b4ff04', fontWeight: 700 }}
+          >
+            防詐騙宣導
+          </button>
+        </div>
+
+        {/* 3. Middle Column B: 專項服務條款（垂直疊放） */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
+            專項服務規範
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate('/booking-terms')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            場館預約與交易服務條款
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/coach-terms')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            自由教練服務條款
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/venue-terms')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            合作場館服務條款
+          </button>
+        </div>
+
+        {/* 4. Right Column: Contact & Follow Us */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff' }}>
+              聯絡我們
+            </div>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: '#cbd5e1' }}>
+              <Mail size={14} color="#b4ff04" /> official@gymspot.space
+            </span>
+            <span style={{ fontSize: '11.5px', color: '#64748b' }}>
+              服務時間：週一至週日 10:00 - 18:00
+            </span>
+          </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.03em' }}>
