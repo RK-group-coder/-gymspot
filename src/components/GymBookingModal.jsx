@@ -630,21 +630,17 @@ export default function GymBookingModal({
         flexDirection: 'column',
         gap: isMobile ? '16px' : '20px'
       }}>
-        {/* Friendly Buffer Notice Banner */}
+        {/* Friendly Buffer Notice Banner (無外框，包含僅限1對1授課) */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(180, 255, 4, 0.08) 0%, rgba(239, 68, 68, 0.06) 100%)',
-          border: '1px solid rgba(180, 255, 4, 0.25)',
-          borderRadius: '12px',
-          padding: '10px 14px',
+          padding: '2px 0',
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          fontSize: '12.5px'
+          fontSize: '13px',
+          lineHeight: 1.6
         }}>
-          <ShieldCheck size={16} color="#b4ff04" style={{ flexShrink: 0 }} />
           <span style={{ color: '#cbd5e1' }}>
             <strong style={{ color: '#f8fafc' }}>預約須知：</strong>
-            為維護店家現場準備動線與人流管制，預約需 <strong style={{ color: '#b4ff04' }}>至少提前 2 小時</strong> 送出；<strong style={{ color: '#f87171' }}>一經預約即無法取消</strong>。
+            為維護店家現場準備動線與人流管制，預約需 <strong style={{ color: '#b4ff04' }}>至少提前 2 小時</strong> 送出，且<strong style={{ color: '#b4ff04' }}>僅限 1 對 1 授課</strong>；<strong style={{ color: '#f87171' }}>一經預約即無法取消</strong>。
           </span>
         </div>
 
@@ -757,24 +753,13 @@ export default function GymBookingModal({
               </span>
             )}
 
-            {/* 這個框上方顯示可用預約額度 */}
+            {/* 右側顯示可用預約額度（無外框） */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              background: currentPoints - totalPointsNeeded < pointsPerSlot
-                ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(20, 20, 20, 0.9) 100%)'
-                : 'linear-gradient(135deg, rgba(180, 255, 4, 0.12) 0%, rgba(20, 20, 20, 0.9) 100%)',
-              border: currentPoints - totalPointsNeeded < pointsPerSlot
-                ? '1px solid rgba(245, 158, 11, 0.55)'
-                : '1px solid rgba(180, 255, 4, 0.45)',
-              padding: '5px 12px',
-              borderRadius: '10px',
-              boxShadow: currentPoints - totalPointsNeeded < pointsPerSlot
-                ? '0 0 12px rgba(245, 158, 11, 0.15)'
-                : '0 0 12px rgba(180, 255, 4, 0.15)'
+              gap: '8px'
             }}>
-              <span style={{ fontSize: '12px', color: '#cbd5e1', fontWeight: 600 }}>可用額度：</span>
+              <span style={{ fontSize: '12.5px', color: '#cbd5e1', fontWeight: 600 }}>可用額度：</span>
               <strong style={{
                 color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04',
                 fontSize: '14.5px',
@@ -793,18 +778,15 @@ export default function GymBookingModal({
                   onClick={onOpenTopUp}
                   style={{
                     marginLeft: '4px',
-                    background: currentPoints - totalPointsNeeded < pointsPerSlot
-                      ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-                      : 'rgba(180, 255, 4, 0.18)',
-                    border: currentPoints - totalPointsNeeded < pointsPerSlot
-                      ? '1px solid #f59e0b'
-                      : '1px solid #b4ff04',
-                    color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#0f172a' : '#b4ff04',
-                    padding: '2px 8px',
-                    borderRadius: '6px',
-                    fontSize: '11px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04',
+                    padding: 0,
+                    fontSize: '12.5px',
                     fontWeight: 800,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '3px'
                   }}
                   title="購買媒合方案"
                 >
@@ -920,16 +902,6 @@ export default function GymBookingModal({
             <label style={{ fontSize: '13px', fontWeight: 700, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span>3. 預約備註需求（選填）：</span>
             </label>
-            <span style={{
-              background: 'rgba(180, 255, 4, 0.1)',
-              color: '#b4ff04',
-              padding: '3px 10px',
-              borderRadius: '6px',
-              fontSize: '11.5px',
-              fontWeight: 700
-            }}>
-              僅限 1 對 1 私人教課
-            </span>
           </div>
 
           <input
