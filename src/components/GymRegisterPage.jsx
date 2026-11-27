@@ -1418,15 +1418,11 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                         6. 首頁圖與場館／器材照片
                       </h3>
                       <span style={{
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontWeight: 700,
-                        padding: '2px 8px',
-                        borderRadius: '6px',
-                        background: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? 'rgba(180, 255, 4, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                        color: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? '#b4ff04' : '#f59e0b',
-                        border: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)'
+                        color: venuePhotos.length >= 4 && venuePhotos.length <= 10 ? '#b4ff04' : '#ef4444'
                       }}>
-                        至少 4 張，至多 10 張 <span style={{ color: '#ef4444' }}>*</span>
+                        至少 4 張，至多 10 張 *
                       </span>
                     </div>
                     <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '6px' }}>
@@ -1736,13 +1732,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                         7. 合作條款
                       </h3>
                       <span style={{
-                        fontSize: '11px',
+                        fontSize: '12px',
                         fontWeight: 700,
-                        padding: '2px 8px',
-                        borderRadius: '6px',
-                        background: isAgreedTerms ? 'rgba(180, 255, 4, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                        color: isAgreedTerms ? '#b4ff04' : '#f87171',
-                        border: isAgreedTerms ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)'
+                        color: isAgreedTerms ? '#b4ff04' : '#ef4444'
                       }}>
                         必簽署 *
                       </span>
@@ -1752,20 +1744,15 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                     </div>
                   </div>
 
-                  {/* Status Pill */}
+                  {/* Status Text */}
                   <div style={{
-                    fontSize: '12px',
+                    fontSize: '12.5px',
                     fontWeight: 700,
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    background: isAgreedTerms ? 'rgba(180, 255, 4, 0.12)' : 'rgba(245, 158, 11, 0.15)',
-                    color: isAgreedTerms ? '#b4ff04' : '#f59e0b',
-                    border: isAgreedTerms ? '1px solid rgba(180, 255, 4, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
+                    color: isAgreedTerms ? '#b4ff04' : '#ef4444',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px'
                   }}>
-                    {isAgreedTerms ? <CheckCircle2 size={14} color="#b4ff04" /> : <AlertCircle size={14} color="#f59e0b" />}
                     <span>{isAgreedTerms ? '已完成條款簽署' : '尚未同意合作條款'}</span>
                   </div>
                 </div>
