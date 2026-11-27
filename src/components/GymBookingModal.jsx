@@ -112,13 +112,14 @@ export default function GymBookingModal({
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  const venueOverride = useMemo(() => (gym?.id ? getVenueScheduleOverride(gym.id) : { weeklySchedule: null, closedDates: [], closedSlots: [] }), [gym?.id, isOpen]);
+
   if (!isOpen || !gym) return null;
 
   const pointsPerSlot = 30; // 每預約 1 時段扣抵 30 點
   const hourlyRate = gym.pricing?.hourlyRate || gym.pricing?.offPeakPerHour || 200;
 
   // 取得場館註冊時勾選的時段表與廠商後台覆寫設定
-  const venueOverride = useMemo(() => getVenueScheduleOverride(gym.id), [gym.id, isOpen]);
   const schedule = venueOverride.weeklySchedule || gym.availableSchedule || {};
   const hasCustomSchedule = !!(venueOverride.weeklySchedule || (gym.availableSchedule && Object.keys(gym.availableSchedule).length > 0));
 
