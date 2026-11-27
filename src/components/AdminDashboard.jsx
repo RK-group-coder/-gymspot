@@ -490,10 +490,30 @@ export default function AdminDashboard({ onNavigateHome }) {
           const approvalRate = totalBookings > 0 ? Math.round((approvedBookings / totalBookings) * 100) : 100;
           const avgOrderValue = topupTx.length > 0 ? Math.round(totalRevenue / topupTx.length) : 0;
 
+          const now = new Date();
+          const pad2 = (n) => String(n).padStart(2, '0');
+          const yyyy = now.getFullYear();
+          const mm = pad2(now.getMonth() + 1);
+          const dd = pad2(now.getDate());
+          const todayStr = `${yyyy}/${mm}/${dd}`;
+
+          // 計算本週一 ~ 週日真實日期
+          const dayOfWeek = now.getDay() === 0 ? 7 : now.getDay();
+          const monday = new Date(now);
+          monday.setDate(now.getDate() - (dayOfWeek - 1));
+          const weekDayNames = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
+          const weekDates = Array.from({ length: 7 }, (_, i) => {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            return `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())}`;
+          });
+          const weekRangeTitle = `${yyyy}/${weekDates[0]} ~ ${yyyy}/${weekDates[6]}`;
+          const lastDayOfMonth = new Date(yyyy, now.getMonth() + 1, 0).getDate();
+
           const rangeConfig = {
             day: {
-              label: '今日 (24小時)',
-              labels: Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`),
+              label: `${todayStr} (24小時)`,
+              labels: Array.from({ length: 24 }, (_, h) => `${pad2(h)}:00`),
               revSeries: [0, 0, 0, 0, 0, 0, 0, 0, 0, 290, 290, 290, 580, 580, 580, 580, 870, 870, 870, 870, 870, 870, 870, totalRevenue || 870],
               bookSeries: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6, 6, totalBookings || 6],
               venueGrowth: '+0',
@@ -502,8 +522,8 @@ export default function AdminDashboard({ onNavigateHome }) {
               bookDelta: '+100%'
             },
             week: {
-              label: '本週',
-              labels: ['週一', '週二', '週三', '週四', '週五', '週六', '週日'],
+              label: weekRangeTitle,
+              labels: weekDates.map((dt, i) => `${dt} ${weekDayNames[i]}`),
               revSeries: [290, 580, 580, 870, 1160, 1450, totalRevenue || 1450],
               bookSeries: [2, 4, 5, 7, 9, 11, totalBookings || 11],
               venueGrowth: `+${applications.filter(a => a.status === 'approved').length}`,
@@ -512,8 +532,8 @@ export default function AdminDashboard({ onNavigateHome }) {
               bookDelta: '+18%'
             },
             month: {
-              label: '本月',
-              labels: ['第1週', '第2週', '第3週', '第4週'],
+              label: `${yyyy}年${mm}月`,
+              labels: [`${mm}/01-${mm}/07`, `${mm}/08-${mm}/14`, `${mm}/15-${mm}/21`, `${mm}/22-${mm}/${pad2(lastDayOfMonth)}`],
               revSeries: [580, 1450, 2610, totalRevenue || 2610],
               bookSeries: [4, 10, 18, totalBookings || 18],
               venueGrowth: `+${applications.length}`,
@@ -522,8 +542,8 @@ export default function AdminDashboard({ onNavigateHome }) {
               bookDelta: '+36%'
             },
             year: {
-              label: '今年',
-              labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+              label: `${yyyy}年 (全年度)`,
+              labels: Array.from({ length: 12 }, (_, m) => `${yyyy}/${pad2(m + 1)}`),
               revSeries: [0, 0, 0, 0, 0, 0, 0, 580, 1160, 1740, totalRevenue || 2610, totalRevenue || 2610],
               bookSeries: [0, 0, 0, 0, 0, 0, 0, 4, 9, 14, totalBookings || 18, totalBookings || 18],
               venueGrowth: `+${totalVenues}`,
@@ -532,8 +552,8 @@ export default function AdminDashboard({ onNavigateHome }) {
               bookDelta: '+54%'
             },
             total: {
-              label: '總計',
-              labels: ['8月', '9月', '10月', '11月'],
+              label: `${yyyy}/08 ~ ${yyyy}/${mm} (累積)`,
+              labels: [`${yyyy}/08`, `${yyyy}/09`, `${yyyy}/10`, `${yyyy}/${mm}`],
               revSeries: [0, 580, 1740, totalRevenue || 1740],
               bookSeries: [0, 5, 14, totalBookings || 14],
               venueGrowth: `${totalVenues} 間`,
