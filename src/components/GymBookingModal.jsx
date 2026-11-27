@@ -72,10 +72,10 @@ function getNext7Days() {
   return days;
 }
 
-export default function GymBookingModal({ 
-  gym, 
-  isOpen, 
-  onClose, 
+export default function GymBookingModal({
+  gym,
+  isOpen,
+  onClose,
   onBookingSuccess,
   userPoints,
   onDeductPoints,
@@ -86,7 +86,7 @@ export default function GymBookingModal({
   // 預設選取今天
   const [selectedDateStr, setSelectedDateStr] = useState(days[0]?.dateStr || '');
   const [selectedSlotHours, setSelectedSlotHours] = useState([]); // Array of hours e.g. [14, 15]
-  
+
   // 教練帳戶剩餘點數 (每時段固定 30 點)
   const [localPoints, setLocalPoints] = useState(() => {
     if (userPoints !== undefined && userPoints !== null) return userPoints;
@@ -97,7 +97,7 @@ export default function GymBookingModal({
 
   // Coach note (教練基本資料於註冊時即已記錄，課程統一固定為 1 對 1 私人指導)
   const [bookingNote, setBookingNote] = useState('');
-  
+
   // Submit state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingReceipt, setBookingReceipt] = useState(null);
@@ -115,7 +115,7 @@ export default function GymBookingModal({
 
   const pointsPerSlot = 30; // 每預約 1 時段扣抵 30 點
   const hourlyRate = gym.pricing?.hourlyRate || gym.pricing?.offPeakPerHour || 200;
-  
+
   // 取得場館註冊時勾選的時段表；若無則預設全開
   const schedule = gym.availableSchedule || {};
   const hasCustomSchedule = gym.availableSchedule && Object.keys(gym.availableSchedule).length > 0;
@@ -267,6 +267,17 @@ export default function GymBookingModal({
       return;
     }
 
+    // 1.5 關鍵限制：帳號需至少填寫 1 項專業證照，否則自動阻擋預約
+    if (getStoredCoachCerts().length < 1) {
+      alert(
+        `【尚未填寫專業證照，無法預約時段】\n\n` +
+        `預約時段前，您的帳號需至少填寫 1 項專業證照。\n` +
+        `請先至「個人頁面」編輯個人資料並新增證照後，再進行預約。\n\n` +
+        `提醒：本平台不審核證照，於場館授課時，場館有權要求教練出示證照，請自行攜帶備查。`
+      );
+      return;
+    }
+
     // 2. 關鍵限制：在預約額度不夠時 無法繼續選取時段！
     const currentUsedPoints = selectedSlotHours.length * pointsPerSlot;
     const remainingUsablePoints = currentPoints - currentUsedPoints;
@@ -306,6 +317,11 @@ export default function GymBookingModal({
     e?.preventDefault();
     if (totalHours === 0) {
       alert('請至少選擇 1 個可預約時段');
+      return;
+    }
+
+    if (getStoredCoachCerts().length < 1) {
+      alert('【尚未填寫專業證照，無法預約】\n\n請先至「個人頁面」新增至少 1 項專業證照後，再送出預約。');
       return;
     }
 
@@ -360,12 +376,10 @@ export default function GymBookingModal({
       `時段：${bookingReceipt.slots.join('、')}\n` +
       `課程：${bookingReceipt.courseType}\n` +
       `使用媒合額度：${bookingReceipt.totalHours} 次\n` +
-      `📜 教練專業證照：已隨單檢附 ${receiptCoachCerts.length} 張證照證明照片（店家現場可直接查驗核對）\n` +
+      `📜 教練專業證照：${receiptCoachCerts.map(c => c.name).join('、')}（本平台不審核，現場請依場館要求出示證照）\n` +
       `備註：${bookingReceipt.bookingNote}\n` +
       `預約單號：#${bookingReceipt.bookingId}`
     );
-
-    const currentCert = viewingCertModalIndex !== null ? receiptCoachCerts[viewingCertModalIndex] : null;
 
     return (
       <div style={{
@@ -455,30 +469,6 @@ export default function GymBookingModal({
               <span style={{ color: '#64748b' }}>預約備註</span>
               <span style={{ color: '#cbd5e1' }}>{bookingReceipt.bookingNote}</span>
             </div>
-            {/* 隨單檢附之教練證照照片按鈕 */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: '#64748b' }}>教練證照證明</span>
-              <button
-                type="button"
-                onClick={() => setViewingCertModalIndex(0)}
-                style={{
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  border: '1px solid #10b981',
-                  color: '#34d399',
-                  borderRadius: '6px',
-                  padding: '3px 10px',
-                  fontSize: '11.5px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-              >
-                <Eye size={13} />
-                <span>查看證照照片 ({receiptCoachCerts.length}張)</span>
-              </button>
-            </div>
           </div>
 
           {/* Quick Notice */}
@@ -493,36 +483,12 @@ export default function GymBookingModal({
             lineHeight: 1.5
           }}>
             <ShieldCheck size={15} color="#10b981" style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
-            <strong style={{ color: '#10b981' }}>店家查核保障：</strong>
-            本單已自動檢附教練之專業證照圖檔證明。店家現場如有需要可隨時查驗核對。預約一經送出即確認保留。
+            <strong style={{ color: '#10b981' }}>證照提醒：</strong>
+            本平台不審核教練證照。於場館授課時，場館有權要求教練出示證照，請自行攜帶證照備查。預約一經送出即確認保留。
           </div>
 
           {/* Actions */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {/* 查看教練證照照片按鈕 (場館若有疑慮，直接點擊看一眼) */}
-            <button
-              type="button"
-              onClick={() => setViewingCertModalIndex(0)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 78, 59, 0.45) 100%)',
-                border: '1.5px solid #10b981',
-                color: '#a7f3d0',
-                borderRadius: '12px',
-                padding: '11px 16px',
-                fontWeight: 800,
-                fontSize: '13.5px',
-                cursor: 'pointer',
-                boxShadow: '0 0 14px rgba(16, 185, 129, 0.25)'
-              }}
-            >
-              <Eye size={17} color="#34d399" />
-              <span>[ 查看教練證照照片 ({receiptCoachCerts.length}張證明) ]</span>
-            </button>
-
             {bookingReceipt.gymLineId && (
               <a
                 href={`https://line.me/R/ti/p/${encodeURIComponent(bookingReceipt.gymLineId)}`}
@@ -591,154 +557,6 @@ export default function GymBookingModal({
           </div>
         </div>
 
-        {/* Certificate Viewer Lightbox for Gym Manager / Coach */}
-        {currentCert && (
-          <div style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 3500,
-            background: 'rgba(3, 6, 12, 0.94)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px'
-          }}>
-            <div style={{
-              background: '#0b111c',
-              border: '1px solid #233148',
-              borderRadius: '18px',
-              width: '100%',
-              maxWidth: '680px',
-              maxHeight: '92vh',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.85), 0 0 30px rgba(16, 185, 129, 0.25)',
-              overflow: 'hidden'
-            }}>
-              {/* Lightbox Header */}
-              <div style={{
-                padding: '14px 20px',
-                borderBottom: '1px solid #1c2738',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: '#070c14'
-              }}>
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>
-                    {currentCert.name}
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#10b981', marginTop: '2px' }}>
-                    第 {viewingCertModalIndex + 1} / {receiptCoachCerts.length} 張 · 教練自主檢附之合格證照
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setViewingCertModalIndex(null)}
-                  style={{
-                    background: 'rgba(255,255,255,0.08)',
-                    border: 'none',
-                    color: '#cbd5e1',
-                    borderRadius: '6px',
-                    padding: '5px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              {/* Lightbox Image Preview */}
-              <div style={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: '#04070e'
-              }}>
-                <img 
-                  src={currentCert.imageUrl} 
-                  alt={currentCert.name}
-                  style={{
-                    maxWidth: '100%',
-                    maxHeight: '60vh',
-                    borderRadius: '10px',
-                    border: '1px solid #233148',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
-                    objectFit: 'contain'
-                  }}
-                />
-              </div>
-
-              {/* Lightbox Footer & Navigation */}
-              <div style={{
-                padding: '12px 20px',
-                borderTop: '1px solid #1c2738',
-                background: '#070c14',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '8px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <button
-                    type="button"
-                    disabled={viewingCertModalIndex === 0}
-                    onClick={() => setViewingCertModalIndex(prev => Math.max(0, prev - 1))}
-                    style={{
-                      background: viewingCertModalIndex === 0 ? '#131b28' : '#1e293b',
-                      color: viewingCertModalIndex === 0 ? '#475569' : '#f8fafc',
-                      border: '1px solid #2a374a',
-                      borderRadius: '6px',
-                      padding: '5px 10px',
-                      fontSize: '11.5px',
-                      cursor: viewingCertModalIndex === 0 ? 'not-allowed' : 'pointer'
-                    }}
-                  >
-                    ← 上一張
-                  </button>
-                  <button
-                    type="button"
-                    disabled={viewingCertModalIndex >= receiptCoachCerts.length - 1}
-                    onClick={() => setViewingCertModalIndex(prev => Math.min(receiptCoachCerts.length - 1, prev + 1))}
-                    style={{
-                      background: viewingCertModalIndex >= receiptCoachCerts.length - 1 ? '#131b28' : '#1e293b',
-                      color: viewingCertModalIndex >= receiptCoachCerts.length - 1 ? '#475569' : '#f8fafc',
-                      border: '1px solid #2a374a',
-                      borderRadius: '6px',
-                      padding: '5px 10px',
-                      fontSize: '11.5px',
-                      cursor: viewingCertModalIndex >= receiptCoachCerts.length - 1 ? 'not-allowed' : 'pointer'
-                    }}
-                  >
-                    下一張 →
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setViewingCertModalIndex(null)}
-                  style={{
-                    background: '#1e293b',
-                    color: '#f8fafc',
-                    border: '1px solid #334155',
-                    borderRadius: '8px',
-                    padding: '6px 14px',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
-                >
-                  關閉預覽
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   }
@@ -855,7 +673,7 @@ export default function GymBookingModal({
                   type="button"
                   onClick={() => handleSelectDate(d.dateStr)}
                   style={{
-                    background: isSelected 
+                    background: isSelected
                       ? (embedded ? '#1a1a1a' : 'linear-gradient(180deg, #1f2c42 0%, #141f30 100%)')
                       : (embedded ? '#111111' : '#090e18'),
                     border: isSelected ? '1.5px solid #b4ff04' : (embedded ? '1px solid #262626' : '1px solid #192336'),
@@ -905,7 +723,7 @@ export default function GymBookingModal({
               gap: '6px'
             }}>
               <span>
-                2. 選擇上課時段 · 
+                2. 選擇上課時段 ·
                 <span style={{ color: '#b4ff04', marginLeft: '6px' }}>
                   {activeDayObj.displayLabel} ({activeDayObj.dayName} {activeDayObj.month}/{activeDayObj.date})
                 </span>
@@ -944,8 +762,8 @@ export default function GymBookingModal({
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              background: currentPoints - totalPointsNeeded < pointsPerSlot 
-                ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(20, 20, 20, 0.9) 100%)' 
+              background: currentPoints - totalPointsNeeded < pointsPerSlot
+                ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(20, 20, 20, 0.9) 100%)'
                 : 'linear-gradient(135deg, rgba(180, 255, 4, 0.12) 0%, rgba(20, 20, 20, 0.9) 100%)',
               border: currentPoints - totalPointsNeeded < pointsPerSlot
                 ? '1px solid rgba(245, 158, 11, 0.55)'
@@ -957,10 +775,10 @@ export default function GymBookingModal({
                 : '0 0 12px rgba(180, 255, 4, 0.15)'
             }}>
               <span style={{ fontSize: '12px', color: '#cbd5e1', fontWeight: 600 }}>可用額度：</span>
-              <strong style={{ 
-                color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04', 
-                fontSize: '14.5px', 
-                fontWeight: 900 
+              <strong style={{
+                color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04',
+                fontSize: '14.5px',
+                fontWeight: 900
               }}>
                 {Math.max(0, Math.floor((currentPoints - totalPointsNeeded) / pointsPerSlot))} 次
               </strong>
@@ -978,8 +796,8 @@ export default function GymBookingModal({
                     background: currentPoints - totalPointsNeeded < pointsPerSlot
                       ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
                       : 'rgba(180, 255, 4, 0.18)',
-                    border: currentPoints - totalPointsNeeded < pointsPerSlot 
-                      ? '1px solid #f59e0b' 
+                    border: currentPoints - totalPointsNeeded < pointsPerSlot
+                      ? '1px solid #f59e0b'
                       : '1px solid #b4ff04',
                     color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#0f172a' : '#b4ff04',
                     padding: '2px 8px',
@@ -1031,9 +849,9 @@ export default function GymBookingModal({
                 cursor = 'pointer';
                 boxShadow = 'none';
               } else if (
-                slotState.type === 'not_open' || 
-                slotState.type === 'occupied' || 
-                slotState.type === 'temp_closed' || 
+                slotState.type === 'not_open' ||
+                slotState.type === 'occupied' ||
+                slotState.type === 'temp_closed' ||
                 slotState.type === 'too_soon'
               ) {
                 cardBg = embedded ? '#161616' : '#121824';
@@ -1201,7 +1019,7 @@ export default function GymBookingModal({
               flex: isMobile ? 1 : 'initial',
               height: isMobile ? '46px' : 'auto',
               background: (totalHours > 0 && totalPointsNeeded <= currentPoints)
-                ? 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)' 
+                ? 'linear-gradient(135deg, #b4ff04 0%, #8ce000 100%)'
                 : '#1e293b',
               color: (totalHours > 0 && totalPointsNeeded <= currentPoints) ? '#0a1402' : '#64748b',
               border: 'none',
@@ -1219,12 +1037,12 @@ export default function GymBookingModal({
             }}
           >
             <span>
-              {isSubmitting 
-                ? '預約處理中...' 
-                : totalPointsNeeded > currentPoints 
-                  ? `額度不足 (差 ${totalHours - Math.floor(currentPoints / pointsPerSlot)} 次)` 
-                  : totalHours > 0 
-                    ? `確認送出預約 (使用 ${totalHours} 次額度)` 
+              {isSubmitting
+                ? '預約處理中...'
+                : totalPointsNeeded > currentPoints
+                  ? `額度不足 (差 ${totalHours - Math.floor(currentPoints / pointsPerSlot)} 次)`
+                  : totalHours > 0
+                    ? `確認送出預約 (使用 ${totalHours} 次額度)`
                     : '確認送出預約上課'}
             </span>
             <ArrowRight size={16} />

@@ -118,7 +118,7 @@ export const getStoredCoachCerts = () => {
     const saved = localStorage.getItem('gymspot_coach_profile');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed.certifications) && parsed.certifications.length > 0) {
+      if (Array.isArray(parsed.certifications)) {
         // If stored as strings (from older versions), upgrade to objects with sample images
         return parsed.certifications.map((item, index) => {
           if (typeof item === 'string') {

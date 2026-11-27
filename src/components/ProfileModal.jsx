@@ -33,7 +33,7 @@ export default function ProfileModal({ isOpen, onClose }) {
           email: parsed.email || 'alex.lin.fitness@gmail.com',
           primaryAreas: parsed.primaryAreas || '台北大安 / 信義 / 板橋',
           instagram: parsed.instagram || '@alex_coach_fit',
-          certifications: Array.isArray(parsed.certifications) && parsed.certifications.length > 0 
+          certifications: Array.isArray(parsed.certifications) 
             ? parsed.certifications.map((item, idx) => {
                 if (typeof item === 'string') {
                   const matched = defaultCerts.find(d => d.name === item);
@@ -301,6 +301,9 @@ export default function ProfileModal({ isOpen, onClose }) {
                   專業證照（教練自行填寫，平台不審核）
                 </h4>
               </div>
+              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.7, marginBottom: '12px' }}>
+                本平台不審核教練證照。於場館授課時，場館有權要求教練出示證照，請自行攜帶證照備查。預約時段前，帳號需至少填寫 1 項專業證照，否則系統將自動阻擋預約。
+              </div>
 
               {/* 證照清單 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -317,7 +320,6 @@ export default function ProfileModal({ isOpen, onClose }) {
                     transition: 'border-color 0.15s ease'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, overflow: 'hidden' }}>
-                      <CheckCircle2 size={16} color="#b4ff04" style={{ flexShrink: 0 }} />
                       <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: 600 }}>{cert.name}</span>
                         {cert.uploadDate && (
