@@ -257,7 +257,7 @@ export function GeneralTermsContent({ onNavigate }) {
         GYMspot 平台通用服務條款
       </h1>
       <div style={{ textAlign: 'center', fontSize: '13.5px', color: '#4b5563', fontWeight: 700, marginBottom: '28px' }}>
-        肌動組 GYMspot 運動空間媒合平台（https://www.gymspot.space）｜ 版本：V1.0
+        版本：V1.0
       </div>
 
       <div style={introBoxStyle}>
@@ -365,7 +365,7 @@ export function PrivacyPolicyContent() {
         GYMspot 隱私權政策
       </h1>
       <div style={{ textAlign: 'center', fontSize: '13.5px', color: '#4b5563', fontWeight: 700, marginBottom: '28px' }}>
-        肌動組 GYMspot 運動空間媒合平台（https://www.gymspot.space）｜ 版本：V1.0
+        版本：V1.0
       </div>
 
       <div style={introBoxStyle}>
@@ -513,7 +513,7 @@ export function BookingTermsContent({ onNavigate }) {
         GYMspot 平台場館預約與交易服務條款
       </h1>
       <div style={{ textAlign: 'center', fontSize: '13.5px', color: '#4b5563', fontWeight: 700, marginBottom: '28px' }}>
-        肌動組 GYMspot 運動空間媒合平台（https://www.gymspot.space）｜ 版本：V1.0
+        版本：V1.0
       </div>
 
       <div style={introBoxStyle}>
@@ -616,7 +616,7 @@ export function RefundPolicyContent() {
         GYMspot 退款或取消預約政策
       </h1>
       <div style={{ textAlign: 'center', fontSize: '13.5px', color: '#4b5563', fontWeight: 700, marginBottom: '28px' }}>
-        肌動組 GYMspot 運動空間媒合平台（https://www.gymspot.space）｜ 版本：V1.0
+        版本：V1.0
       </div>
 
       <div style={introBoxStyle}>
@@ -762,7 +762,7 @@ export function CoachTermsContent() {
         GYMspot 自由教練服務條款
       </h1>
       <div style={{ textAlign: 'center', fontSize: '13.5px', color: '#4b5563', fontWeight: 700, marginBottom: '28px' }}>
-        肌動組 GYMspot 運動空間媒合平台（https://www.gymspot.space）｜ 版本：V1.0
+        版本：V1.0
       </div>
 
       <div style={introBoxStyle}>
@@ -876,7 +876,7 @@ export function VenueTermsContent() {
         GYMspot 合作場館服務條款
       </h1>
       <div style={{ textAlign: 'center', fontSize: '13.5px', color: '#4b5563', fontWeight: 700, marginBottom: '28px' }}>
-        肌動組 GYMspot 運動空間媒合平台（https://www.gymspot.space）｜ 版本：V1.0
+        版本：V1.0
       </div>
 
       <div style={introBoxStyle}>
