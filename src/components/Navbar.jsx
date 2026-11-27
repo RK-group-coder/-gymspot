@@ -292,7 +292,7 @@ export default function Navbar({
                   <span style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 700 }}>可用預約次數</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#b4ff04' }}>{Math.floor(points / 30)} 次</span>
+                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#ffffff' }}>{Math.floor(points / 30)} 次</span>
                   <span style={{ fontSize: '12px', color: '#94a3b8' }}>購買方案</span>
                 </div>
               </div>
@@ -315,10 +315,10 @@ export default function Navbar({
                   gap: '12px',
                   width: '100%',
                   padding: '12px 14px',
-                  background: currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
-                  border: currentPath === '/' ? '1px solid rgba(180, 255, 4, 0.28)' : '1px solid transparent',
+                  background: 'transparent',
+                  border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -326,10 +326,10 @@ export default function Navbar({
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
-                onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
-                <MapPin size={18} color="#b4ff04" />
-                <span style={{ flex: 1, color: '#b4ff04', fontWeight: 800 }}>返回地圖找場館</span>
+                <MapPin size={18} color="#ffffff" />
+                <span style={{ flex: 1, color: '#ffffff' }}>返回地圖找場館</span>
                 <span style={{ fontSize: '11px', color: '#64748b' }}>探索地圖</span>
               </button>
 
@@ -349,7 +349,7 @@ export default function Navbar({
                   background: 'transparent',
                   border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -380,7 +380,7 @@ export default function Navbar({
                   background: 'transparent',
                   border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -408,10 +408,10 @@ export default function Navbar({
                   gap: '12px',
                   width: '100%',
                   padding: '12px 14px',
-                  background: currentPath === '/about' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
-                  border: currentPath === '/about' ? '1px solid rgba(180, 255, 4, 0.28)' : '1px solid transparent',
+                  background: 'transparent',
+                  border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -419,7 +419,7 @@ export default function Navbar({
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
-                onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/about' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <Info size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>關於/聯絡我們</span>
@@ -442,7 +442,7 @@ export default function Navbar({
                   background: 'transparent',
                   border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -454,7 +454,7 @@ export default function Navbar({
               >
                 <Building2 size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>場館免費入駐申請</span>
-                <span style={{ fontSize: '11px', color: '#b4ff04' }}>審核中</span>
+                <span style={{ fontSize: '11px', color: '#ffffff' }}>審核中</span>
               </button>
 
               {/* Menu Item 5.5: 審核管理後台 (Admin Panel) */}
@@ -470,10 +470,10 @@ export default function Navbar({
                   gap: '12px',
                   width: '100%',
                   padding: '12px 14px',
-                  background: currentPath === '/admin' ? 'rgba(180, 255, 4, 0.08)' : 'transparent',
-                  border: currentPath === '/admin' ? '1px solid rgba(180, 255, 4, 0.28)' : '1px solid transparent',
+                  background: 'transparent',
+                  border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -481,11 +481,11 @@ export default function Navbar({
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = '#1a2436'}
-                onMouseLeave={(e) => e.currentTarget.style.background = currentPath === '/admin' ? 'rgba(180, 255, 4, 0.08)' : 'transparent'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
-                <ShieldCheck size={18} color="#b4ff04" />
+                <ShieldCheck size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>場館入駐審核後台</span>
-                <span style={{ fontSize: '10.5px', color: '#b4ff04', background: 'rgba(180, 255, 4, 0.12)', padding: '2px 6px', borderRadius: '4px', fontWeight: 800 }}>ADMIN</span>
+                <span style={{ fontSize: '11px', color: '#ffffff', fontWeight: 700 }}>ADMIN</span>
               </button>
 
               {/* Menu Item 6: 預約媒合方案 */}
@@ -504,7 +504,7 @@ export default function Navbar({
                   background: 'transparent',
                   border: '1px solid transparent',
                   borderRadius: '12px',
-                  color: '#e2e8f0',
+                  color: '#ffffff',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -516,7 +516,7 @@ export default function Navbar({
               >
                 <Wallet size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>預約媒合方案</span>
-                <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 800 }}>可預約 {Math.floor(points / 30)} 次</span>
+                <span style={{ fontSize: '12px', color: '#ffffff', fontWeight: 700 }}>可預約 {Math.floor(points / 30)} 次</span>
               </button>
             </div>
 
