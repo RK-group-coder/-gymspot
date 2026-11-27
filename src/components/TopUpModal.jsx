@@ -351,22 +351,23 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px', marginTop: '2px' }}>
                 <span>購買 7 日內未使用可全額退刷 · 客服信箱 official@gymspot.space</span>
                 {onOpenTerms && (
-                  <button
-                    type="button"
-                    onClick={onOpenTerms}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      padding: 0,
-                      color: '#b4ff04',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      textDecoration: 'underline'
-                    }}
-                  >
-                    服務條款與退費規範
-                  </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => onOpenTerms('/booking-terms')}
+                      style={{ background: 'none', border: 'none', padding: 0, color: '#b4ff04', fontSize: '11px', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      預約與交易條款
+                    </button>
+                    <span>·</span>
+                    <button
+                      type="button"
+                      onClick={() => onOpenTerms('/refund-policy')}
+                      style={{ background: 'none', border: 'none', padding: 0, color: '#b4ff04', fontSize: '11px', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      退款與取消政策
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -595,28 +596,50 @@ export default function TopUpModal({ points, onClose, onTopUp, onOpenTerms }) {
                       我已詳細閱讀並同意遵守
                     </span>{' '}
                     {onOpenTerms ? (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onOpenTerms();
-                        }}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          color: '#b4ff04',
-                          fontSize: '12px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          textDecoration: 'underline'
-                        }}
-                      >
-                        《平台服務條款與 7 日猶豫期退費政策》
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onOpenTerms('/booking-terms');
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            color: '#b4ff04',
+                            fontSize: '12px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          《GYMspot 平台場館預約與交易服務條款》
+                        </button>
+                        {' '}與{' '}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onOpenTerms('/refund-policy');
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            color: '#b4ff04',
+                            fontSize: '12px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          《退款或取消預約政策》
+                        </button>
+                      </>
                     ) : (
                       <span style={{ color: '#b4ff04', fontWeight: 700 }}>
-                        《平台服務條款與 7 日猶豫期退費政策》
+                        《GYMspot 平台場館預約與交易服務條款》與《退款或取消預約政策》
                       </span>
                     )}
                     <div style={{ fontSize: '11px', color: '#8a8a8a', marginTop: '4px', lineHeight: 1.5 }}>

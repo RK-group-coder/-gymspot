@@ -230,18 +230,27 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms,
             <span style={{ color: '#334155' }}>|</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap' }}>
               <button
-                onClick={onOpenTerms}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  fontSize: '12px'
-                }}
+                type="button"
+                onClick={() => onOpenTerms('/terms')}
+                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
               >
-                服務條款與隱私權協議
+                通用服務條款
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => onOpenTerms('/privacy')}
+                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
+              >
+                隱私權政策
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => onOpenTerms('/refund-policy')}
+                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
+              >
+                退款與取消政策
               </button>
               <span>·</span>
               <button

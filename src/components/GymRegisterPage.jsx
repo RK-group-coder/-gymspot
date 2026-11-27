@@ -26,6 +26,7 @@ import confetti from 'canvas-confetti';
 import { saveApplication } from '../utils/adminStorage';
 import { TAIWAN_DISTRICTS, TAIWAN_CITIES } from '../utils/geo';
 import AntiFraudModal from './AntiFraudModal';
+import { VenueTermsContent } from './LegalPages';
 
 // 1 到 7 星期定義
 const WEEKDAYS = [
@@ -1747,7 +1748,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                       </span>
                     </div>
                     <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '6px' }}>
-                      為保障雙方權益與場地安全，請點擊查閱並同意《肌動組 GYMspot 特約場館入駐合作規範》
+                      為保障雙方權益與場地安全，請點擊查閱並同意《GYMspot 合作場館服務條款 V1.0》
                     </div>
                   </div>
 
@@ -1797,7 +1798,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                     </div>
                     <div>
                       <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
-                        《肌動組 GYMspot 特約場館入駐合作規範》
+                        《GYMspot 合作場館服務條款 V1.0》
                       </div>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
                         {isAgreedTerms 
@@ -1937,18 +1938,27 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
             <span style={{ color: '#334155' }}>|</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap' }}>
               <button
-                onClick={onOpenTerms}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: 0,
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  fontSize: '12px'
-                }}
+                type="button"
+                onClick={() => onOpenTerms('/terms')}
+                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
               >
-                服務條款與隱私權協議
+                通用服務條款
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => onOpenTerms('/privacy')}
+                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
+              >
+                隱私權政策
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => onOpenTerms('/venue-terms')}
+                style={{ background: 'transparent', border: 'none', padding: 0, color: '#94a3b8', cursor: 'pointer', textDecoration: 'underline', fontSize: '12px' }}
+              >
+                合作場館服務條款
               </button>
               <span>·</span>
               <button
@@ -2126,158 +2136,35 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
               </button>
             </div>
 
-            {/* Modal Scrollable Content Box */}
+            {/* Modal Scrollable Content Box (白底黑字正式條款排版 — GYMspot 合作場館服務條款 V1.0) */}
             <div
               ref={termsScrollRef}
               onScroll={handleTermsScroll}
               style={{
                 flex: 1,
                 overflowY: 'auto',
-                padding: '24px 28px',
-                fontSize: '13.5px',
-                color: '#cbd5e1',
-                lineHeight: 1.8,
-                background: '#090e18'
+                padding: '28px 32px',
+                fontSize: '14.5px',
+                color: '#1f2937',
+                lineHeight: 1.85,
+                background: '#ffffff'
               }}
             >
-              <div style={{
-                background: 'rgba(180, 255, 4, 0.08)',
-                border: '1px solid rgba(180, 255, 4, 0.25)',
-                borderRadius: '10px',
-                padding: '12px 16px',
-                marginBottom: '20px',
-                fontSize: '12.5px',
-                color: '#b4ff04',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <AlertCircle size={15} color="#b4ff04" />
-                <span><strong>審閱提醒：</strong> 依據特約合作協議規範，請向下完整滾動至條款最末端，確認您已理解雙方之權利與義務。</span>
-              </div>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '0 0 8px' }}>
-                【立約目的與平台宗旨】
-              </h4>
-              <p style={{ margin: '0 0 16px' }}>
-                肌動組 GYMspot（以下簡稱「本平台」）致力於建立全台最健全、合法、透明之自由教練場租與自主訓練媒合網絡。為維護場地安全、保障場館方合法收費權益，並規範進駐自由教練與學員之使用秩序，特訂定本《特約場館入駐合作規範》（以下簡稱「本規範」）。申請入駐之健身房、體適能工作室或運動訓練空間營運主體（以下簡稱「特約場館」）於送出登記前，應審慎閱讀本規範之全部內容。
-              </p>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第一條：場館資格與合法性擔保
-              </h4>
-              <p style={{ margin: '0 0 10px' }}>
-                1.1 特約場館保證為依法設立之公司、行號或立案團體，具備有效之設立/商業登記證明文件與稅籍編號，且實際營業項目符合運動訓練設施經營之相關法規。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                1.2 特約場館保證場地空間通過當地消防安全檢查，配置合格且在效期內之滅火設備、逃生避難指示與緊急照明設施。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                1.3 特約場館須依法為營業場所投保足額之「公共意外責任保險」，並在特約合作期間內維持保單效力，以保障進場教練與學員之人身財產安全。
-              </p>
-              <p style={{ margin: '0 0 16px' }}>
-                1.4 特約場館保證所提供之深蹲架、槓鈴、啞鈴、有氧器材及功能性訓練器材均經定期維護保養，結構穩固無安全隱患。
-              </p>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第二條：場租收費、透明定價與開放時段維護
-              </h4>
-              <p style={{ margin: '0 0 10px' }}>
-                2.1 特約場館於本平台登記並公開之「小時制場租費用」及「學員清潔費」，即為自由教練帶課預約之最終收費標準。場館承諾不得於教練或學員到場時，額外強制加收未於平台揭露之任何附加費用（如入會費、空調費、淋浴加收等）。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                2.2 特約場館得依自主營運狀況，於本平台自由設定每週 7 天、每日 8:00 至 24:00 各時段之開放預約格數。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                2.3 凡經預約確認之時段，特約場館承諾優先保留相應器材與空間，不得無故重疊預約或拒絕教練入場。
-              </p>
-              <p style={{ margin: '0 0 16px' }}>
-                2.4 若場館欲調整場租價格或清潔費政策，應提前至少 14 日於系統進行更新，已預約成立之訂單仍依預約當時之揭露價格履行。
-              </p>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第三條：進駐自由教練之審查資格與現場公約
-              </h4>
-              <p style={{ margin: '0 0 10px' }}>
-                3.1 本平台嚴格把關進駐教練專業度，教練入場帶課須具備 ACE、NASM、ACSM、NSCA 等國際認證體適能證照，或教育部體育署合格教練證，並持有在效期內之 CPR+AED 急救證照。
-              </p>
-              <p style={{ margin: '0 0 6px' }}>
-                3.2 進駐教練與其學員入場時應共同遵守特約場館現場使用公約，包含但不限於：
-              </p>
-              <ul style={{ margin: '0 0 16px', paddingLeft: '20px' }}>
-                <li>進入訓練區須穿著乾淨室內專用訓練鞋，禁止赤足、穿著拖鞋或室外鞋踩踏草皮與重訓地墊。</li>
-                <li>器材使用完畢後應主動落實槓片歸位、啞鈴擺回架上，並使用場館提供之酒精噴霧擦拭接觸表面。</li>
-                <li>深蹲架與熱門槓鈴器材在尖峰時段應秉持禮貌原則與其他訓練者友善輪替。</li>
-                <li>禁止於公共區域進行喧嘩、惡意重摔器材（非奧林匹克舉重專用區）或私自招攬非自帶學員之場館自有會員。</li>
-              </ul>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第四條：預約取消、變更與不可抗力處置
-              </h4>
-              <p style={{ margin: '0 0 10px' }}>
-                4.1 雙方同意依平台公告之取消退改政策辦理。一經預約成立，除因不可抗力事故外，原則上不予臨時任意取消，以維護場地排程秩序。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                4.2 因地震、颱風等天災經政府主管機關公告停班停課，或場館發生突發停電、管線爆裂等不可抗力事故致無法正常營運時，特約場館應立即通知本平台與預約教練，並無條件全額退還場租或協商順延補課時段。
-              </p>
-              <p style={{ margin: '0 0 16px' }}>
-                4.3 若因特約場館自身疏失（如雙重超收、未依約開門）導致教練或學員無法如期使用，特約場館除全額退費外，應積極協助安排替代時段。
-              </p>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第五條：店家身分核驗與資料安全保護
-              </h4>
-              <p style={{ margin: '0 0 10px' }}>
-                5.1 本平台採行輕量化官方身分核驗機制，不向特約場館收取公司設立公文或查核統一編號，改由平台官方人員傳送確認訊息至場館對外公開之官方聯絡管道（官方 Instagram、官方 LINE 或 Facebook 粉絲專頁）核實場館經營身分。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                5.2 特約場館保證所填寫之場館名稱、實體營業地址及對外聯絡帳號均為真實且具合法經營管理權限，絕無冒用他人品牌或場館名義之情事。
-              </p>
-              <p style={{ margin: '0 0 16px' }}>
-                5.3 本平台依嚴格之資料安全與 Row Level Security (RLS) 列級隔離政策保護場館留存之聯繫資訊，防止未經授權之外部存取或濫用。
-              </p>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第六條：違規處理、停權與特約終止
-              </h4>
-              <p style={{ margin: '0 0 6px' }}>
-                6.1 特約場館若有以下情事之一者，本平台得不經預告立即暫停或終止特約合作，並自場租地圖與列表中下架：
-              </p>
-              <ul style={{ margin: '0 0 10px', paddingLeft: '20px' }}>
-                <li>冒用他人場館名義、填寫虛偽不實之營業地址或非本人管理之官方聯絡帳號。</li>
-                <li>於現場對平台教練或學員進行言語辱罵、肢體衝突或惡意刁難。</li>
-                <li>現場違法任意超收未約定之高額費用，經教練舉證申訴查證屬實且未於期限內改善者。</li>
-                <li>營業場所發生重大公共安全事故且未妥善處置。</li>
-              </ul>
-              <p style={{ margin: '0 0 16px' }}>
-                6.2 特約場館如欲終止特約合作，得提前 30 日通知本平台，已排定並確認之預約時段仍須依約履行完畢。
-              </p>
-
-              <h4 style={{ color: '#f8fafc', fontSize: '15px', fontWeight: 800, margin: '18px 0 8px' }}>
-                第七條：契約生效、條款修改與準據法
-              </h4>
-              <p style={{ margin: '0 0 10px' }}>
-                7.1 特約場館於線上完成完整條款之瀏覽，並點擊「我已詳閱並同意合作條款」按鈕後，本規範即行生效，並對雙方產生法律約束力。
-              </p>
-              <p style={{ margin: '0 0 10px' }}>
-                7.2 本平台保留依市場機制或法規演進修訂本規範之權利，修訂後之內容將公告於平台或透過留存之官方 Email / LINE 通知特約場館。
-              </p>
-              <p style={{ margin: '0 0 20px' }}>
-                7.3 本規範之解釋與適用，均以中華民國法律為準據法。因本規範所生之任何爭議，雙方合意以臺灣臺北地方法院為第一審管轄法院。
-              </p>
+              <VenueTermsContent />
 
               {/* End of Document marker */}
               <div style={{
                 textAlign: 'center',
                 padding: '18px 0 8px',
-                borderTop: '1px dashed #243248',
-                color: hasScrolledToBottom ? '#b4ff04' : '#64748b',
-                fontSize: '12.5px',
-                fontWeight: 700
+                marginTop: '24px',
+                borderTop: '1px dashed #d1d5db',
+                color: hasScrolledToBottom ? '#15803d' : '#6b7280',
+                fontSize: '13px',
+                fontWeight: 800
               }}>
                 {hasScrolledToBottom 
                   ? '✓ 已閱讀至條款最底部，您現在可以點擊下方「我已詳閱並同意合作條款」按鈕'
-                  : '👇 請繼續向下滾動至最底部以啟用同意按鈕 👇'}
+                  : '請向下滾動閱讀至條款最底部以啟用同意按鈕'}
               </div>
             </div>
 

@@ -299,6 +299,23 @@ export default function AuthModal({
             </div>
           )}
 
+          {/* Legal Terms Notice for Coach Login/Register */}
+          <div style={{
+            fontSize: '11.5px',
+            color: '#94a3b8',
+            textAlign: 'center',
+            lineHeight: 1.6,
+            marginTop: '14px'
+          }}>
+            繼續登入即代表您已閱讀並同意遵守
+            <br />
+            <a href="/terms" style={{ color: '#b4ff04', textDecoration: 'underline', fontWeight: 700 }}>《平台通用服務條款》</a>
+            、
+            <a href="/coach-terms" style={{ color: '#b4ff04', textDecoration: 'underline', fontWeight: 700 }}>《自由教練服務條款》</a>
+            與
+            <a href="/privacy" style={{ color: '#b4ff04', textDecoration: 'underline', fontWeight: 700 }}>《隱私權政策》</a>
+          </div>
+
           {/* Subtitle Brand Footer Note */}
           <div style={{
             display: 'flex',
@@ -307,7 +324,7 @@ export default function AuthModal({
             gap: '8px',
             fontSize: '11px',
             color: '#64748b',
-            marginTop: '16px'
+            marginTop: '12px'
           }}>
             <span style={{
               width: '5px',

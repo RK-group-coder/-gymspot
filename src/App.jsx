@@ -15,7 +15,7 @@ import AboutPage from './components/AboutPage';
 import GymRegisterPage from './components/GymRegisterPage';
 import AdminDashboard from './components/AdminDashboard';
 import AuthModal from './components/AuthModal';
-import { TermsPage, AntiFraudPage } from './components/LegalPages';
+import { LegalDocumentPage, isLegalRoute } from './components/LegalPages';
 import { supabase } from './lib/supabase';
 import { INITIAL_GYMS, PRESET_LOCATIONS } from './data/mockGyms';
 import { calculateDistanceKm, getCurrentPositionAsync } from './utils/geo';
@@ -390,14 +390,8 @@ export default function App() {
     );
   }
 
-  // Full-page /terms or /anti-fraud routes (白底黑字正式條款與防詐騙宣導獨立頁面)
-  if (
-    currentPath === '/terms' ||
-    currentPath === '/terms/' ||
-    currentPath === '/anti-fraud' ||
-    currentPath === '/anti-fraud/'
-  ) {
-    const isAntiFraudRoute = currentPath.startsWith('/anti-fraud');
+  // Full-page Legal Routes (/terms, /privacy, /booking-terms, /refund-policy, /coach-terms, /venue-terms, /anti-fraud)
+  if (isLegalRoute(currentPath)) {
     return (
       <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column' }}>
         <Navbar
@@ -409,7 +403,7 @@ export default function App() {
           onOpenRegister={() => navigateTo('/partner')}
           onOpenAdmin={() => navigateTo('/admin')}
           onOpenTopUp={() => setIsTopUpOpen(true)}
-          currentPath={isAntiFraudRoute ? '/anti-fraud' : '/terms'}
+          currentPath={currentPath}
           points={points}
           isLoggedIn={isLoggedIn}
           userRole={userRole}
@@ -420,9 +414,9 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
-            onOpenTerms={() => {
+            onOpenTerms={(targetPath = '/booking-terms') => {
               setIsTopUpOpen(false);
-              navigateTo('/terms');
+              navigateTo(targetPath);
             }}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
@@ -431,19 +425,11 @@ export default function App() {
             }}
           />
         )}
-        {isAntiFraudRoute ? (
-          <AntiFraudPage
-            onNavigateHome={() => navigateTo('/')}
-            onNavigateTerms={() => navigateTo('/terms')}
-            onNavigateAntiFraud={() => navigateTo('/anti-fraud')}
-          />
-        ) : (
-          <TermsPage
-            onNavigateHome={() => navigateTo('/')}
-            onNavigateTerms={() => navigateTo('/terms')}
-            onNavigateAntiFraud={() => navigateTo('/anti-fraud')}
-          />
-        )}
+        <LegalDocumentPage
+          currentPath={currentPath}
+          onNavigateHome={() => navigateTo('/')}
+          onNavigate={(path) => navigateTo(path)}
+        />
         {isProfileModalOpen && (
           <ProfileModal
             isOpen={isProfileModalOpen}
@@ -454,6 +440,10 @@ export default function App() {
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
           onLogin={handleLogin}
+          onNavigateLegal={(path) => {
+            setIsAuthModalOpen(false);
+            navigateTo(path);
+          }}
           onOpenVenueRegister={() => {
             setIsAuthModalOpen(false);
             navigateTo('/partner');
@@ -487,9 +477,9 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
-            onOpenTerms={() => {
+            onOpenTerms={(targetPath = '/booking-terms') => {
               setIsTopUpOpen(false);
-              navigateTo('/terms');
+              navigateTo(targetPath);
             }}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
@@ -501,7 +491,7 @@ export default function App() {
         <AboutPage
           onNavigateHome={() => navigateTo('/')}
           onOpenRegister={() => navigateTo('/partner')}
-          onOpenTerms={() => navigateTo('/terms')}
+          onOpenTerms={(targetPath = '/terms') => navigateTo(targetPath)}
           onOpenAntiFraud={() => navigateTo('/anti-fraud')}
         />
         {isProfileModalOpen && (
@@ -558,9 +548,9 @@ export default function App() {
           <TopUpModal
             points={points}
             onClose={() => setIsTopUpOpen(false)}
-            onOpenTerms={() => {
+            onOpenTerms={(targetPath = '/booking-terms') => {
               setIsTopUpOpen(false);
-              navigateTo('/terms');
+              navigateTo(targetPath);
             }}
             onTopUp={(pts, price) => {
               setPoints(p => p + pts);
@@ -571,7 +561,7 @@ export default function App() {
         )}
         <GymRegisterPage
           onNavigateHome={() => navigateTo('/')}
-          onOpenTerms={() => navigateTo('/terms')}
+          onOpenTerms={(targetPath = '/terms') => navigateTo(targetPath)}
           onOpenAntiFraud={() => navigateTo('/anti-fraud')}
           onRegisterSuccess={handleRegisterSuccess}
         />
@@ -644,9 +634,9 @@ export default function App() {
         <TopUpModal
           points={points}
           onClose={() => setIsTopUpOpen(false)}
-          onOpenTerms={() => {
+          onOpenTerms={(targetPath = '/booking-terms') => {
             setIsTopUpOpen(false);
-            navigateTo('/terms');
+            navigateTo(targetPath);
           }}
           onTopUp={(pts, price) => {
             setPoints(p => p + pts);
