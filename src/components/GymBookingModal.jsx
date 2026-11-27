@@ -778,15 +778,18 @@ export default function GymBookingModal({
                   onClick={onOpenTopUp}
                   style={{
                     marginLeft: '4px',
-                    background: 'transparent',
-                    border: 'none',
-                    color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#fbbf24' : '#b4ff04',
-                    padding: 0,
-                    fontSize: '12.5px',
+                    background: currentPoints - totalPointsNeeded < pointsPerSlot
+                      ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                      : 'rgba(180, 255, 4, 0.16)',
+                    border: currentPoints - totalPointsNeeded < pointsPerSlot
+                      ? '1px solid #f59e0b'
+                      : '1px solid rgba(180, 255, 4, 0.7)',
+                    color: currentPoints - totalPointsNeeded < pointsPerSlot ? '#0f172a' : '#b4ff04',
+                    padding: '4px 10px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
                     fontWeight: 800,
-                    cursor: 'pointer',
-                    textDecoration: 'underline',
-                    textUnderlineOffset: '3px'
+                    cursor: 'pointer'
                   }}
                   title="購買媒合方案"
                 >
