@@ -566,8 +566,8 @@ export default function Navbar({
                 <span>{isLoggedIn ? '退出登入' : '登入/註冊'}</span>
               </button>
 
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', marginTop: '12px' }}>
-                <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.04em' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '12px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.04em' }}>
                   Follow Us
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
