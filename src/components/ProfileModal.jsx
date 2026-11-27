@@ -27,7 +27,7 @@ export default function ProfileModal({ isOpen, onClose }) {
       try {
         const parsed = JSON.parse(saved);
         return {
-          coachId: parsed.coachId || 'A001',
+          coachId: parsed.coachId === 'A001' ? 'A0001' : (parsed.coachId || 'A0001'),
           name: parsed.name || '林峻 (Alex Lin)',
           phone: parsed.phone || '0912-345-678',
           email: parsed.email || 'alex.lin.fitness@gmail.com',
@@ -54,7 +54,7 @@ export default function ProfileModal({ isOpen, onClose }) {
       }
     }
     return {
-      coachId: 'A001',
+      coachId: 'A0001',
       name: '林峻 (Alex Lin)',
       phone: '0912-345-678',
       email: 'alex.lin.fitness@gmail.com',
@@ -227,13 +227,12 @@ export default function ProfileModal({ isOpen, onClose }) {
                   {coachProfile.name}
                 </h2>
                 <span style={{
-                  color: '#b4ff04',
+                  color: '#ffffff',
                   fontSize: '13.5px',
-                  fontWeight: 900,
-                  letterSpacing: '0.6px',
-                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+                  fontWeight: 700,
+                  letterSpacing: '0.4px'
                 }}>
-                  {coachProfile.coachId || 'A001'}
+                  會員編號:{coachProfile.coachId || 'A0001'}
                 </span>
               </div>
 
