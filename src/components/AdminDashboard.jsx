@@ -43,6 +43,9 @@ export default function AdminDashboard({ onNavigateHome }) {
   const [passcodeError, setPasscodeError] = useState('');
 
   // 2. 審核列表與篩選狀態
+  const [adminSection, setAdminSection] = useState('venues'); // 'venues' | 'members'
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [memberSearch, setMemberSearch] = useState('');
   const [applications, setApplications] = useState([]);
   const [activeTab, setActiveTab] = useState('pending'); // 'all' | 'pending' | 'approved' | 'rejected'
   const [searchQuery, setSearchQuery] = useState('');
@@ -374,8 +377,42 @@ export default function AdminDashboard({ onNavigateHome }) {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h1 style={{ fontSize: '17px', fontWeight: 700, color: '#f8fafc', margin: 0, letterSpacing: '0.01em' }}>
-                場館入駐審核中心
+                GYMspot 管理後台
               </h1>
+              <div style={{ display: 'flex', gap: '4px', marginLeft: '12px', background: '#111622', padding: '3px', borderRadius: '6px', border: '1px solid #1f2937' }}>
+                <button
+                  type="button"
+                  onClick={() => setAdminSection('venues')}
+                  style={{
+                    background: adminSection === 'venues' ? '#1e293b' : 'transparent',
+                    color: adminSection === 'venues' ? '#ffffff' : '#94a3b8',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '5px 12px',
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  場館入駐審核
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdminSection('members')}
+                  style={{
+                    background: adminSection === 'members' ? '#1e293b' : 'transparent',
+                    color: adminSection === 'members' ? '#ffffff' : '#94a3b8',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '5px 12px',
+                    fontSize: '12.5px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  會員專區
+                </button>
+              </div>
             </div>
           </div>
 
@@ -421,6 +458,159 @@ export default function AdminDashboard({ onNavigateHome }) {
 
       {/* Main Admin Dashboard Body */}
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 28px' }}>
+        {adminSection === 'members' ? (() => {
+          // 讀取目前註冊會員資料與交易紀錄
+          let currentCoach = {
+            coachId: 'A0001',
+            name: '林峻 (Alex Lin)',
+            phone: '0912-345-678',
+            email: 'alex.lin.fitness@gmail.com',
+            instagram: '@alex_coach_fit',
+            primaryAreas: '台北大安 / 信義 / 板橋',
+            certifications: []
+          };
+          try {
+            const saved = JSON.parse(localStorage.getItem('gymspot_coach_profile') || 'null');
+            if (saved) currentCoach = { ...currentCoach, ...saved };
+          } catch {}
+          const currentPts = Number(localStorage.getItem('gymspot_points') ?? 300);
+          let bookingTx = [];
+          try {
+            bookingTx = JSON.parse(localStorage.getItem('gymspot_venue_bookings_v1') || '[]');
+          } catch {}
+          let topupTx = [];
+          try {
+            topupTx = JSON.parse(localStorage.getItem('gymspot_topup_history_v1') || '[]');
+          } catch {}
+          const usedPts = bookingTx.reduce((sum, b) => sum + (Number(b.totalPoints) || (Number(b.totalHours) || 1) * 30), 0);
+          const transactions = [
+            ...topupTx.map((t) => ({
+              id: t.id || `TOP-${t.createdAt}`,
+              time: t.createdAt || '—',
+              type: '購買媒合方案',
+              detail: t.planName || `儲值 ${t.points} 點`,
+              pointsDelta: `+${t.points} 點 (+${Math.floor((t.points || 0) / 30)} 次)`,
+              amount: t.price ? `NT$ ${t.price}` : '—'
+            })),
+            ...bookingTx.map((b) => ({
+              id: b.bookingId,
+              time: b.createdAt || '—',
+              type: '預約場館扣點',
+              detail: `${b.gymName} (${b.dateStr} ${(b.slots || []).join('、')})`,
+              pointsDelta: `-${b.totalPoints || (b.totalHours || 1) * 30} 點 (-${b.totalHours || 1} 次)`,
+              amount: b.status === 'cancelled' ? '已婉拒' : b.status === 'approved' ? '已同意' : '待確認'
+            }))
+          ];
+          const membersList = [
+            {
+              ...currentCoach,
+              currentPoints: currentPts,
+              currentCredits: Math.floor(currentPts / 30),
+              usedPoints: usedPts,
+              usedCredits: Math.floor(usedPts / 30),
+              transactions
+            }
+          ].filter((m) => {
+            const q = memberSearch.trim().toLowerCase();
+            if (!q) return true;
+            return (
+              (m.coachId || '').toLowerCase().includes(q) ||
+              (m.name || '').toLowerCase().includes(q) ||
+              (m.email || '').toLowerCase().includes(q) ||
+              (m.phone || '').toLowerCase().includes(q)
+            );
+          });
+
+          return (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#f8fafc', margin: 0 }}>會員專區</h2>
+                  <div style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '4px' }}>
+                    檢視所有註冊教練會員資料、專業證照、聯絡方式、預約點數餘額與交易紀錄
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={memberSearch}
+                  onChange={(e) => setMemberSearch(e.target.value)}
+                  placeholder="搜尋會員編號、姓名、電話或 Gmail..."
+                  style={{
+                    background: '#111622',
+                    border: '1px solid #263042',
+                    borderRadius: '8px',
+                    padding: '8px 14px',
+                    color: '#fff',
+                    fontSize: '13px',
+                    width: '280px',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '10px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px', minWidth: '920px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #1f2937', color: '#94a3b8', fontSize: '12px' }}>
+                      <th style={{ padding: '12px 16px' }}>會員編號</th>
+                      <th style={{ padding: '12px 16px' }}>姓名</th>
+                      <th style={{ padding: '12px 16px' }}>教練證照（現有填寫）</th>
+                      <th style={{ padding: '12px 16px' }}>聯絡方式</th>
+                      <th style={{ padding: '12px 16px' }}>現有預約點數</th>
+                      <th style={{ padding: '12px 16px' }}>已使用點數</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>交易紀錄</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {membersList.map((m) => (
+                      <tr key={m.coachId} style={{ borderBottom: '1px solid #182030' }}>
+                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#f8fafc', fontFamily: 'ui-monospace, monospace' }}>
+                          {m.coachId}
+                        </td>
+                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#f8fafc' }}>{m.name}</td>
+                        <td style={{ padding: '14px 16px', color: '#cbd5e1', maxWidth: '260px' }}>
+                          {Array.isArray(m.certifications) && m.certifications.length > 0
+                            ? m.certifications.map((c) => c.name || c).join('、')
+                            : <span style={{ color: '#64748b' }}>尚未填寫</span>}
+                        </td>
+                        <td style={{ padding: '14px 16px', color: '#cbd5e1', lineHeight: 1.5 }}>
+                          <div>電話：{m.phone || '—'}</div>
+                          <div>Gmail：{m.email || '—'}</div>
+                          <div>IG：{m.instagram || '—'}</div>
+                        </td>
+                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#b4ff04' }}>
+                          {m.currentPoints} 點（{m.currentCredits} 次）
+                        </td>
+                        <td style={{ padding: '14px 16px', color: '#cbd5e1' }}>
+                          {m.usedPoints} 點（{m.usedCredits} 次）
+                        </td>
+                        <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedMember(m)}
+                            style={{
+                              background: '#182030',
+                              border: '1px solid #263042',
+                              borderRadius: '6px',
+                              padding: '6px 12px',
+                              color: '#f8fafc',
+                              fontSize: '12px',
+                              fontWeight: 600,
+                              cursor: 'pointer'
+                            }}
+                          >
+                            查看交易紀錄 ({m.transactions.length})
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })() : (
+        <>
         {/* Stats Grid */}
         <div style={{
           display: 'grid',
@@ -789,7 +979,94 @@ export default function AdminDashboard({ onNavigateHome }) {
             </div>
           )}
         </div>
+        </>
+        )}
       </main>
+
+      {/* 會員交易紀錄明細彈窗 */}
+      {selectedMember && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1100,
+            background: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+          onClick={() => setSelectedMember(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: '680px',
+              maxHeight: '85vh',
+              background: '#111622',
+              border: '1px solid #1f2937',
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden'
+            }}
+          >
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '12px', color: '#94a3b8' }}>會員編號：{selectedMember.coachId}</div>
+                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', margin: '2px 0 0' }}>
+                  {selectedMember.name} · 交易與點數紀錄
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedMember(null)}
+                style={{ background: '#182030', border: 'none', borderRadius: '6px', color: '#cbd5e1', padding: '6px', cursor: 'pointer' }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div style={{ padding: '18px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '16px', fontSize: '13px', marginBottom: '6px' }}>
+                <span>現有預約點數：<strong style={{ color: '#b4ff04' }}>{selectedMember.currentPoints} 點（{selectedMember.currentCredits} 次）</strong></span>
+                <span>已使用預約點數：<strong style={{ color: '#f8fafc' }}>{selectedMember.usedPoints} 點（{selectedMember.usedCredits} 次）</strong></span>
+              </div>
+              {selectedMember.transactions.length === 0 ? (
+                <div style={{ padding: '28px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                  尚無交易或預約扣點紀錄
+                </div>
+              ) : (
+                selectedMember.transactions.map((tx, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: '#090d16',
+                      border: '1px solid #1f2937',
+                      borderRadius: '8px',
+                      padding: '12px 14px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: '12px',
+                      fontSize: '13px'
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 700, color: '#f8fafc' }}>{tx.type} · {tx.detail}</div>
+                      <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '3px' }}>單號 #{tx.id} · {tx.time}</div>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div style={{ fontWeight: 700, color: tx.pointsDelta.startsWith('+') ? '#10b981' : '#f8fafc' }}>{tx.pointsDelta}</div>
+                      <div style={{ fontSize: '11.5px', color: '#94a3b8' }}>{tx.amount}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* -------------------------------------------------------------
           Modal / Drawer: 審核明細檢視抽屜
