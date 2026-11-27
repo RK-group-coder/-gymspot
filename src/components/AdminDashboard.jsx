@@ -28,6 +28,11 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ensureVenuePortalCreds, getVenuePortalCreds } from '../utils/venuePortalStore';
+import {
+  fetchGymApplicationsFromSupabase,
+  updateGymApplicationStatusInSupabase,
+  fetchCoachMembersFromSupabase
+} from '../lib/supabaseService';
 import { 
   getApplications, 
   updateApplicationStatus, 
@@ -57,8 +62,13 @@ export default function AdminDashboard({ onNavigateHome }) {
   const [showSqlModal, setShowSqlModal] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const loadData = () => {
+  const loadData = async () => {
     setApplications(getApplications());
+    const remoteApps = await fetchGymApplicationsFromSupabase();
+    if (Array.isArray(remoteApps) && remoteApps.length > 0) {
+      setApplications(remoteApps);
+    }
+    fetchCoachMembersFromSupabase();
   };
 
   useEffect(() => {
@@ -95,7 +105,9 @@ export default function AdminDashboard({ onNavigateHome }) {
   const handleApprove = (app) => {
     if (!window.confirm(`確定核准「${app.name}」並正式上架到網站地圖嗎？`)) return;
 
-    const updated = updateApplicationStatus(app.id, 'approved', '經管理員核對營登與器材符合標準，核准上線');
+    const updated = updateApplicationStatus(app.id, 'approved', '經管理員核對與場館資料符合標準，核准上線');
+    updateGymApplicationStatusInSupabase(app.id, 'approved', '經管理員核對與場館資料符合標準，核准上線');
+    ensureVenuePortalCreds(app.id);
     setApplications(updated);
     if (selectedApp?.id === app.id) {
       setSelectedApp(prev => ({ ...prev, status: 'approved' }));
@@ -115,6 +127,7 @@ export default function AdminDashboard({ onNavigateHome }) {
     if (!selectedApp) return;
     const reason = rejectReasonInput.trim() || '上傳文件未符合標準，請補正資料';
     const updated = updateApplicationStatus(selectedApp.id, 'rejected', reason);
+    updateGymApplicationStatusInSupabase(selectedApp.id, 'rejected', reason);
     setApplications(updated);
     setSelectedApp(prev => ({ ...prev, status: 'rejected', reviewerNote: reason }));
     setIsRejectModalOpen(false);

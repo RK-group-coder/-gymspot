@@ -23,6 +23,7 @@ import {
   X
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { submitGymApplicationToSupabase } from '../lib/supabaseService';
 import { saveApplication } from '../utils/adminStorage';
 import { TAIWAN_DISTRICTS, TAIWAN_CITIES } from '../utils/geo';
 import AntiFraudModal from './AntiFraudModal';
@@ -447,6 +448,9 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
         agreedTerms: true,
         agreedTermsAt: agreedTermsTimestamp
       };
+
+      // 同步寫入 Supabase gym_applications 資料表
+      submitGymApplicationToSupabase({ ...newGym, status: 'pending' });
 
       // Confetti burst
       confetti({

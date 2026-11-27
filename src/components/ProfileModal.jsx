@@ -16,6 +16,7 @@ import {
   Download
 } from 'lucide-react';
 import { getStoredCoachCerts } from '../utils/certUtils';
+import { upsertCoachMemberToSupabase } from '../lib/supabaseService';
 
 export default function ProfileModal({ isOpen, onClose }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -107,6 +108,8 @@ export default function ProfileModal({ isOpen, onClose }) {
     setIsEditing(false);
     try {
       localStorage.setItem('gymspot_coach_profile', JSON.stringify(coachProfile));
+      const pts = Number(localStorage.getItem('gymspot_points') ?? 300);
+      upsertCoachMemberToSupabase(coachProfile, pts);
     } catch (e) {
       // ignore
     }

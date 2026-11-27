@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { getStoredCoachCerts } from '../utils/certUtils';
 import { addVenueBooking, getVenueScheduleOverride } from '../utils/venuePortalStore';
+import { addVenueBookingToSupabase } from '../lib/supabaseService';
 
 // 每天 8:00 到 24:00，一小時一格，總共 16 格 (做成 4x4 的格子)
 const TIME_SLOTS = Array.from({ length: 16 }, (_, i) => {
@@ -381,11 +382,13 @@ export default function GymBookingModal({
           };
         }
       } catch {}
-      addVenueBooking({
+      const bookingPayload = {
         ...receipt,
         status: 'pending',
         coach: coachInfo
-      });
+      };
+      addVenueBooking(bookingPayload);
+      addVenueBookingToSupabase(bookingPayload);
 
       setBookingReceipt(receipt);
       setIsSubmitting(false);
