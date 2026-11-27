@@ -275,27 +275,25 @@ export default function Navbar({
                   justifyContent: 'space-between',
                   padding: '12px 14px',
                   borderRadius: '12px',
-                  background: 'rgba(180, 255, 4, 0.06)',
-                  border: '1px solid rgba(180, 255, 4, 0.3)',
-                  marginBottom: '10px',
+                  background: 'transparent',
+                  border: '1px solid transparent',
+                  marginBottom: '6px',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(180, 255, 4, 0.12)';
-                  e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.6)';
+                  e.currentTarget.style.background = '#1a2436';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(180, 255, 4, 0.06)';
-                  e.currentTarget.style.borderColor = 'rgba(180, 255, 4, 0.3)';
+                  e.currentTarget.style.background = 'transparent';
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '13px', color: '#e2e8f0', fontWeight: 700 }}>可用預約次數</span>
+                  <span style={{ fontSize: '14px', color: '#e2e8f0', fontWeight: 700 }}>可用預約次數</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '15px', fontWeight: 900, color: '#b4ff04' }}>{Math.floor(points / 30)} 次</span>
-                  <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: '4px' }}>購買方案</span>
+                  <span style={{ fontSize: '12px', color: '#94a3b8' }}>購買方案</span>
                 </div>
               </div>
 
