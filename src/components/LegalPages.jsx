@@ -22,7 +22,8 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
     padding: 0,
     color: '#94a3b8',
     cursor: 'pointer',
-    textDecoration: 'none',
+    textDecoration: 'underline',
+    textUnderlineOffset: '3px',
     fontSize: '12.5px',
     textAlign: 'left',
     lineHeight: 1.5
