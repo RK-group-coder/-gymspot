@@ -227,7 +227,39 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
     }));
   };
 
-  const processNewPhotos = (files) => {
+  const compressImageFile = (file, maxDimension = 1400, quality = 0.82) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDimension || height > maxDimension) {
+            if (width >= height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedDataUrl);
+        };
+        img.onerror = () => resolve(URL.createObjectURL(file));
+        img.src = ev.target?.result;
+      };
+      reader.onerror = () => resolve(URL.createObjectURL(file));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const processNewPhotos = async (files) => {
     if (!files || files.length === 0) return;
     
     const imageFiles = files.filter(f => f.type ? f.type.startsWith('image/') : true);
@@ -248,10 +280,12 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
       filesToAdd = imageFiles.slice(0, availableSlots);
     }
 
-    const newPhotos = filesToAdd.map(file => ({
-      name: file.name,
-      preview: URL.createObjectURL(file)
-    }));
+    const newPhotos = await Promise.all(
+      filesToAdd.map(async (file) => ({
+        name: file.name,
+        preview: await compressImageFile(file)
+      }))
+    );
     setVenuePhotos(prev => [...prev, ...newPhotos]);
   };
 
@@ -262,17 +296,18 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
     }
   };
 
-  const setCoverFromFile = (file) => {
+  const setCoverFromFile = async (file) => {
     if (!file) return;
     if (file.type && !file.type.startsWith('image/')) {
       alert('請選取圖片檔案（支援 JPG、PNG、WEBP）');
       return;
     }
+    const compressedPreview = await compressImageFile(file);
     setCoverPhoto(prev => {
       if (prev && prev.preview && prev.preview.startsWith('blob:')) {
         try { URL.revokeObjectURL(prev.preview); } catch (_) {}
       }
-      return { name: file.name, preview: URL.createObjectURL(file) };
+      return { name: file.name, preview: compressedPreview };
     });
   };
 

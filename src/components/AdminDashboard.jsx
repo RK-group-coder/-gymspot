@@ -964,33 +964,40 @@ export default function AdminDashboard({ onNavigateHome }) {
                 </div>
               </div>
 
-              {/* 1. 店家基本資料與聯繫管道 */}
+              {/* 1. 場館基本資料 */}
               <div style={{
                 background: '#101726',
                 borderRadius: '14px',
                 border: '1px solid #1e293b',
                 padding: '18px'
               }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Building2 size={16} color="#b4ff04" />
-                  店家基本資訊與聯繫管道
+                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 14px' }}>
+                  1. 場館基本資料
                 </h3>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '13px' }}>
                   <div>
-                    <span style={{ color: '#64748b' }}>品牌商標：</span>
-                    <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{selectedApp.brand || '無'}</span>
+                    <span style={{ color: '#64748b' }}>場館完整名稱：</span>
+                    <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{selectedApp.name || '未填寫'}</span>
                   </div>
                   <div>
-                    <span style={{ color: '#64748b' }}>所在行政區：</span>
-                    <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{selectedApp.city} {selectedApp.district}</span>
+                    <span style={{ color: '#64748b' }}>場館簡稱 (地圖顯示)：</span>
+                    <span style={{ color: '#b4ff04', fontWeight: 700 }}>{selectedApp.shortName || selectedApp.brand || selectedApp.name || '未填寫'}</span>
+                  </div>
+                  <div>
+                    <span style={{ color: '#64748b' }}>所在城市：</span>
+                    <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{selectedApp.city || '未填寫'}</span>
+                  </div>
+                  <div>
+                    <span style={{ color: '#64748b' }}>行政區：</span>
+                    <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{selectedApp.district || '未填寫'}</span>
                   </div>
                   <div style={{ gridColumn: 'span 2' }}>
-                    <span style={{ color: '#64748b' }}>詳細地址：</span>
-                    <span style={{ color: '#e2e8f0' }}>{selectedApp.address}</span>
+                    <span style={{ color: '#64748b' }}>詳細營業地址：</span>
+                    <span style={{ color: '#e2e8f0' }}>{selectedApp.address || '未填寫'}</span>
                     <button
                       onClick={() => {
-                        const q = encodeURIComponent(`${selectedApp.city} ${selectedApp.name}`);
+                        const q = encodeURIComponent(selectedApp.address || `${selectedApp.city} ${selectedApp.name}`);
                         window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank');
                       }}
                       style={{
@@ -1005,46 +1012,92 @@ export default function AdminDashboard({ onNavigateHome }) {
                         gap: '2px'
                       }}
                     >
-                      <ExternalLink size={12} /> Google 地圖驗證
+                      <ExternalLink size={12} /> 在 Google Maps 上預覽核對
                     </button>
                   </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>聯繫電話：</span>
-                    <a href={`tel:${selectedApp.phone}`} style={{ color: '#b4ff04', textDecoration: 'none' }}>{selectedApp.phone}</a>
-                  </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>Gmail：</span>
-                    <a href={`mailto:${selectedApp.email}`} style={{ color: '#b4ff04', textDecoration: 'none' }}>{selectedApp.email}</a>
-                  </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>官方 LINE：</span>
-                    <span style={{ color: '#e2e8f0' }}>{selectedApp.officialLine || '未提供'}</span>
-                  </div>
-                  <div>
-                    <span style={{ color: '#64748b' }}>官方 IG：</span>
-                    <span style={{ color: '#e2e8f0' }}>{selectedApp.igHandle || '未提供'}</span>
-                  </div>
-                  {selectedApp.fbPageUrl && (
-                    <div style={{ gridColumn: 'span 2' }}>
-                      <span style={{ color: '#64748b' }}>FB 粉專網址：</span>
-                      <a href={selectedApp.fbPageUrl} target="_blank" rel="noreferrer" style={{ color: '#b4ff04', textDecoration: 'none' }}>
-                        {selectedApp.fbPageUrl}
-                      </a>
-                    </div>
-                  )}
                 </div>
               </div>
 
-              {/* 場館介紹 */}
+              {/* 2. 小時制場租費用與每週開放時段 */}
               <div style={{
                 background: '#101726',
                 borderRadius: '14px',
                 border: '1px solid #1e293b',
                 padding: '18px'
               }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <FileText size={16} color="#b4ff04" />
-                  場館介紹
+                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 12px' }}>
+                  2. 小時制場租費用與每週開放時段
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '13px', marginBottom: '14px' }}>
+                  <div style={{ background: '#090e17', padding: '12px', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                    <div style={{ fontSize: '11px', color: '#64748b' }}>小時制場租費用 (NT$)</div>
+                    <div style={{ fontSize: '20px', fontWeight: 900, color: '#b4ff04', marginTop: '2px' }}>
+                      ${selectedApp.hourlyRate || selectedApp.pricing?.hourlyRate || 200} <span style={{ fontSize: '12px', color: '#94a3b8' }}>/ 小時（僅限 1 對 1）</span>
+                    </div>
+                  </div>
+                  <div style={{ background: '#090e17', padding: '12px', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                    <div style={{ fontSize: '11px', color: '#64748b' }}>每週開放時段總計</div>
+                    <div style={{ fontSize: '20px', fontWeight: 900, color: '#f8fafc', marginTop: '2px' }}>
+                      {selectedApp.availableSchedule
+                        ? Object.values(selectedApp.availableSchedule).filter(Boolean).length
+                        : (selectedApp.openSlotsCount ?? 112)} <span style={{ fontSize: '12px', color: '#94a3b8' }}>/ 112 格</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 每週開放時段表 (1~7, 08:00~24:00) */}
+                <div style={{ overflowX: 'auto', background: '#090e17', borderRadius: '10px', border: '1px solid #1e293b', padding: '10px' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center', minWidth: '480px' }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: '6px 4px', color: '#94a3b8', borderBottom: '1px solid #1e293b' }}>時段</th>
+                        {['一', '二', '三', '四', '五', '六', '日'].map((d, i) => (
+                          <th key={i} style={{ padding: '6px 4px', color: '#cbd5e1', borderBottom: '1px solid #1e293b' }}>週{d}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.from({ length: 16 }, (_, idx) => 8 + idx).map((hr) => (
+                        <tr key={hr}>
+                          <td style={{ padding: '4px', color: '#94a3b8', borderBottom: '1px solid #141d2c', fontWeight: 600 }}>
+                            {String(hr).padStart(2, '0')}:00
+                          </td>
+                          {[1, 2, 3, 4, 5, 6, 7].map((dayKey) => {
+                            const isOpen = selectedApp.availableSchedule
+                              ? !!selectedApp.availableSchedule[`${dayKey}-${hr}`]
+                              : true;
+                            return (
+                              <td key={dayKey} style={{ padding: '3px', borderBottom: '1px solid #141d2c' }}>
+                                <span style={{
+                                  display: 'inline-block',
+                                  width: '100%',
+                                  padding: '2px 0',
+                                  borderRadius: '4px',
+                                  background: isOpen ? 'rgba(180, 255, 4, 0.14)' : 'rgba(255, 255, 255, 0.03)',
+                                  color: isOpen ? '#b4ff04' : '#475569',
+                                  fontWeight: isOpen ? 800 : 500
+                                }}>
+                                  {isOpen ? '可預約' : '—'}
+                                </span>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 3. 場館介紹 */}
+              <div style={{
+                background: '#101726',
+                borderRadius: '14px',
+                border: '1px solid #1e293b',
+                padding: '18px'
+              }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px' }}>
+                  3. 場館介紹
                 </h3>
                 <div style={{
                   fontSize: '13px',
@@ -1060,16 +1113,15 @@ export default function AdminDashboard({ onNavigateHome }) {
                 </div>
               </div>
 
-              {/* 給教練的話或規則 */}
+              {/* 4. 給教練的話或規則 */}
               <div style={{
                 background: '#101726',
                 borderRadius: '14px',
                 border: '1px solid #1e293b',
                 padding: '18px'
               }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <FileText size={16} color="#b4ff04" />
-                  給教練的話或規則
+                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px' }}>
+                  4. 給教練的話或規則
                 </h3>
                 <div style={{
                   fontSize: '13px',
@@ -1085,53 +1137,29 @@ export default function AdminDashboard({ onNavigateHome }) {
                 </div>
               </div>
 
-              {/* 2. 店家身分確認（免收公文、免查統編，官方帳號私訊核驗） */}
+              {/* 5. 場館聯繫管道 */}
               <div style={{
-                background: 'linear-gradient(180deg, #101a2c 0%, #0c121e 100%)',
+                background: '#101726',
                 borderRadius: '14px',
-                border: '1px solid rgba(16, 185, 129, 0.4)',
+                border: '1px solid #1e293b',
                 padding: '18px'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ShieldCheck size={16} color="#10b981" />
-                    店家身分確認（官方聯絡管道核驗）
-                  </h3>
-                  <span style={{ fontSize: '11px', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '2px 8px', borderRadius: '4px', fontWeight: 700 }}>
-                    免收公文・免查統編
-                  </span>
-                </div>
-
-                <p style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5, margin: '0 0 12px' }}>
-                  請由平台官方帳號傳送確認訊息至店家指定之聯絡管道，店家回覆確認後即可核准上架。
-                </p>
-
-                <div style={{
-                  background: '#090e17',
-                  border: '1px solid #1e293b',
-                  borderRadius: '8px',
-                  padding: '12px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '8px'
-                }}>
-                  <div>
-                    <div style={{ fontSize: '11.5px', color: '#94a3b8', marginBottom: '3px' }}>
-                      {selectedApp.verifyChannelLabel || '對外官方聯絡管道'}
-                    </div>
-                    <div style={{ fontSize: '14px', color: '#b4ff04', fontWeight: 800 }}>
-                      {selectedApp.verifyAccount || selectedApp.igHandle || selectedApp.officialLine || selectedApp.fbPageUrl || '未提供'}
-                    </div>
+                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 12px' }}>
+                  5. 場館聯繫管道
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '13px' }}>
+                  <div style={{ background: '#090e17', padding: '12px', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>場館聯繫電話</div>
+                    <a href={`tel:${selectedApp.phone}`} style={{ color: '#b4ff04', textDecoration: 'none', fontWeight: 700 }}>{selectedApp.phone || '未填寫'}</a>
                   </div>
-                  <span style={{ fontSize: '11.5px', color: '#10b981', fontWeight: 700 }}>
-                    請傳訊至此帳號確認身分
-                  </span>
+                  <div style={{ background: '#090e17', padding: '12px', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>場租專用 Gmail</div>
+                    <a href={`mailto:${selectedApp.email}`} style={{ color: '#b4ff04', textDecoration: 'none', fontWeight: 700 }}>{selectedApp.email || '未填寫'}</a>
+                  </div>
                 </div>
               </div>
 
-              {/* 3. 場館照片 (4~10 張) 畫廊檢驗 */}
+              {/* 6. 首頁圖與場館／器材照片 */}
               <div style={{
                 background: '#101726',
                 borderRadius: '14px',
@@ -1139,15 +1167,35 @@ export default function AdminDashboard({ onNavigateHome }) {
                 padding: '18px'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ImageIcon size={16} color="#b4ff04" />
-                    場館與器材照片 ({selectedApp.photos?.length || 0} / 10 張)
+                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                    6. 首頁圖與場館／器材照片 ({selectedApp.photos?.length || 0} / 10 張)
                   </h3>
                   <span style={{ fontSize: '11px', color: (selectedApp.photos?.length || 0) >= 4 ? '#b4ff04' : '#ef4444', fontWeight: 700 }}>
                     {(selectedApp.photos?.length || 0) >= 4 ? '符合至少 4 張標準' : '照片不足 4 張'}
                   </span>
                 </div>
 
+                {selectedApp.coverImage && (
+                  <div style={{ marginBottom: '14px' }}>
+                    <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '6px', fontWeight: 700 }}>首頁圖（封面圖）</div>
+                    <div
+                      onClick={() => setLightboxImage(selectedApp.coverImage)}
+                      style={{
+                        width: '200px',
+                        aspectRatio: '4 / 3',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        border: '2px solid #b4ff04',
+                        cursor: 'pointer',
+                        background: '#090e17'
+                      }}
+                    >
+                      <img src={selectedApp.coverImage} alt="首頁圖" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', fontWeight: 700 }}>場館／器材照片（點擊放大）</div>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
@@ -1161,7 +1209,7 @@ export default function AdminDashboard({ onNavigateHome }) {
                         position: 'relative',
                         borderRadius: '8px',
                         overflow: 'hidden',
-                        border: idx === 0 ? '2px solid #b4ff04' : '1px solid #243248',
+                        border: '1px solid #243248',
                         aspectRatio: '4 / 3',
                         cursor: 'pointer',
                         background: '#090e17'
@@ -1172,21 +1220,6 @@ export default function AdminDashboard({ onNavigateHome }) {
                         alt={`Photo ${idx + 1}`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
-                      {idx === 0 && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '4px',
-                          left: '4px',
-                          background: '#b4ff04',
-                          color: '#0a1402',
-                          fontSize: '9px',
-                          fontWeight: 900,
-                          padding: '1px 5px',
-                          borderRadius: '4px'
-                        }}>
-                          封面圖
-                        </div>
-                      )}
                       <div style={{
                         position: 'absolute',
                         bottom: '4px',
@@ -1204,29 +1237,20 @@ export default function AdminDashboard({ onNavigateHome }) {
                 </div>
               </div>
 
-              {/* 4. 場租定價與開放課表 */}
+              {/* 7. 合作條款 */}
               <div style={{
                 background: '#101726',
                 borderRadius: '14px',
                 border: '1px solid #1e293b',
                 padding: '18px'
               }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 12px' }}>
-                  場租報價與每週開放
+                <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 8px' }}>
+                  7. 合作條款（《GYMspot 合作場館服務條款 V1.0》）
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '13px' }}>
-                  <div style={{ background: '#090e17', padding: '12px', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '11px', color: '#64748b' }}>小時制場租</div>
-                    <div style={{ fontSize: '20px', fontWeight: 900, color: '#b4ff04', marginTop: '2px' }}>
-                      ${selectedApp.hourlyRate} <span style={{ fontSize: '12px', color: '#94a3b8' }}>/ hr</span>
-                    </div>
-                  </div>
-                  <div style={{ background: '#090e17', padding: '12px', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '11px', color: '#64748b' }}>學員人頭清潔費</div>
-                    <div style={{ fontSize: '20px', fontWeight: 900, color: selectedApp.studentCleanFee === 0 ? '#b4ff04' : '#fbbf24', marginTop: '2px' }}>
-                      {selectedApp.studentCleanFee === 0 ? '完全免收' : `$${selectedApp.studentCleanFee} /次`}
-                    </div>
-                  </div>
+                <div style={{ fontSize: '13px', color: selectedApp.agreedTerms !== false ? '#b4ff04' : '#ef4444', fontWeight: 700 }}>
+                  {selectedApp.agreedTerms !== false
+                    ? `✓ 已於 ${selectedApp.agreedTermsAt || selectedApp.submittedAt || '提交時'} 完成線上詳閱並簽署同意`
+                    : '尚未同意合作條款'}
                 </div>
               </div>
             </div>
