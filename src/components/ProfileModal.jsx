@@ -517,11 +517,9 @@ export default function ProfileModal({ isOpen, onClose }) {
                     padding: '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
                     fontSize: '13px',
                     color: '#cbd5e1'
                   }}>
-                    <MapPin size={16} color="#ffffff" style={{ filter: 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))', flexShrink: 0 }} />
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       常駐：<strong style={{ color: '#f8fafc' }}>{coachProfile.primaryAreas}</strong>
                     </span>
@@ -535,11 +533,9 @@ export default function ProfileModal({ isOpen, onClose }) {
                     padding: '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
                     fontSize: '13px',
                     color: '#cbd5e1'
                   }}>
-                    <Phone size={16} color="#b4ff04" style={{ filter: 'drop-shadow(0 0 3px rgba(180, 255, 4, 0.5))', flexShrink: 0 }} />
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       電話：<strong style={{ color: '#f8fafc' }}>{coachProfile.phone}</strong>
                     </span>
@@ -553,11 +549,9 @@ export default function ProfileModal({ isOpen, onClose }) {
                     padding: '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
                     fontSize: '13px',
                     color: '#cbd5e1'
                   }}>
-                    <Mail size={16} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 3px rgba(56, 189, 248, 0.5))', flexShrink: 0 }} />
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       Gmail：<strong style={{ color: '#f8fafc' }}>{coachProfile.email}</strong>
                     </span>
@@ -571,15 +565,9 @@ export default function ProfileModal({ isOpen, onClose }) {
                     padding: '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
                     fontSize: '13px',
                     color: '#cbd5e1'
                   }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       IG：<strong style={{ color: '#f8fafc' }}>{coachProfile.instagram}</strong>
                     </span>
