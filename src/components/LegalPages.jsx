@@ -129,6 +129,13 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           >
             自由教練服務條款
           </button>
+        </div>
+
+        {/* 4. Middle Column C: 場館專區 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
+            場館專區
+          </div>
           <a
             href="https://forms.gle/FpCdQzzPBmAFdpBr8"
             target="_blank"
@@ -137,7 +144,7 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
             onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
           >
-            場館進駐申請表單
+            場館進駐表單
           </a>
         </div>
 
