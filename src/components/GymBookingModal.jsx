@@ -366,12 +366,12 @@ export default function GymBookingModal({
       };
 
       // 同步將教練完整資料傳送至該場館專屬後台 (/venue/:id)
-      let coachInfo = { coachId: 'A0001', name: '林峻 (Alex Lin)', phone: '0912-345-678', email: 'alex.lin.fitness@gmail.com', instagram: '@alex_coach_fit', certifications: getStoredCoachCerts() };
+      let coachInfo = { coachId: 'A1001', name: '林峻 (Alex Lin)', phone: '0912-345-678', email: 'alex.lin.fitness@gmail.com', instagram: '@alex_coach_fit', certifications: getStoredCoachCerts() };
       try {
         const savedProfile = JSON.parse(localStorage.getItem('gymspot_coach_profile') || 'null');
         if (savedProfile) {
           coachInfo = {
-            coachId: savedProfile.coachId || 'A0001',
+            coachId: (savedProfile.coachId === 'A001' || savedProfile.coachId === 'A0001') ? 'A1001' : (savedProfile.coachId || 'A1001'),
             name: savedProfile.name || coachInfo.name,
             phone: savedProfile.phone || coachInfo.phone,
             email: savedProfile.email || coachInfo.email,

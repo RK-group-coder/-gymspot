@@ -406,7 +406,7 @@ export default function VenuePortalPage({ venueId, gyms = [], onNavigateHome }) 
                         {b.coach?.name || b.coachName || '自由教練'}
                       </strong>
                       <span style={{ fontSize: '12.5px', color: '#94a3b8', marginLeft: '10px' }}>
-                        會員編號：{b.coach?.coachId || 'A0001'}
+                        會員編號：{b.coach?.coachId || 'A1001'}
                       </span>
                     </div>
 
@@ -834,3 +834,4 @@ export default function VenuePortalPage({ venueId, gyms = [], onNavigateHome }) 
     </div>
   );
 }
+

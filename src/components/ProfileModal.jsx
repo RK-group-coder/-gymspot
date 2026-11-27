@@ -27,7 +27,7 @@ export default function ProfileModal({ isOpen, onClose }) {
       try {
         const parsed = JSON.parse(saved);
         return {
-          coachId: parsed.coachId === 'A001' ? 'A0001' : (parsed.coachId || 'A0001'),
+          coachId: (parsed.coachId === 'A001' || parsed.coachId === 'A0001') ? 'A1001' : (parsed.coachId || 'A1001'),
           name: parsed.name || '林峻 (Alex Lin)',
           phone: parsed.phone || '0912-345-678',
           email: parsed.email || 'alex.lin.fitness@gmail.com',
@@ -54,7 +54,7 @@ export default function ProfileModal({ isOpen, onClose }) {
       }
     }
     return {
-      coachId: 'A0001',
+      coachId: 'A1001',
       name: '林峻 (Alex Lin)',
       phone: '0912-345-678',
       email: 'alex.lin.fitness@gmail.com',
@@ -252,7 +252,7 @@ export default function ProfileModal({ isOpen, onClose }) {
                   fontWeight: 700,
                   letterSpacing: '0.4px'
                 }}>
-                  會員編號:{coachProfile.coachId || 'A0001'}
+                  會員編號:{coachProfile.coachId || 'A1001'}
                 </span>
               </div>
 

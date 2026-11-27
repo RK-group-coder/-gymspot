@@ -461,7 +461,7 @@ export default function AdminDashboard({ onNavigateHome }) {
         {adminSection === 'members' ? (() => {
           // 讀取目前註冊會員資料與交易紀錄
           let currentCoach = {
-            coachId: 'A0001',
+            coachId: 'A1001',
             name: '林峻 (Alex Lin)',
             phone: '0912-345-678',
             email: 'alex.lin.fitness@gmail.com',
@@ -471,7 +471,13 @@ export default function AdminDashboard({ onNavigateHome }) {
           };
           try {
             const saved = JSON.parse(localStorage.getItem('gymspot_coach_profile') || 'null');
-            if (saved) currentCoach = { ...currentCoach, ...saved };
+            if (saved) {
+              currentCoach = {
+                ...currentCoach,
+                ...saved,
+                coachId: (saved.coachId === 'A001' || saved.coachId === 'A0001') ? 'A1001' : (saved.coachId || 'A1001')
+              };
+            }
           } catch {}
           const currentPts = Number(localStorage.getItem('gymspot_points') ?? 300);
           let bookingTx = [];
@@ -519,7 +525,7 @@ export default function AdminDashboard({ onNavigateHome }) {
               (m.email || '').toLowerCase().includes(q) ||
               (m.phone || '').toLowerCase().includes(q)
             );
-          });
+          }).sort((a, b) => (a.coachId || '').localeCompare(b.coachId || '', undefined, { numeric: true }));
 
           return (
             <div>
