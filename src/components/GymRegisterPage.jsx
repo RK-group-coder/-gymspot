@@ -1782,29 +1782,14 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                   flexWrap: 'wrap',
                   gap: '14px'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{
-                      width: '42px',
-                      height: '42px',
-                      borderRadius: '10px',
-                      background: isAgreedTerms ? 'rgba(180, 255, 4, 0.15)' : '#1a2436',
-                      border: `1px solid ${isAgreedTerms ? '#b4ff04' : '#243248'}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0
-                    }}>
-                      <FileText size={20} color={isAgreedTerms ? '#b4ff04' : '#94a3b8'} />
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
+                      《GYMspot 合作場館服務條款 V1.0》
                     </div>
-                    <div>
-                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>
-                        《GYMspot 合作場館服務條款 V1.0》
-                      </div>
-                      <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                        {isAgreedTerms 
-                          ? `已於 ${agreedTermsTimestamp} 完成線上詳閱並簽署同意`
-                          : '點擊右方按鈕查閱條款，需滑動滾輪至最下方才可點擊「同意」'}
-                      </div>
+                    <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                      {isAgreedTerms 
+                        ? `已於 ${agreedTermsTimestamp} 完成線上詳閱並簽署同意`
+                        : '點擊右方按鈕查閱條款，需滑動滾輪至最下方才可點擊「同意」'}
                     </div>
                   </div>
 
@@ -1822,12 +1807,11 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
+                      justifyContent: 'center',
                       boxShadow: isAgreedTerms ? 'none' : '0 4px 14px rgba(180, 255, 4, 0.35)',
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    <FileText size={15} />
                     <span>{isAgreedTerms ? '重新查閱條款' : '點擊查閱條款'}</span>
                   </button>
                 </div>
@@ -1955,26 +1939,12 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
               alignItems: 'center',
               justifyContent: 'space-between'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '10px',
-                  background: 'rgba(180, 255, 4, 0.12)',
-                  border: '1px solid rgba(180, 255, 4, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <ShieldCheck size={20} color="#b4ff04" />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0 }}>
-                    肌動組 GYMspot · 特約場館入駐合作規範
-                  </h3>
-                  <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                    請向下滾動閱讀完整條款，滑動至最下方方可啟用「我已詳閱並同意」
-                  </div>
+              <div>
+                <h3 style={{ fontSize: '17px', fontWeight: 900, color: '#f8fafc', margin: 0 }}>
+                  肌動組 GYMspot · 特約場館入駐合作規範
+                </h3>
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
+                  請向下滾動閱讀完整條款，滑動至最下方方可啟用「我已詳閱並同意」
                 </div>
               </div>
 
