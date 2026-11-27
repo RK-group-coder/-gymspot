@@ -36,10 +36,8 @@ import {
 const DEFAULT_ADMIN_PASSCODE = 'gymspot-admin';
 
 export default function AdminDashboard({ onNavigateHome }) {
-  // 1. 管理員密鑰授權鎖
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem('gymspot_admin_authed') === 'true';
-  });
+  // 1. 管理員授權（暫時開放直接進入）
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [passcodeInput, setPasscodeInput] = useState('');
   const [passcodeError, setPasscodeError] = useState('');
 
