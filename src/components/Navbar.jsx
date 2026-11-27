@@ -330,7 +330,6 @@ export default function Navbar({
               >
                 <MapPin size={18} color="#ffffff" />
                 <span style={{ flex: 1, color: '#ffffff' }}>返回地圖找場館</span>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>探索地圖</span>
               </button>
 
               {/* Menu Item 2: 個人頁面 */}
@@ -361,7 +360,6 @@ export default function Navbar({
               >
                 <User size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>個人頁面</span>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>資歷 / 評價</span>
               </button>
 
               {/* Menu Item 3: 服務條款與隱私權 */}
@@ -392,7 +390,6 @@ export default function Navbar({
               >
                 <FileText size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>服務條款與隱私權</span>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>法律規範</span>
               </button>
 
               {/* Menu Item 4: 關於我們 */}
@@ -423,7 +420,6 @@ export default function Navbar({
               >
                 <Info size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>關於/聯絡我們</span>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>品牌理念</span>
               </button>
 
               {/* Menu Item 5: 場館免費入駐申請 */}
@@ -454,7 +450,6 @@ export default function Navbar({
               >
                 <Building2 size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>場館免費入駐申請</span>
-                <span style={{ fontSize: '11px', color: '#ffffff' }}>審核中</span>
               </button>
 
               {/* Menu Item 5.5: 審核管理後台 (Admin Panel) */}
@@ -485,7 +480,6 @@ export default function Navbar({
               >
                 <ShieldCheck size={18} color="#ffffff" />
                 <span style={{ flex: 1 }}>場館入駐審核後台</span>
-                <span style={{ fontSize: '11px', color: '#ffffff', fontWeight: 700 }}>ADMIN</span>
               </button>
 
               {/* Menu Item 6: 預約媒合方案 */}
