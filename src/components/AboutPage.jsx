@@ -87,6 +87,24 @@ export default function AboutPage({ gymCount = 15, onNavigateHome, onOpenRegiste
         }}>
           簡單預約・無繁瑣流程
         </div>
+
+        {/* 去背版「GYMspot 簡單預約三步驟」圖解 */}
+        <div style={{
+          marginTop: '36px',
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
+          <img
+            src="/about-steps-transparent.png"
+            alt="GYMspot 簡單預約三步驟：Step 01 打開地圖尋找適合場館、Step 02 選擇預約時段發送預約請求、Step 03 獲得商家確認成功預約場租"
+            style={{
+              width: '100%',
+              maxWidth: '780px',
+              height: 'auto',
+              display: 'block'
+            }}
+          />
+        </div>
       </div>
 
       {/* Divider & Moved Down Section: 為什麼我們創立「肌動組 GYMspot」 */}
