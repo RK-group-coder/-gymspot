@@ -917,7 +917,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                     2. 小時制場租費用與每週開放時段
                   </h3>
                   <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px' }}>
-                    設定統一小時制場租收費（統一價錢收費，不做多堂優惠），並在下方時間表格勾選可以場租的時段
+                    設定統一小時制場租收費（統一價錢收費，不做多堂優惠，僅開放教練進行 1 對 1 課程），並在下方時間表格勾選可以場租的時段
                   </div>
                 </div>
 
@@ -935,7 +935,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                       max="5000"
                       value={formData.hourlyRate ?? ''}
                       onChange={handleChange}
-                      placeholder="統一價錢收費，不做多堂優惠（例如：200）"
+                      placeholder="統一價錢收費，不做多堂優惠，僅限 1 對 1 課程（例如：200）"
                       style={{
                         width: '100%',
                         background: '#121927',
@@ -951,7 +951,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                       onBlur={(e) => e.target.style.borderColor = '#243248'}
                     />
                     <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '6px', fontWeight: 600 }}>
-                      統一價錢收費，不做多堂優惠（每小時一格計費）
+                      統一價錢收費，不做多堂優惠（每小時一格計費，僅開放教練做 1 對 1 課程）
                     </div>
                   </div>
                 </div>
