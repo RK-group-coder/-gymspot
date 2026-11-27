@@ -221,8 +221,8 @@ export default function AboutPage({ gymCount = 15, onNavigateHome, onOpenRegiste
           {/* 右側照片：連上最右側螢幕邊緣 */}
           <div className="story-img-side">
             <img 
-              src="/about-coach-squat.jpg?v=2" 
-              alt="教練現場指導學員深蹲" 
+              src="/about-coach-squat.jpg?v=3" 
+              alt="健身房自由重量與深蹲架實景" 
             />
           </div>
 
