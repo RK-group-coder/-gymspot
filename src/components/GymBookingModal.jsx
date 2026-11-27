@@ -640,7 +640,7 @@ export default function GymBookingModal({
         }}>
           <span style={{ color: '#cbd5e1' }}>
             <strong style={{ color: '#f8fafc' }}>預約須知：</strong>
-            為維護店家現場準備動線與人流管制，預約需 <strong style={{ color: '#b4ff04' }}>至少提前 2 小時</strong> 送出，且<strong style={{ color: '#b4ff04' }}>僅限 1 對 1 授課</strong>；<strong style={{ color: '#f87171' }}>一經預約即無法取消</strong>。
+            為維護店家現場準備動線與人流管制，預約需 <strong style={{ color: '#b4ff04' }}>至少提前 2 小時</strong> 送出，且<strong style={{ color: '#b4ff04' }}>僅限 1 對 1 授課</strong>；<strong style={{ color: '#f87171' }}>一經送出預約申請即無法取消</strong>。
           </span>
         </div>
 
