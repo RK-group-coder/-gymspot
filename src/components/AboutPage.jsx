@@ -15,16 +15,16 @@ import {
 } from 'lucide-react';
 import { LegalFooter } from './LegalPages';
 
-export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms, onOpenAntiFraud }) {
+export default function AboutPage({ gymCount = 15, onNavigateHome, onOpenRegister, onOpenTerms, onOpenAntiFraud }) {
   return (
     <div className="about-page-steel-bg" style={{
       fontFamily: 'system-ui, -apple-system, sans-serif'
     }}>
-      {/* 1. Page Header (Centered) */}
+      {/* 1. Top Welcome Hero Section */}
       <div style={{
-        maxWidth: '900px',
+        maxWidth: '960px',
         margin: '0 auto',
-        padding: '50px 24px 30px',
+        padding: '68px 24px 64px',
         textAlign: 'center',
         position: 'relative',
         zIndex: 1
@@ -32,22 +32,78 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms,
         {/* Ambient Glow */}
         <div style={{
           position: 'absolute',
-          top: '20px',
+          top: '15px',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '500px',
-          height: '220px',
-          background: 'radial-gradient(ellipse at center, rgba(180, 255, 4, 0.12) 0%, rgba(7, 10, 16, 0) 70%)',
-          filter: 'blur(50px)',
+          width: '560px',
+          height: '240px',
+          background: 'radial-gradient(ellipse at center, rgba(180, 255, 4, 0.14) 0%, rgba(7, 10, 16, 0) 70%)',
+          filter: 'blur(55px)',
           zIndex: -1,
           pointerEvents: 'none'
         }} />
 
         <h1 style={{
-          fontSize: 'clamp(32px, 5vw, 52px)',
+          fontSize: 'clamp(34px, 5.2vw, 56px)',
+          fontWeight: 900,
+          lineHeight: 1.28,
+          margin: '0 0 22px',
+          color: '#ffffff',
+          letterSpacing: '-0.5px'
+        }}>
+          歡迎使用{' '}
+          <span style={{ color: '#ffffff', textShadow: '0 0 22px rgba(255, 255, 255, 0.85)' }}>GYM</span>
+          <span style={{ color: '#b4ff04', textShadow: '0 0 25px rgba(180, 255, 4, 0.55)' }}>spot</span>{' '}
+          場租地圖
+        </h1>
+
+        <p style={{
+          fontSize: 'clamp(16px, 2vw, 20px)',
+          color: '#e2e8f0',
+          maxWidth: '720px',
+          margin: '0 auto 14px',
+          lineHeight: 1.75,
+          fontWeight: 600
+        }}>
+          使用我們的預約點數，享有全台{' '}
+          <strong style={{
+            color: '#b4ff04',
+            fontSize: '1.15em',
+            fontWeight: 900,
+            padding: '0 4px',
+            textShadow: '0 0 16px rgba(180, 255, 4, 0.45)'
+          }}>
+            {gymCount}
+          </strong>{' '}
+          間合作場館的預約場租服務
+        </p>
+
+        <div style={{
+          fontSize: 'clamp(15px, 1.8vw, 18px)',
+          color: '#b4ff04',
+          fontWeight: 800,
+          letterSpacing: '0.12em',
+          marginTop: '6px'
+        }}>
+          簡單預約・無繁瑣流程
+        </div>
+      </div>
+
+      {/* Divider & Moved Down Section: 為什麼我們創立「肌動組 GYMspot」 */}
+      <div style={{
+        borderTop: '1px solid rgba(255, 255, 255, 0.16)',
+        maxWidth: '900px',
+        margin: '0 auto',
+        padding: '54px 24px 32px',
+        textAlign: 'center',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <h2 style={{
+          fontSize: 'clamp(28px, 4.2vw, 44px)',
           fontWeight: 900,
           lineHeight: 1.3,
-          margin: '0 0 16px',
+          margin: '0 0 14px',
           color: '#ffffff',
           letterSpacing: '-0.5px'
         }}>
@@ -55,7 +111,7 @@ export default function AboutPage({ onNavigateHome, onOpenRegister, onOpenTerms,
           <span>
             「<span style={{ color: '#ffffff', textShadow: '0 0 22px rgba(255, 255, 255, 0.85)' }}>肌動組 GYM</span><span style={{ color: '#b4ff04', textShadow: '0 0 25px rgba(180, 255, 4, 0.55)' }}>spot</span>」
           </span>
-        </h1>
+        </h2>
 
         <p style={{
           fontSize: '16px',

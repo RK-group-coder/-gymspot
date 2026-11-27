@@ -489,6 +489,7 @@ export default function App() {
           />
         )}
         <AboutPage
+          gymCount={gyms.length}
           onNavigateHome={() => navigateTo('/')}
           onOpenRegister={() => navigateTo('/partner')}
           onOpenTerms={(targetPath = '/terms') => navigateTo(targetPath)}
