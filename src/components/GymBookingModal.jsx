@@ -25,6 +25,7 @@ import {
   Eye
 } from 'lucide-react';
 import { getStoredCoachCerts } from '../utils/certUtils';
+import { addVenueBooking, getVenueScheduleOverride } from '../utils/venuePortalStore';
 
 // 每天 8:00 到 24:00，一小時一格，總共 16 格 (做成 4x4 的格子)
 const TIME_SLOTS = Array.from({ length: 16 }, (_, i) => {
@@ -116,9 +117,10 @@ export default function GymBookingModal({
   const pointsPerSlot = 30; // 每預約 1 時段扣抵 30 點
   const hourlyRate = gym.pricing?.hourlyRate || gym.pricing?.offPeakPerHour || 200;
 
-  // 取得場館註冊時勾選的時段表；若無則預設全開
-  const schedule = gym.availableSchedule || {};
-  const hasCustomSchedule = gym.availableSchedule && Object.keys(gym.availableSchedule).length > 0;
+  // 取得場館註冊時勾選的時段表與廠商後台覆寫設定
+  const venueOverride = useMemo(() => getVenueScheduleOverride(gym.id), [gym.id, isOpen]);
+  const schedule = venueOverride.weeklySchedule || gym.availableSchedule || {};
+  const hasCustomSchedule = !!(venueOverride.weeklySchedule || (gym.availableSchedule && Object.keys(gym.availableSchedule).length > 0));
 
   // 目前選取的日期物件
   const activeDayObj = days.find(d => d.dateStr === selectedDateStr) || days[0];
@@ -140,8 +142,10 @@ export default function GymBookingModal({
     return (dayKey === 3 && hour === 19) || (dayKey === 4 && hour === 18) || (dayKey === 5 && hour === 20) || (dayKey === 6 && hour === 15);
   };
 
-  // 判斷店家是否因應現場情況手動暫時關閉 (暫時關閉)
+  // 判斷店家是否因應現場情況手動暫時關閉 / 特定日期公休 / 單時段劃除
   const isSlotTempClosed = (dayKey, hour, dateStr) => {
+    if ((venueOverride.closedDates || []).includes(dateStr)) return true;
+    if ((venueOverride.closedSlots || []).includes(`${dateStr}-${hour}`)) return true;
     if (gym.tempClosedSchedule) return !!gym.tempClosedSchedule[`${dayKey}-${hour}`];
     if (gym.tempClosedSlots) return gym.tempClosedSlots.includes(`${dateStr}-${hour}`);
     // 示範店家手動暫時關閉 (週三 13:00、週四 14:00、週五 14:00)
@@ -340,6 +344,7 @@ export default function GymBookingModal({
 
       const receipt = {
         bookingId: `BK-${Date.now().toString().slice(-6)}`,
+        gymId: gym.id,
         gymName: gym.name,
         gymAddress: gym.address,
         gymPhone: gym.phone,
@@ -358,6 +363,27 @@ export default function GymBookingModal({
         bookingNote: bookingNote.trim() || '無特殊需求',
         createdAt: new Date().toLocaleString('zh-TW')
       };
+
+      // 同步將教練完整資料傳送至該場館專屬後台 (/venue/:id)
+      let coachInfo = { coachId: 'A0001', name: '林峻 (Alex Lin)', phone: '0912-345-678', email: 'alex.lin.fitness@gmail.com', instagram: '@alex_coach_fit', certifications: getStoredCoachCerts() };
+      try {
+        const savedProfile = JSON.parse(localStorage.getItem('gymspot_coach_profile') || 'null');
+        if (savedProfile) {
+          coachInfo = {
+            coachId: savedProfile.coachId || 'A0001',
+            name: savedProfile.name || coachInfo.name,
+            phone: savedProfile.phone || coachInfo.phone,
+            email: savedProfile.email || coachInfo.email,
+            instagram: savedProfile.instagram || coachInfo.instagram,
+            certifications: Array.isArray(savedProfile.certifications) ? savedProfile.certifications : coachInfo.certifications
+          };
+        }
+      } catch {}
+      addVenueBooking({
+        ...receipt,
+        status: 'pending',
+        coach: coachInfo
+      });
 
       setBookingReceipt(receipt);
       setIsSubmitting(false);

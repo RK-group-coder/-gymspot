@@ -27,6 +27,7 @@ import {
   X
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { ensureVenuePortalCreds, getVenuePortalCreds } from '../utils/venuePortalStore';
 import { 
   getApplications, 
   updateApplicationStatus, 
@@ -1188,6 +1189,48 @@ export default function AdminDashboard({ onNavigateHome }) {
                     : '尚未同意合作條款'}
                 </div>
               </div>
+
+              {/* 8. 合作場館專屬後台路由與密碼（總部後台全程可見，含商家變更後之密碼） */}
+              {(() => {
+                const portalCreds = getVenuePortalCreds(selectedApp.id);
+                const portalUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://www.gymspot.space'}/venue/${selectedApp.id}`;
+                return (
+                  <div style={{
+                    background: '#101726',
+                    borderRadius: '14px',
+                    border: '1px solid #1e293b',
+                    padding: '18px'
+                  }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px' }}>
+                      廠商專屬後台路由與登入密碼
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px' }}>
+                      <div>
+                        <span style={{ color: '#64748b' }}>專屬路由：</span>
+                        <a
+                          href={`/venue/${selectedApp.id}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: '#b4ff04', textDecoration: 'underline', fontWeight: 700 }}
+                        >
+                          {portalUrl}
+                        </a>
+                      </div>
+                      <div>
+                        <span style={{ color: '#64748b' }}>目前登入密碼：</span>
+                        <strong style={{ color: '#f8fafc', fontFamily: 'ui-monospace, monospace' }}>
+                          {portalCreds.passcode}
+                        </strong>
+                        {portalCreds.updatedAt && (
+                          <span style={{ fontSize: '11.5px', color: '#94a3b8', marginLeft: '8px' }}>
+                            (商家於 {portalCreds.updatedAt} 更新)
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Drawer Actions Footer */}

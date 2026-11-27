@@ -14,6 +14,7 @@ import TopUpModal from './components/TopUpModal';
 import AboutPage from './components/AboutPage';
 import GymRegisterPage from './components/GymRegisterPage';
 import AdminDashboard from './components/AdminDashboard';
+import VenuePortalPage from './components/VenuePortalPage';
 import AuthModal from './components/AuthModal';
 import { LegalDocumentPage, isLegalRoute } from './components/LegalPages';
 import { supabase } from './lib/supabase';
@@ -450,6 +451,18 @@ export default function App() {
           }}
         />
       </div>
+    );
+  }
+
+  // Full-page /venue/:venueId route (合作場館專屬後台)
+  if (currentPath.startsWith('/venue/')) {
+    const venueId = currentPath.replace(/^\/venue\//, '').replace(/\/+$/, '');
+    return (
+      <VenuePortalPage
+        venueId={venueId}
+        gyms={gyms}
+        onNavigateHome={() => navigateTo('/')}
+      />
     );
   }
 
