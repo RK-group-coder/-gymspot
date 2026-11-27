@@ -1807,11 +1807,20 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
               {/* Submit Buttons */}
               <div style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                gap: '14px',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: '12px',
                 paddingTop: '10px'
               }}>
+                <div style={{ fontSize: '12.5px', color: '#94a3b8', textAlign: 'right', lineHeight: 1.6 }}>
+                  發送申請後，我們將在三天內處理，上架成功將會發送負責人 Gmail 通知（進駐意願表單時填寫的 Gmail）。
+                </div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  gap: '14px'
+                }}>
                 <button
                   type="button"
                   onClick={onNavigateHome}
@@ -1872,6 +1881,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                     '提交'
                   )}
                 </button>
+                </div>
               </div>
 
             </form>
