@@ -1289,18 +1289,18 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
                         fontWeight: 700,
                         padding: '4px 10px',
                         borderRadius: '6px',
-                        background: len >= 300 ? 'rgba(239, 68, 68, 0.15)' : '#121927',
-                        color: len >= 300 ? '#ef4444' : '#64748b',
-                        border: '1px solid ' + (len >= 300 ? 'rgba(239, 68, 68, 0.4)' : '#243248')
+                        background: len >= 1000 ? 'rgba(239, 68, 68, 0.15)' : '#121927',
+                        color: len >= 1000 ? '#ef4444' : '#64748b',
+                        border: '1px solid ' + (len >= 1000 ? 'rgba(239, 68, 68, 0.4)' : '#243248')
                       }}>
-                        {len} / 300 字
+                        {len} / 1000 字
                       </div>
                     </div>
 
                     <textarea
                       name={sec.name}
-                      maxLength={300}
-                      rows={4}
+                      maxLength={1000}
+                      rows={5}
                       placeholder={sec.placeholder}
                       value={formData[sec.name] || ''}
                       onChange={handleChange}
