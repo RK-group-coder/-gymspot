@@ -562,7 +562,7 @@ export default function GymRegisterPage({ onNavigateHome, onOpenTerms, onOpenAnt
             margin: '0 auto',
             lineHeight: 1.6
           }}>
-            提交您的場館地址、官方聯絡管道與場租報價表，確認身分後即時在 <strong style={{ color: '#ffffff', textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>GYMspot map 場租地圖</strong> 上線，免費吸引全台自由教練進駐帶課！
+            提交您的場館地址、官方聯絡管道與場租報價表，確認身分後即時在 <strong style={{ color: '#ffffff', textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>GYMspot map 場租地圖</strong> 上線，免費吸引全台自由教練預約帶課！
           </p>
         </div>
 
