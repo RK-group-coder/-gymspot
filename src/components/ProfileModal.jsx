@@ -417,13 +417,13 @@ export default function ProfileModal({ isOpen, onClose }) {
             {/* 2. Contact Details (常駐商圈、電話、Gmail、IG) */}
             <div>
               <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#f8fafc', margin: '0 0 10px' }}>
-                聯絡方式與常駐商圈
+                聯絡方式與常駐教學地點
               </h4>
 
               {isEditing ? (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
                   <div>
-                    <label style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginBottom: '6px', fontWeight: 600 }}>常駐商圈</label>
+                    <label style={{ fontSize: '11.5px', color: '#94a3b8', display: 'block', marginBottom: '6px', fontWeight: 600 }}>常駐教學地點</label>
                     <input
                       type="text"
                       value={coachProfile.primaryAreas}
@@ -505,7 +505,7 @@ export default function ProfileModal({ isOpen, onClose }) {
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-                  {/* 1. 常駐商圈 */}
+                  {/* 1. 常駐教學地點 */}
                   <div style={{
                     background: '#111827',
                     border: '1px solid #1f293d',
@@ -517,7 +517,7 @@ export default function ProfileModal({ isOpen, onClose }) {
                     color: '#cbd5e1'
                   }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      常駐：<strong style={{ color: '#f8fafc' }}>{coachProfile.primaryAreas}</strong>
+                      常駐教學地點：<strong style={{ color: '#f8fafc' }}>{coachProfile.primaryAreas}</strong>
                     </span>
                   </div>
 
