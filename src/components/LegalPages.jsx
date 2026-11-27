@@ -65,7 +65,7 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           </div>
         </div>
 
-        {/* 2. Middle Column A: 平台政策（垂直疊放） */}
+        {/* 2. Middle Column A: 條款與政策（全部統一垂直疊放） */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
           <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
             條款與政策
@@ -90,35 +90,21 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           </button>
           <button
             type="button"
-            onClick={() => onNavigate('/refund-policy')}
-            style={linkBtnStyle}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
-          >
-            退款或取消預約政策
-          </button>
-          <button
-            type="button"
-            onClick={() => onNavigate('/anti-fraud')}
-            style={{ ...linkBtnStyle, color: '#b4ff04', fontWeight: 700 }}
-          >
-            防詐騙宣導
-          </button>
-        </div>
-
-        {/* 3. Middle Column B: 專項服務條款（垂直疊放） */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-          <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
-            專項服務規範
-          </div>
-          <button
-            type="button"
             onClick={() => onNavigate('/booking-terms')}
             style={linkBtnStyle}
             onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
           >
             場館預約與交易服務條款
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/refund-policy')}
+            style={linkBtnStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            退款或取消預約政策
           </button>
           <button
             type="button"
@@ -129,9 +115,16 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
           >
             自由教練服務條款
           </button>
+          <button
+            type="button"
+            onClick={() => onNavigate('/anti-fraud')}
+            style={{ ...linkBtnStyle, color: '#b4ff04', fontWeight: 700 }}
+          >
+            防詐騙宣導
+          </button>
         </div>
 
-        {/* 4. Middle Column C: 場館專區 */}
+        {/* 3. Middle Column B: 場館專區 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
           <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff', marginBottom: '2px' }}>
             場館專區
