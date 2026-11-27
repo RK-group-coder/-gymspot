@@ -7,7 +7,6 @@ export const LEGAL_ROUTES = [
   { path: '/booking-terms', key: 'booking-terms', shortLabel: '場館預約與交易條款', title: 'GYMspot 平台場館預約與交易服務條款' },
   { path: '/refund-policy', key: 'refund-policy', shortLabel: '退款或取消預約政策', title: 'GYMspot 退款或取消預約政策' },
   { path: '/coach-terms', key: 'coach-terms', shortLabel: '自由教練服務條款', title: 'GYMspot 自由教練服務條款' },
-  { path: '/venue-terms', key: 'venue-terms', shortLabel: '合作場館服務條款', title: 'GYMspot 合作場館服務條款' },
   { path: '/anti-fraud', key: 'anti-fraud', shortLabel: '防詐騙宣導', title: '防詐騙宣導' }
 ];
 
@@ -128,15 +127,6 @@ export function LegalFooter({ onNavigateHome, onNavigate }) {
             onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
           >
             自由教練服務條款
-          </button>
-          <button
-            type="button"
-            onClick={() => onNavigate('/venue-terms')}
-            style={linkBtnStyle}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
-          >
-            合作場館服務條款
           </button>
         </div>
 
