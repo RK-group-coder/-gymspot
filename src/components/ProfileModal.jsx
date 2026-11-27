@@ -29,6 +29,7 @@ export default function ProfileModal({ isOpen, onClose }) {
         return {
           coachId: (parsed.coachId === 'A001' || parsed.coachId === 'A0001') ? 'A1001' : (parsed.coachId || 'A1001'),
           name: parsed.name || '林峻 (Alex Lin)',
+          gender: parsed.gender || '男',
           phone: parsed.phone || '0912-345-678',
           email: parsed.email || 'alex.lin.fitness@gmail.com',
           primaryAreas: parsed.primaryAreas || '台北大安 / 信義 / 板橋',
@@ -56,6 +57,7 @@ export default function ProfileModal({ isOpen, onClose }) {
     return {
       coachId: 'A1001',
       name: '林峻 (Alex Lin)',
+      gender: '男',
       phone: '0912-345-678',
       email: 'alex.lin.fitness@gmail.com',
       primaryAreas: '台北大安 / 信義 / 板橋',
@@ -224,27 +226,52 @@ export default function ProfileModal({ isOpen, onClose }) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                 {isEditing ? (
-                  <input
-                    type="text"
-                    value={coachProfile.name}
-                    onChange={(e) => setCoachProfile({ ...coachProfile, name: e.target.value })}
-                    placeholder="請填寫真實姓名"
-                    style={{
-                      background: '#090d16',
-                      border: '1px solid #334155',
-                      borderRadius: '8px',
-                      padding: '6px 12px',
-                      color: '#f8fafc',
-                      fontSize: '18px',
-                      fontWeight: 800,
-                      outline: 'none',
-                      width: '180px'
-                    }}
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <input
+                      type="text"
+                      value={coachProfile.name}
+                      onChange={(e) => setCoachProfile({ ...coachProfile, name: e.target.value })}
+                      placeholder="請填寫真實姓名"
+                      style={{
+                        background: '#090d16',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '6px 12px',
+                        color: '#f8fafc',
+                        fontSize: '18px',
+                        fontWeight: 800,
+                        outline: 'none',
+                        width: '180px'
+                      }}
+                    />
+                    <select
+                      value={coachProfile.gender || '男'}
+                      onChange={(e) => setCoachProfile({ ...coachProfile, gender: e.target.value })}
+                      style={{
+                        background: '#090d16',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        padding: '7px 10px',
+                        color: '#f8fafc',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        outline: 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value="男">男</option>
+                      <option value="女">女</option>
+                    </select>
+                  </div>
                 ) : (
-                  <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#f8fafc', margin: 0, letterSpacing: '0.2px' }}>
-                    {coachProfile.name}
-                  </h2>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                    <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#f8fafc', margin: 0, letterSpacing: '0.2px' }}>
+                      {coachProfile.name}
+                    </h2>
+                    <span style={{ fontSize: '13.5px', color: '#cbd5e1', fontWeight: 600 }}>
+                      ({coachProfile.gender || '男'})
+                    </span>
+                  </div>
                 )}
                 <span style={{
                   color: '#ffffff',

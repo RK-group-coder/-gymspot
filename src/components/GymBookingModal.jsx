@@ -373,6 +373,7 @@ export default function GymBookingModal({
           coachInfo = {
             coachId: (savedProfile.coachId === 'A001' || savedProfile.coachId === 'A0001') ? 'A1001' : (savedProfile.coachId || 'A1001'),
             name: savedProfile.name || coachInfo.name,
+            gender: savedProfile.gender || '男',
             phone: savedProfile.phone || coachInfo.phone,
             email: savedProfile.email || coachInfo.email,
             instagram: savedProfile.instagram || coachInfo.instagram,

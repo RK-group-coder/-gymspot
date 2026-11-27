@@ -769,6 +769,7 @@ export default function AdminDashboard({ onNavigateHome }) {
           let currentCoach = {
             coachId: 'A1001',
             name: '林峻 (Alex Lin)',
+            gender: '男',
             phone: '0912-345-678',
             email: 'alex.lin.fitness@gmail.com',
             instagram: '@alex_coach_fit',
@@ -865,7 +866,7 @@ export default function AdminDashboard({ onNavigateHome }) {
                   <thead>
                     <tr style={{ borderBottom: '1px solid #1f2937', color: '#94a3b8', fontSize: '12px' }}>
                       <th style={{ padding: '12px 16px' }}>會員編號</th>
-                      <th style={{ padding: '12px 16px' }}>姓名</th>
+                      <th style={{ padding: '12px 16px' }}>姓名 / 性別</th>
                       <th style={{ padding: '12px 16px' }}>教練證照（現有填寫）</th>
                       <th style={{ padding: '12px 16px' }}>聯絡方式</th>
                       <th style={{ padding: '12px 16px' }}>現有預約點數</th>
@@ -879,7 +880,9 @@ export default function AdminDashboard({ onNavigateHome }) {
                         <td style={{ padding: '14px 16px', fontWeight: 700, color: '#f8fafc', fontFamily: 'ui-monospace, monospace' }}>
                           {m.coachId}
                         </td>
-                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#f8fafc' }}>{m.name}</td>
+                        <td style={{ padding: '14px 16px', fontWeight: 700, color: '#f8fafc' }}>
+                          {m.name} <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>({m.gender || '男'})</span>
+                        </td>
                         <td style={{ padding: '14px 16px', color: '#cbd5e1', maxWidth: '260px' }}>
                           {Array.isArray(m.certifications) && m.certifications.length > 0
                             ? m.certifications.map((c) => c.name || c).join('、')
