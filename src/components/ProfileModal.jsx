@@ -66,62 +66,22 @@ export default function ProfileModal({ isOpen, onClose }) {
 
   // State for adding a new certification
   const [newCertName, setNewCertName] = useState('');
-  const [newCertImage, setNewCertImage] = useState(null);
-  const [newCertImageName, setNewCertImageName] = useState('');
-  const fileInputRef = useRef(null);
-
-  // State for viewing certificate in Lightbox
-  const [viewingCert, setViewingCert] = useState(null);
 
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   if (!isOpen) return null;
 
-  // Handle image upload via FileReader
-  const handleImageFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      alert('請選取 JPG、PNG 等圖片格式檔案！');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert('圖片檔案過大，請選取小於 5MB 的照片！');
-      return;
-    }
-
-    setNewCertImageName(file.name);
-    const reader = new FileReader();
-    reader.onload = (loadEvent) => {
-      setNewCertImage(loadEvent.target?.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Add certification - STRICT: MUST ATTACH IMAGE
+  // Add certification（僅填寫文字，不上傳照片）
   const handleAddCertification = () => {
     if (!newCertName.trim()) {
       alert('請先輸入證照全名！例如：NASM-CPT、CPR+AED 等');
       return;
     }
 
-    // 關鍵強制限制：必須附上圖片才能新增證照！
-    if (!newCertImage) {
-      alert('【必須檢附證照圖檔】\n\n為保障場館方查核與學員訓練安全，新增證照時「必須檢附證照正面照片或電子證明」！\n請先選取證照圖檔後再點擊新增。');
-      if (fileInputRef.current) {
-        fileInputRef.current.click();
-      }
-      return;
-    }
-
     const newCertItem = {
       id: `cert-custom-${Date.now()}`,
       name: newCertName.trim(),
-      code: `LIC-SELF-${Math.floor(1000 + Math.random() * 9000)}`,
-      uploadDate: new Date().toLocaleDateString('zh-TW'),
-      imageUrl: newCertImage
+      uploadDate: new Date().toLocaleDateString('zh-TW')
     };
 
     setCoachProfile(prev => ({
@@ -129,13 +89,7 @@ export default function ProfileModal({ isOpen, onClose }) {
       certifications: [...prev.certifications, newCertItem]
     }));
 
-    // Reset input fields
     setNewCertName('');
-    setNewCertImage(null);
-    setNewCertImageName('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
 
   // Remove certification
@@ -344,7 +298,7 @@ export default function ProfileModal({ isOpen, onClose }) {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '6px' }}>
                 <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-                  專業證照（教練自主檢附照片證明）
+                  專業證照（教練自行填寫，平台不審核）
                 </h4>
               </div>
 
@@ -373,26 +327,6 @@ export default function ProfileModal({ isOpen, onClose }) {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-                      {/* 查看照片按鈕 */}
-                      {cert.imageUrl && (
-                        <button
-                          type="button"
-                          onClick={() => setViewingCert(cert)}
-                          style={{
-                            background: 'rgba(180, 255, 4, 0.12)',
-                            border: '1px solid rgba(180, 255, 4, 0.4)',
-                            color: '#b4ff04',
-                            borderRadius: '6px',
-                            padding: '4px 10px',
-                            fontSize: '11.5px',
-                            fontWeight: 700,
-                            cursor: 'pointer'
-                          }}
-                          title="查看證照證明圖檔"
-                        >
-                          查看照片
-                        </button>
-                      )}
 
                       {/* 編輯模式下的刪除按鈕 */}
                       {isEditing && (
@@ -435,7 +369,7 @@ export default function ProfileModal({ isOpen, onClose }) {
                 }}>
                   <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Plus size={15} color="#b4ff04" />
-                    <span>新增專業證照（必須檢附照片）</span>
+                    <span>新增專業證照</span>
                   </div>
 
                   <input
@@ -456,61 +390,6 @@ export default function ProfileModal({ isOpen, onClose }) {
                     }}
                   />
 
-                  {/* 證照圖片上傳區域 (必須項目) */}
-                  <div>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleImageFileChange}
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                    />
-
-                    <div 
-                      onClick={() => fileInputRef.current?.click()}
-                      style={{
-                        border: newCertImage ? '1px solid #10b981' : '1px dashed #475569',
-                        borderRadius: '8px',
-                        padding: '10px 14px',
-                        background: newCertImage ? 'rgba(16, 185, 129, 0.08)' : '#111827',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        cursor: 'pointer',
-                        gap: '10px'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
-                        {newCertImage ? (
-                          <FileImage size={18} color="#10b981" />
-                        ) : (
-                          <Upload size={18} color="#94a3b8" />
-                        )}
-                        <span style={{ fontSize: '12px', color: newCertImage ? '#f8fafc' : '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {newCertImage ? `已選取：${newCertImageName}` : '點擊上傳證照正面照片（支援 JPG / PNG，必填）'}
-                        </span>
-                      </div>
-
-                      <span style={{
-                        fontSize: '11px',
-                        padding: '3px 8px',
-                        borderRadius: '5px',
-                        background: newCertImage ? '#10b981' : '#334155',
-                        color: newCertImage ? '#ffffff' : '#cbd5e1',
-                        fontWeight: 700,
-                        flexShrink: 0
-                      }}>
-                        {newCertImage ? '✓ 照片就緒' : '選取圖片 (必填)'}
-                      </span>
-                    </div>
-
-                    {!newCertImage && (
-                      <div style={{ fontSize: '11px', color: '#f87171', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <ShieldAlert size={12} />
-                        <span>* 必須附上清晰證照圖檔才能新增，以供場館方查驗核對</span>
-                      </div>
-                    )}
-                  </div>
 
                   <button
                     type="button"
@@ -531,7 +410,7 @@ export default function ProfileModal({ isOpen, onClose }) {
                     }}
                   >
                     <Plus size={15} />
-                    確認新增證照（已檢附圖片）
+                    確認新增證照
                   </button>
                 </div>
               )}
@@ -736,120 +615,6 @@ export default function ProfileModal({ isOpen, onClose }) {
         </div>
       </div>
 
-      {/* Certificate Photo Lightbox Modal (檢視證照證明照片) */}
-      {viewingCert && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 3000,
-          background: 'rgba(3, 6, 12, 0.92)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px'
-        }}>
-          <div style={{
-            background: '#0b111c',
-            border: '1px solid #233148',
-            borderRadius: '18px',
-            width: '100%',
-            maxWidth: '680px',
-            maxHeight: '92vh',
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: '0 25px 60px rgba(0,0,0,0.85), 0 0 30px rgba(180, 255, 4, 0.2)',
-            overflow: 'hidden'
-          }}>
-            {/* Lightbox Header */}
-            <div style={{
-              padding: '14px 20px',
-              borderBottom: '1px solid #1c2738',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: '#070c14'
-            }}>
-              <div>
-                <div style={{ fontSize: '14px', fontWeight: 800, color: '#f8fafc' }}>
-                  {viewingCert.name}
-                </div>
-                <div style={{ fontSize: '11px', color: '#10b981', marginTop: '2px' }}>
-                  教練自主檢附之合格證明圖檔 · 供店家現場查核核驗
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setViewingCert(null)}
-                style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: 'none',
-                  color: '#cbd5e1',
-                  borderRadius: '6px',
-                  padding: '5px',
-                  cursor: 'pointer'
-                }}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Lightbox Image Preview */}
-            <div style={{
-              flex: 1,
-              overflowY: 'auto',
-              padding: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#04070e'
-            }}>
-              <img 
-                src={viewingCert.imageUrl} 
-                alt={viewingCert.name}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '62vh',
-                  borderRadius: '10px',
-                  border: '1px solid #233148',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
-                  objectFit: 'contain'
-                }}
-              />
-            </div>
-
-            {/* Lightbox Footer */}
-            <div style={{
-              padding: '12px 20px',
-              borderTop: '1px solid #1c2738',
-              background: '#070c14',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-              <span style={{ fontSize: '11.5px', color: '#64748b' }}>
-                檔案狀態：已檢附 · 證號：{viewingCert.code || 'LICENSE-VERIFIED'}
-              </span>
-              <button
-                type="button"
-                onClick={() => setViewingCert(null)}
-                style={{
-                  background: '#1e293b',
-                  color: '#f8fafc',
-                  border: '1px solid #334155',
-                  borderRadius: '8px',
-                  padding: '6px 14px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer'
-                }}
-              >
-                關閉預覽
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
