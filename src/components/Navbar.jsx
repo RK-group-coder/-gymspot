@@ -222,17 +222,6 @@ export default function Navbar({
                 }}>
                   功能選單
                 </span>
-                <span style={{
-                  fontSize: '11px',
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  background: 'rgba(180, 255, 4, 0.12)',
-                  color: '#b4ff04',
-                  fontWeight: 800,
-                  border: '1px solid rgba(180, 255, 4, 0.3)'
-                }}>
-                  GYMspot
-                </span>
               </div>
 
               {/* Close Button (X) */}
