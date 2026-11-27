@@ -13,7 +13,6 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { buildGoogleMapsRouteUrl, formatDistance } from '../utils/geo';
-import GymReviewsSection from './GymReviewsSection';
 import GymBookingModal from './GymBookingModal';
 
 const DAY_NAMES = ['一', '二', '三', '四', '五', '六', '日'];
@@ -313,11 +312,11 @@ export default function GymDetailModal({
           </div>
         </div>
 
-        {/* Google 風格三分頁導覽列：總覽 / 評論 / 預約 */}
+        {/* 兩分頁導覽列：總覽 / 預約 */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(2, 1fr)',
             borderBottom: '1px solid #222222',
             background: '#000000',
             position: 'sticky',
@@ -328,7 +327,6 @@ export default function GymDetailModal({
         >
           {[
             { key: 'overview', label: '總覽' },
-            { key: 'reviews', label: '評論' },
             { key: 'booking', label: '預約' }
           ].map((tab) => {
             const isActive = activeTab === tab.key;
@@ -659,12 +657,7 @@ export default function GymDetailModal({
             </>
           )}
 
-          {/* 分頁 2：評論 */}
-          {activeTab === 'reviews' && (
-            <GymReviewsSection key={gym.id || gym.name} gym={gym} />
-          )}
-
-          {/* 分頁 3：預約 */}
+          {/* 分頁 2：預約 */}
           {activeTab === 'booking' && (
             <GymBookingModal
               gym={gym}
