@@ -223,9 +223,29 @@ export default function ProfileModal({ isOpen, onClose }) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#f8fafc', margin: 0, letterSpacing: '0.2px' }}>
-                  {coachProfile.name}
-                </h2>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={coachProfile.name}
+                    onChange={(e) => setCoachProfile({ ...coachProfile, name: e.target.value })}
+                    placeholder="請填寫真實姓名"
+                    style={{
+                      background: '#090d16',
+                      border: '1px solid #334155',
+                      borderRadius: '8px',
+                      padding: '6px 12px',
+                      color: '#f8fafc',
+                      fontSize: '18px',
+                      fontWeight: 800,
+                      outline: 'none',
+                      width: '180px'
+                    }}
+                  />
+                ) : (
+                  <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#f8fafc', margin: 0, letterSpacing: '0.2px' }}>
+                    {coachProfile.name}
+                  </h2>
+                )}
                 <span style={{
                   color: '#ffffff',
                   fontSize: '13.5px',
@@ -259,6 +279,10 @@ export default function ProfileModal({ isOpen, onClose }) {
               >
                 {isEditing ? '儲存變更' : '編輯個人資料'}
               </button>
+            </div>
+
+            <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '8px', lineHeight: 1.6 }}>
+              姓名請填寫真實姓名。預約場館時，系統將發送您的姓名、證照與聯絡資訊給場館方確認。
             </div>
 
             {savedSuccess && (
