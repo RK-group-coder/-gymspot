@@ -534,18 +534,24 @@ export default function AdminDashboard({ onNavigateHome }) {
           };
           const cfg = rangeConfig[overviewRange];
 
-          // 簡易 SVG 折線圖產生器（自適應單一螢幕高度）
-          const buildPolyline = (values, maxVal, w = 520, h = 150, pad = 16) => {
+          // 專業級 SVG 面積折線圖座標計算
+          const buildCoords = (values, maxVal, w = 540, h = 160, padL = 46, padR = 20, padT = 20, padB = 26) => {
             const safeMax = Math.max(maxVal, 1);
             return values.map((v, i) => {
-              const x = pad + (i * (w - pad * 2)) / Math.max(values.length - 1, 1);
-              const y = h - pad - ((v / safeMax) * (h - pad * 2));
-              return `${x.toFixed(1)},${y.toFixed(1)}`;
-            }).join(' ');
+              const x = padL + (i * (w - padL - padR)) / Math.max(values.length - 1, 1);
+              const y = h - padB - ((v / safeMax) * (h - padT - padB));
+              return { x, y, v };
+            });
           };
 
           const maxRev = Math.max(...cfg.revSeries, 100);
           const maxBook = Math.max(...cfg.bookSeries, 5);
+          const revCoords = buildCoords(cfg.revSeries, maxRev);
+          const bookCoords = buildCoords(cfg.bookSeries, maxBook);
+          const revPoints = revCoords.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+          const bookPoints = bookCoords.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+          const revArea = `46,134 ${revPoints} ${revCoords[revCoords.length - 1].x.toFixed(1)},134`;
+          const bookArea = `46,134 ${bookPoints} ${bookCoords[bookCoords.length - 1].x.toFixed(1)},134`;
 
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', height: 'calc(100vh - 96px)', overflow: 'hidden' }}>
@@ -606,60 +612,104 @@ export default function AdminDashboard({ onNavigateHome }) {
               {/* 雙增幅圖表區（填滿剩餘螢幕高度，一頁完整呈現） */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', flex: 1, minHeight: 0 }}>
                 {/* 圖表 1：營收增幅趨勢圖 */}
-                <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '16px 18px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#f8fafc' }}>平台營收增幅趨勢 ({cfg.label})</span>
-                    <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 700 }}>NT$ {totalRevenue.toLocaleString()}</span>
+                <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '18px 20px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>平台營收增幅趨勢 ({cfg.label})</div>
+                      <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px' }}>單位：新台幣 (NTD)</div>
+                    </div>
+                    <span style={{ fontSize: '14px', color: '#10b981', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>NT$ {totalRevenue.toLocaleString()}</span>
                   </div>
                   <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
-                    <svg viewBox="0 0 520 175" style={{ width: '100%', height: '100%', maxHeight: '240px' }}>
-                      <line x1="16" y1="150" x2="504" y2="150" stroke="#1f2937" strokeWidth="1" />
-                      <line x1="16" y1="85" x2="504" y2="85" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
-                      <line x1="16" y1="20" x2="504" y2="20" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
-                      <polyline
-                        fill="none"
-                        stroke="#10b981"
-                        strokeWidth="2.5"
-                        points={buildPolyline(cfg.revSeries, maxRev, 520, 150, 16)}
-                      />
-                      {cfg.labels.map((lbl, i) => {
-                        const x = 16 + (i * (520 - 32)) / Math.max(cfg.labels.length - 1, 1);
-                        return (
-                          <text key={i} x={x} y="168" fill="#64748b" fontSize="11" textAnchor="middle">
-                            {lbl}
+                    <svg viewBox="0 0 540 165" style={{ width: '100%', height: '100%', maxHeight: '280px' }}>
+                      <defs>
+                        <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.28" />
+                          <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      {[
+                        { y: 20, label: maxRev.toLocaleString() },
+                        { y: 77, label: Math.round(maxRev / 2).toLocaleString() },
+                        { y: 134, label: '0' }
+                      ].map((tick, idx) => (
+                        <g key={idx}>
+                          <line x1="46" y1={tick.y} x2="520" y2={tick.y} stroke="#1f2937" strokeDasharray={idx === 2 ? undefined : '4 4'} strokeWidth="1" />
+                          <text x="38" y={tick.y + 4} fill="#64748b" fontSize="10" textAnchor="end">{tick.label}</text>
+                        </g>
+                      ))}
+                      <polygon points={revArea} fill="url(#revGrad)" />
+                      <polyline fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinejoin="round" points={revPoints} />
+                      {revCoords.map((pt, i) => (
+                        <g key={i}>
+                          <circle cx={pt.x} cy={pt.y} r="3.5" fill="#111622" stroke="#10b981" strokeWidth="2" />
+                          <text x={pt.x} y={pt.y - 9} fill="#cbd5e1" fontSize="10" textAnchor="middle" fontWeight="600">
+                            {pt.v > 0 ? pt.v.toLocaleString() : ''}
                           </text>
-                        );
-                      })}
+                        </g>
+                      ))}
+                      {cfg.labels.map((lbl, i) => (
+                        <text key={i} x={revCoords[i].x} y="155" fill="#64748b" fontSize="10.5" textAnchor="middle">
+                          {lbl}
+                        </text>
+                      ))}
                     </svg>
+                  </div>
+                  <div style={{ borderTop: '1px solid #1f2937', paddingTop: '10px', marginTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8' }}>
+                    <span>峰值：<strong style={{ color: '#f8fafc' }}>NT$ {Math.max(...cfg.revSeries).toLocaleString()}</strong></span>
+                    <span>期均：<strong style={{ color: '#f8fafc' }}>NT$ {Math.round(cfg.revSeries.reduce((a, b) => a + b, 0) / cfg.revSeries.length).toLocaleString()}</strong></span>
+                    <span>增幅：<strong style={{ color: '#10b981' }}>{cfg.revDelta}</strong></span>
                   </div>
                 </div>
 
                 {/* 圖表 2：預約次數增幅趨勢圖 */}
-                <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '16px 18px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#f8fafc' }}>預約次數增幅趨勢 ({cfg.label})</span>
-                    <span style={{ fontSize: '12px', color: '#b4ff04', fontWeight: 700 }}>{totalBookings} 次</span>
+                <div style={{ background: '#111622', border: '1px solid #1f2937', borderRadius: '8px', padding: '18px 20px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc' }}>預約次數增幅趨勢 ({cfg.label})</div>
+                      <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px' }}>單位：預約次數 (次)</div>
+                    </div>
+                    <span style={{ fontSize: '14px', color: '#b4ff04', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{totalBookings} 次</span>
                   </div>
                   <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0 }}>
-                    <svg viewBox="0 0 520 175" style={{ width: '100%', height: '100%', maxHeight: '240px' }}>
-                      <line x1="16" y1="150" x2="504" y2="150" stroke="#1f2937" strokeWidth="1" />
-                      <line x1="16" y1="85" x2="504" y2="85" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
-                      <line x1="16" y1="20" x2="504" y2="20" stroke="#1f2937" strokeDasharray="4 4" strokeWidth="1" />
-                      <polyline
-                        fill="none"
-                        stroke="#b4ff04"
-                        strokeWidth="2.5"
-                        points={buildPolyline(cfg.bookSeries, maxBook, 520, 150, 16)}
-                      />
-                      {cfg.labels.map((lbl, i) => {
-                        const x = 16 + (i * (520 - 32)) / Math.max(cfg.labels.length - 1, 1);
-                        return (
-                          <text key={i} x={x} y="168" fill="#64748b" fontSize="11" textAnchor="middle">
-                            {lbl}
+                    <svg viewBox="0 0 540 165" style={{ width: '100%', height: '100%', maxHeight: '280px' }}>
+                      <defs>
+                        <linearGradient id="bookGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#b4ff04" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#b4ff04" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      {[
+                        { y: 20, label: String(maxBook) },
+                        { y: 77, label: String(Math.round(maxBook / 2)) },
+                        { y: 134, label: '0' }
+                      ].map((tick, idx) => (
+                        <g key={idx}>
+                          <line x1="46" y1={tick.y} x2="520" y2={tick.y} stroke="#1f2937" strokeDasharray={idx === 2 ? undefined : '4 4'} strokeWidth="1" />
+                          <text x="38" y={tick.y + 4} fill="#64748b" fontSize="10" textAnchor="end">{tick.label}</text>
+                        </g>
+                      ))}
+                      <polygon points={bookArea} fill="url(#bookGrad)" />
+                      <polyline fill="none" stroke="#b4ff04" strokeWidth="2.5" strokeLinejoin="round" points={bookPoints} />
+                      {bookCoords.map((pt, i) => (
+                        <g key={i}>
+                          <circle cx={pt.x} cy={pt.y} r="3.5" fill="#111622" stroke="#b4ff04" strokeWidth="2" />
+                          <text x={pt.x} y={pt.y - 9} fill="#cbd5e1" fontSize="10" textAnchor="middle" fontWeight="600">
+                            {pt.v > 0 ? pt.v : ''}
                           </text>
-                        );
-                      })}
+                        </g>
+                      ))}
+                      {cfg.labels.map((lbl, i) => (
+                        <text key={i} x={bookCoords[i].x} y="155" fill="#64748b" fontSize="10.5" textAnchor="middle">
+                          {lbl}
+                        </text>
+                      ))}
                     </svg>
+                  </div>
+                  <div style={{ borderTop: '1px solid #1f2937', paddingTop: '10px', marginTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8' }}>
+                    <span>峰值：<strong style={{ color: '#f8fafc' }}>{Math.max(...cfg.bookSeries)} 次</strong></span>
+                    <span>期均：<strong style={{ color: '#f8fafc' }}>{Math.round(cfg.bookSeries.reduce((a, b) => a + b, 0) / cfg.bookSeries.length)} 次</strong></span>
+                    <span>增幅：<strong style={{ color: '#b4ff04' }}>{cfg.bookDelta}</strong></span>
                   </div>
                 </div>
               </div>
